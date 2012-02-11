@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from scriptfan import create_app
-
-app = create_app("scriptfan.cfg")
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from scriptfan import app
 
 if __name__ == "__main__":
     app.run(debug=True)
