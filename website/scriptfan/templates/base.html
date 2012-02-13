@@ -7,19 +7,32 @@
     </head>
     <body>
 		<div class="navbar">
-			<div class="navbar-inner">
-				<h1><a class="brand" href="/">ScriptFan.com</a></h1>
-				<div class="container">
-					<ul class="nav">
-						<li class="active">
-							<a href="/">首页</a>
-						</li>
-						<li><a href="#">Link</a></li>
-						<li><a href="#">Link</a></li>
-					</ul>
+			<div class="navbar-inner" style="border-radius:0;">
+				<div class="container" style="width:auto;">
+					<h1><a class="brand" href="/">ScriptFan.com</a></h1>
+					<div class="nav-collapse">
+						<ul class="nav">
+							<li class="active"><a href="/">首页</a></li>
+							<li><a href="#">新闻</a></li>
+							<li><a href="#">话题</a></li>
+						</ul>
+						<form class="navbar-search pull-left">
+							<input type="text" class="search-query" placeholder="Search" />
+						</form>
+						<ul class="nav pull-right">
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+								</ul>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
-		{% block content %}{% endblock %}
+		<div class="container">
+			<div class="span8">{% block content %}{% endblock %}</div>
+			<div class="span4">{% block sidebar %}{% endblock %}</div>
+		</div>
     </body>
 </html>
