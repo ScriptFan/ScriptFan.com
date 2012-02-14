@@ -3,12 +3,13 @@
         <meta charset="utf-8" />
         <title>{% block title %}{% endblock %} - ScriptFan.com</title>
         <link type="text/css" rel="stylesheet" media="screen" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+        <link type="text/css" rel="stylesheet" media="screen" href="{{ url_for('static', filename='css/styles.css')}}" />
         <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     </head>
     <body>
 		<div class="navbar">
-			<div class="navbar-inner" style="border-radius:0;">
-				<div class="container" style="width:auto;">
+			<div class="navbar-inner">
+				<div class="container">
 					<h1><a class="brand" href="/">ScriptFan.com</a></h1>
 					<div class="nav-collapse">
 						<ul class="nav">
