@@ -1,4 +1,7 @@
 {% extends "base.html" %}
 {% block title %}首页{% endblock %}
 {% block contnet %}
+{% for news in g.news %}
+{{ news.title }}
+{% enddor %}
 {% endblock %}
