@@ -2,13 +2,12 @@
 #-*-coding:utf-8-*-
 from datetime import datetime
 from hashlib import md5, sha1
-from flask_peewee.auth import BaseUser
 from peewee import *
-from scriptfan import db
+from scriptfan.variables import db
 
 __all__ = ["User", "Relationship", "News", "NewsComment"]
 
-class User(db.Model, BaseUser):
+class User(db.Document):
     nickname = CharField()
     password = CharField()
     email = CharField()
