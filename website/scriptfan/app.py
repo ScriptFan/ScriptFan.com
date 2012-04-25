@@ -4,7 +4,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask, session, render_template, g, abort
 from scriptfan.variables import db
-from scriptfan.models import *
 
 def config_app(app, config):
     app.config.from_pyfile(config)
@@ -48,13 +47,9 @@ def dispatch_handlers(app):
         return render_template('error.html', **d), 500
 
 def dispatch_apps(app):
-    from scriptfan.views import siteapp, pasteapp, userapp, rankapp, tagapp, adminapp
-    app.register_blueprint(siteapp,  url_prefix='/')
-    app.register_blueprint(pasteapp, url_prefix='/paste')
-    app.register_blueprint(userapp,  url_prefix='/user')
-    app.register_blueprint(rankapp,  url_prefix='/rank')
-    app.register_blueprint(tagapp,   url_prefix='/tag')
-    app.register_blueprint(adminapp, url_prefix='/admin')
+    from scriptfan.views import sitemodular, postmodular
+    app.register_blueprint(sitemodular,  url_prefix='/')
+    app.register_blueprint(postmodular, url_prefix='/paste')
 
     from scriptfan.utils.filters import dateformat, empty, time_passed
     app.jinja_env.filters['dateformat'] = dateformat

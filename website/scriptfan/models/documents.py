@@ -5,7 +5,7 @@ from flask import url_for, session, g
 from scriptfan.variables import db
 from scriptfan.utils.functions import *
 
-__all__ = ['User', 'Tag', 'Entry', 'EntryComment', 'getUserObject', 'updateTags']
+__all__ = ['User', 'Tag', 'Post', 'PostComment', 'getUserObject', 'updateTags']
 
 def updateTags(model, tags=[]):
     old_tags = [tag.name for tag in model.tags]
@@ -101,7 +101,7 @@ class Tag(db.Document):
     def entries(self):
         return Entry.objects(tags=self)
 
-class EntryComment(db.EmbeddedDocument):
+class PostComment(db.EmbeddedDocument):
     """docstring for Comment"""
     user = db.ReferenceField(User)
     content = db.StringField(required=True)
@@ -112,10 +112,9 @@ class EntryComment(db.EmbeddedDocument):
         'ordering': ['-created_time']
     }
 
-class Entry(db.Document):
+class Post(db.Document):
     """docstring for Paste"""
     user = db.ReferenceField(User)
-    syntax = db.ReferenceField(Syntax)
     title = db.StringField(default=u'未命名标题')
     content = db.StringField(required=True)
     description = db.StringField(default=u'没有描述')
@@ -128,8 +127,7 @@ class Entry(db.Document):
         'ordering': ['-created_time']
     }
 
-    comments = db.ListField(db.EmbeddedDocumentField(PasteComment))
-    rates = db.ListField(db.EmbeddedDocumentField(PasteRate))
+    comments = db.ListField(db.EmbeddedDocumentField(PostComment))
     tags = db.ListField(db.ReferenceField(Tag))
     followers = db.ListField(db.ReferenceField(User))
 
@@ -137,9 +135,6 @@ class Entry(db.Document):
         if not self.id:
             self.followers.append(self.user)
         super(Paste, self).save(*args, **kwargs)
-
-    def get_related_pastes(self, num):
-        return Paste.objects(db.Q(syntax=self.syntax) & db.Q(id__ne=self.id))[:num]
 
     @property
     def is_user_followed(self):
