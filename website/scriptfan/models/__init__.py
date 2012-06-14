@@ -42,10 +42,14 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     openid = db.Column(db.Text, nullable=True)
     email = db.Column(db.String(45), unique=True, nullable=False) # 登陆使用的
-    nickname = db.Column(db.String(45), unique=True, nullable=False) # 显示时用的
-    password = db.Column(db.String(45), nullable=True)
+    email_status = db.Column(db.Integer, nullable=True) # 邮箱可见度: 0-不公开 1-公开 2-向成员公开
+    phone = db.Column(db.String(15), unique=True, nullable=True) # 手机号码
+    phone_status = db.Column(db.Integer, nullable=True) # 手机可见度: 0-不公开 1-公开 2-向成员公开
+    nickname = db.Column(db.String(45), unique=True, nullable=False) # 昵称, 显示时用的
+    photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
+    password = db.Column(db.String(45), nullable=True) # 密码
     is_email_verified = db.Column(db.Boolean, nullable=False)
-    slug = db.Column(db.String(45), nullable=True)
+    slug = db.Column(db.String(45), nullable=True) # 用户页面
     created_time = db.Column(db.DateTime, nullable=False)
     modified_time = db.Column(db.DateTime, nullable=False)
     last_login_time = db.Column(db.DateTime, default=datetime.now())
