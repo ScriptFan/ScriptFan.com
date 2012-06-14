@@ -22,37 +22,8 @@ def test(config):
 @manager.option('-c', '--config', dest='config', help='Configuration file name')
 def initialize(config):
     config_app(app, config)
+    db.initialize(app)
 
-    import pymongo
-    host = app.config.get('MONGODB_HOST', 'localhost')
-    port = app.config.get('MONGODB_PORT', 27017)
-    conn = pymongo.Connection(host=host, port=port)
-    if conn:
-        try:
-            conn.drop_database(app.config['MONGODB_DB'])
-        except:
-            pass
-
-    db.init_app(app)
-
-    print "Start to add all syntax"
-    from daimaduan.models.syntax import ALL_SYNTAX
-    from daimaduan.models import User, Syntax, Tag, Paste
-    for lexer in ALL_SYNTAX:
-        syntax = Syntax(name=lexer[0], tag=lexer[1].lower())
-        try:
-            syntax.save()
-        except:
-            pass
-
-    print u'Start to add 未注册用户'
-    import random
-    user = User(nickname=u'未注册用户', email='user@daimaduan.com',
-                password=''.join(random.sample('abcdefghijklmnopqrstuvwxyz0123456789', 8)))
-    try:
-        user.save()
-    except Exception, e:
-        pass
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name')
 def generate_test(config):

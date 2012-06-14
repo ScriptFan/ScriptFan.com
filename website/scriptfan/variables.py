@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-*-coding:utf-8-*-
-from flaskext.mongoengine import MongoEngine
+from flask.ext.sqlalchemy import SQLAlchemy
 from flaskext.openid import OpenID
 
-db = MongoEngine()
+db = SQLAlchemy()
 oid = OpenID()
