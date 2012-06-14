@@ -3,11 +3,12 @@
 import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask, session, render_template, g, abort
-from scriptfan.variables import db
+from scriptfan.variables import *
 
 def config_app(app, config):
     app.config.from_pyfile(config)
-
+    db.init_app(app)
+    oid.init_app(app)
     formatter = logging.Formatter(
             '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
         )
@@ -23,8 +24,17 @@ def config_app(app, config):
     @app.before_request
     def before_request():
         g.user = None
-        if 'openid' in session:
-            g.user = User.objects(openid=session['openid']).first()
+        if 'user' in session:
+            g.user = User.query.filter_by(id=session['user']).first()
+
+    @app.after_request
+    def after_request(response):
+        try:
+            db.session.commit()
+        except Exception, e:
+            db.session.rollback()
+            abort(500)
+        return response
 
 def dispatch_handlers(app):
     d = {}

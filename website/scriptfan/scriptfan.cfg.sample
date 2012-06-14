@@ -13,4 +13,4 @@ SECRET_KEY='youshouldnotknowthis'
 PAGE_SIZE=20
 
 # database settings
-MONGODB_DB='scriptfan'
+SQLALCHEMY_DATABASE_URI='sqlite:///test.db'
