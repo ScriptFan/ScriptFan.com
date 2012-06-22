@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-from scriptfan.variables import db
-
-__all__ = ["User", "UserInfo", "getUserObject"]
+from scriptfan.extensions import db
+from datetime import datetime
 
 def getUserObject(slug=None, user_id=None):
     user = None
@@ -82,4 +81,28 @@ class User(db.Model):
                 request.url_root)
 
 class Activity(db.Model):
-    pass
+    """
+    活动表
+    每期活动需要一个公告
+    """
+    __tablename__ = 'activities'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    title = db.Column(db.String(255))
+    content = db.Column(db.Text)
+    hold_datetime = db.Column(db.DateTime)
+    created_time = db.Column(db.DateTime)
+    modified_time = db.Column(db.DateTime)
+
+    signups = db.relationship('SignUp')
+
+class SignUp(db.Model):
+
+    __tablename__ = 'signups'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    activity_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_time = db.Column(db.DateTime)
+
+    user = db.relationship(User)
