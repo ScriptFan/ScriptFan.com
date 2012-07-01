@@ -21,7 +21,13 @@ def test(config):
 def initialize(config):
     config_app(app, config)
     from scriptfan.models import *
-    db.create_all()
+    try:
+        db.drop_all()
+        db.create_all()
+    except:
+        print "Create tables fail"
+        sys.exit(0)
+    print "Create tables success"
 
 if __name__ == '__main__':
     manager.run()

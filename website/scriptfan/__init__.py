@@ -60,7 +60,7 @@ def dispatch_handlers(app):
 def dispatch_apps(app):
     from scriptfan.views import sitemodular, postmodular
     app.register_blueprint(sitemodular,  url_prefix='/')
-    app.register_blueprint(postmodular, url_prefix='/paste')
+    app.register_blueprint(postmodular, url_prefix='/post')
 
     from scriptfan.utils.filters import dateformat, empty, time_passed
     app.jinja_env.filters['dateformat'] = dateformat

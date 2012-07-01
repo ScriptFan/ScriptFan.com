@@ -14,6 +14,11 @@ def getUserObject(slug=None, user_id=None):
         user = User.query.filter_by(id=user_id).first()
     return user
 
+follow_user_post = db.Table('follow_user_post',
+            db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+            db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
+        )
+
 class UserInfo(db.Model):
     """
     用户信息表
@@ -24,6 +29,9 @@ class UserInfo(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     motoo = db.Column(db.String(255))
     introduction = db.Column(db.Text)
+    phone = db.Column(db.String(15), unique=True, nullable=True) # 手机号码
+    phone_status = db.Column(db.Integer, nullable=True) # 手机可见度: 0-不公开 1-公开 2-向成员公开
+    photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
 
     def __init__(self, user_id):
         self.user_id = user_id
@@ -42,10 +50,7 @@ class User(db.Model):
     openid = db.Column(db.Text, nullable=True)
     email = db.Column(db.String(45), unique=True, nullable=False) # 登陆使用的
     email_status = db.Column(db.Integer, nullable=True) # 邮箱可见度: 0-不公开 1-公开 2-向成员公开
-    phone = db.Column(db.String(15), unique=True, nullable=True) # 手机号码
-    phone_status = db.Column(db.Integer, nullable=True) # 手机可见度: 0-不公开 1-公开 2-向成员公开
     nickname = db.Column(db.String(45), unique=True, nullable=False) # 昵称, 显示时用的
-    photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
     password = db.Column(db.String(45), nullable=True) # 密码
     is_email_verified = db.Column(db.Boolean, nullable=False)
     slug = db.Column(db.String(45), nullable=True) # 用户页面
@@ -80,29 +85,19 @@ class User(db.Model):
                 size,
                 request.url_root)
 
-class Activity(db.Model):
+class Post(db.Model):
     """
     活动表
     每期活动需要一个公告
     """
-    __tablename__ = 'activities'
+    __tablename__ = 'posts'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     title = db.Column(db.String(255))
     content = db.Column(db.Text)
-    hold_datetime = db.Column(db.DateTime)
+    url = db.Column(db.String(255))
     created_time = db.Column(db.DateTime)
     modified_time = db.Column(db.DateTime)
 
-    signups = db.relationship('SignUp')
-
-class SignUp(db.Model):
-
-    __tablename__ = 'signups'
-
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    activity_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    created_time = db.Column(db.DateTime)
-
-    user = db.relationship(User)
+    followers = db.relationship(User, secondary=follow_user_post)
