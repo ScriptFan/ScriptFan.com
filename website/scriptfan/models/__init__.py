@@ -47,7 +47,6 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    openid = db.Column(db.Text, nullable=True)
     email = db.Column(db.String(45), unique=True, nullable=False) # 登陆使用的
     email_status = db.Column(db.Integer, nullable=True) # 邮箱可见度: 0-不公开 1-公开 2-向成员公开
     nickname = db.Column(db.String(45), unique=True, nullable=False) # 昵称, 显示时用的
@@ -85,6 +84,18 @@ class User(db.Model):
                 size,
                 request.url_root)
 
+class UserOpenID(db.Model):
+    """
+    用户绑定OpenID的表
+    一个用户可以对应多个OpenID
+    """
+    __tablename__ = 'user_openid'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # openid关联的用户
+    openid_src = db.Column(db.String(45), nullable=False) # openid的提供商，比如 google 
+    openid_url = db.Column(db.String(255), nullable=False, unique=True) # 记录的 openid, 不能重复
+    
 class Post(db.Model):
     """
     活动表
