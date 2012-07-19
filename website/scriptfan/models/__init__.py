@@ -95,20 +95,35 @@ class UserOpenID(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # openid关联的用户
     openid_src = db.Column(db.String(45), nullable=False) # openid的提供商，比如 google 
     openid_url = db.Column(db.String(255), nullable=False, unique=True) # 记录的 openid, 不能重复
-    
-class Post(db.Model):
+
+class Resource(db.Model):
+    """
+    资源表
+    汇集图片、视频、演示文稿等资源, 用于嵌入活动中
+    """
+    __tablename__ = 'resources'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id')) # 发布者
+    filetype = db.Column(db.String(45)) # 类型: video, audio, image, slides, pdf, webpage, ...
+    created_time = db.Column(db.DateTime)
+    modified_time = db.Column(db.DateTime)
+
+
+class Activity(db.Model):
     """
     活动表
     每期活动需要一个公告
     """
-    __tablename__ = 'posts'
+    __tablename__ = 'activities'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    title = db.Column(db.String(255))
-    content = db.Column(db.Text)
-    url = db.Column(db.String(255))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id')) # 发起人
+    title = db.Column(db.String(255)) # 活动标题
+    content = db.Column(db.Text) # 活动介绍
+    slug = db.Column(db.String(255)) # 页面地址
+    start_time = db.Column(db.DateTime) # 活动开始时间
+    end_time = db.Column(db.DateTime) # 活动结束时间
     created_time = db.Column(db.DateTime)
     modified_time = db.Column(db.DateTime)
 
-    followers = db.relationship(User, secondary=follow_user_post)
+    followers = db.relationship(User, secondary=follow_user_post) # 参与者
