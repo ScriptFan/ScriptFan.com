@@ -123,6 +123,9 @@ class Activity(db.Model):
     slug = db.Column(db.String(255)) # 页面地址
     start_time = db.Column(db.DateTime) # 活动开始时间
     end_time = db.Column(db.DateTime) # 活动结束时间
+    address = db.Column(db.String(255)) # 活动地址
+    longitude = db.Column(db.Numeric(10, 7)) # 经度
+    Latitude = db.Column(db.Numeric(10, 7)) # 纬度
     created_time = db.Column(db.DateTime)
     modified_time = db.Column(db.DateTime)
 
