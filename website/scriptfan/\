@@ -129,7 +129,6 @@ class Topic(db.Model):
     intro = db.Column(db.Text) # 简要介绍
     rate_count = db.Column(db.Integer, default=0) # 投票数
     user_id = db.Column(db.Integer, db.ForeignKey('users.id')) # 发起人
-    followers = db.relationship(User, secondary=topic_users) # 参与者
 
 class Activity(db.Model):
     """
@@ -151,4 +150,4 @@ class Activity(db.Model):
     created_time = db.Column(db.DateTime)
     modified_time = db.Column(db.DateTime)
 
-    followers = db.relationship(User, secondary=activity_users) # 参与者
+    followers = db.relationship(User, secondary=follow_user_post) # 参与者
