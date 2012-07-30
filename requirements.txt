@@ -1,0 +1,7 @@
+flask >= 0.8
+flask-script >= 0.3.3
+flask-sqlalchemy >= 0.16
+flask-admin >= 1.0.1
+flask-openid >= 1.0.1
+flask-principal >= 0.3
+sqlalchemy >= 0.7
