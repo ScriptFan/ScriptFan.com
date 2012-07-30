@@ -20,7 +20,7 @@ def test(config):
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
 def initdb(config='scriptfan.cfg'):
     config_app(app, config)
-    from scriptfan.models import *
+    from scriptfan.models import db
 
     try:
         db.drop_all()
