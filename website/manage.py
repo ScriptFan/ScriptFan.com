@@ -10,24 +10,25 @@ from scriptfan.extensions import *
 
 manager = Manager(app)
 
-@manager.option('-c', '--config', dest='config', help='Configuration file name')
+@manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
 def test(config):
     config_app(app, config)
     dispatch_handlers(app)
     dispatch_apps(app)
     app.run(host='0.0.0.0')
 
-@manager.option('-c', '--config', dest='config', help='Configuration file name')
-def initialize(config):
+@manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
+def initdb(config='scriptfan.cfg'):
     config_app(app, config)
     from scriptfan.models import *
+
     try:
         db.drop_all()
         db.create_all()
-    except:
-        print "Create tables fail"
+        print 'Create tables success'
+    except Exception as e:
+        print 'Create tables fail:', e
         sys.exit(0)
-    print "Create tables success"
 
 if __name__ == '__main__':
     manager.run()

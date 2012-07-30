@@ -14,18 +14,6 @@ def getUserObject(slug=None, user_id=None):
         user = User.query.filter_by(id=user_id).first()
     return user
 
-# 用户参与活动的跟踪表
-activity_users = db.Table('activity_users',
-    db.Column('activity_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-)
-
-# 用户参与投票的跟踪表（活动关闭后可清除此表数据）
-topic_users = db.Table('topic_users',
-    db.Column('topic_id', db.Integer, db.ForeignKey('topics.id'), primary_key=True),
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-)
-
 class UserInfo(db.Model):
     """
     用户信息表
@@ -60,11 +48,11 @@ class User(db.Model):
     password = db.Column(db.String(45), nullable=True) # 密码
     is_email_verified = db.Column(db.Boolean, nullable=False)
     slug = db.Column(db.String(45), nullable=True) # 用户页面
-    created_time = db.Column(db.DateTime, nullable=False)
-    modified_time = db.Column(db.DateTime, nullable=False)
-    last_login_time = db.Column(db.DateTime, default=datetime.now())
-
-    info = db.relationship('UserInfo', uselist=False)
+    created_time = db.Column(db.DateTime, nullable=False) # 用户注册时间
+    modified_time = db.Column(db.DateTime, nullable=False) # 用户更新时间
+    last_login_time = db.Column(db.DateTime) # 最后一次登陆时间
+    privilege = db.Column(db.Integer, default=3) # 权重：3-普通用户 4-管理员
+    info = db.relationship('UserInfo', uselist=False) # 用户附加信息
     
     # shared topics
     topics = db.relationship('Topic', backref='speaker', lazy='dynamic')
@@ -118,6 +106,17 @@ class Resource(db.Model):
     created_time = db.Column(db.DateTime)
     modified_time = db.Column(db.DateTime)
 
+# 活动相关资源
+topic_resources = db.Table('topic_resources',
+    db.Column('topic_id', db.Integer, db.ForeignKey('topics.id'), primary_key=True),
+    db.Column('resource_id', db.Integer, db.ForeignKey('resources.id'), primary_key=True),
+)
+
+# 用户参与投票的跟踪表（活动关闭后可清除此表数据）
+topic_users = db.Table('topic_users',
+    db.Column('topic_id', db.Integer, db.ForeignKey('topics.id'), primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+)
 
 class Topic(db.Model):
     """
@@ -128,8 +127,21 @@ class Topic(db.Model):
     name = db.Column(db.String(255)) # 话题名称
     intro = db.Column(db.Text) # 简要介绍
     rate_count = db.Column(db.Integer, default=0) # 投票数
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id')) # 发起人
+    user = db.relationship(User, uselist=False)
     followers = db.relationship(User, secondary=topic_users) # 参与者
+    resources = db.relationship(Resource, secondary=topic_resources) # 话题相关资源
+
+# 用户参与活动的跟踪表
+activity_users = db.Table('activity_users',
+    db.Column('activity_id', db.Integer, db.ForeignKey('activities.id'), primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+)
+
+# 活动相关资源
+activity_resources = db.Table('activity_resources',
+    db.Column('activity_id', db.Integer, db.ForeignKey('activities.id'), primary_key=True),
+    db.Column('resource_id', db.Integer, db.ForeignKey('resources.id'), primary_key=True),
+)
 
 class Activity(db.Model):
     """
@@ -148,7 +160,26 @@ class Activity(db.Model):
     address = db.Column(db.String(255)) # 活动地址
     longitude = db.Column(db.Numeric(10, 7)) # 经度
     Latitude = db.Column(db.Numeric(10, 7)) # 纬度
-    created_time = db.Column(db.DateTime)
-    modified_time = db.Column(db.DateTime)
+    created_time = db.Column(db.DateTime) # 活动创建时间
+    modified_time = db.Column(db.DateTime) # 活动更新时间
 
     followers = db.relationship(User, secondary=activity_users) # 参与者
+    resources = db.relationship(Resource, secondary=activity_resources) # 话题相关资源
+
+class ActivityComment(db.Model):
+    """
+    活动评论表
+    如果是未注册用户使用openid注册，则仅将openid记录在cookie中
+    """
+    __tablename__ = 'activity_comments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship(User, uselist=False) # 作者
+    author_name = db.Column(db.String(50), nullable=False) # 作者昵称
+    author_email = db.Column(db.String(255)) # 作者邮件地址
+    author_site = db.Column(db.String(255)) # 作者网址
+    content = db.Column(db.Text, nullable=False) # 评论内容
+    created_time = db.Column(db.DateTime) # 创建日期
+    modified_time = db.Column(db.DateTime) # 更新日期
+
+    parent = db.relationship(Topic, uselist=False) # 回复评论的引用
