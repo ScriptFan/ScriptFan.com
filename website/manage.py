@@ -5,8 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask
 from flaskext.script import Manager, Shell
-from scriptfan import config_app, dispatch_handlers, dispatch_apps
-from scriptfan.extensions import *
+from scriptfan import app, db, config_app, dispatch_handlers, dispatch_apps
 
 manager = Manager(app, with_default_commands=False)
 

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-from scriptfan.extensions import db
+from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
+
+db = SQLAlchemy()
 
 def getUserObject(slug=None, user_id=None):
     user = None

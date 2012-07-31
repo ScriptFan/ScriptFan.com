@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
+import logging
 from flask import Blueprint, request, url_for, redirect, render_template, abort, flash, g
-from flaskext.openid import COMMON_PROVIDERS
-from daimaduan.variables import db, oid
+from flask.ext.wtf import Form, TextField, Required
+from scriptfan.extensions import *
 
-usermodular = Blueprint("user", __name__, url_prefix="/user")
+userapp = Blueprint("user", __name__)
+
+class LoginForm(Form):
+    email = TextField('email', validators=[Required()])
 
 @userapp.route('/login', methods=['GET', 'POST'])
 @oid.loginhandler
@@ -43,8 +47,13 @@ def create_or_login(resp):
                             nickname=resp.nickname,
                             email=resp.email))
 
+class ProfileForm(Form):
+    email = TextField('email', validators=[Required()])
+    nickname = TextField('nickname', validators=[Required()])
+
 @userapp.route('/register', methods=['GET', 'POST'])
 def register():
+    logging.info('register')
     form = ProfileForm(request.form)
     form.nickname.data = request.values.get('nickname')
     form.email.data = request.values.get('email')

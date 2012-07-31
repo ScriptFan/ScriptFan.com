@@ -1,6 +1,7 @@
+<!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{% block title %}{% endblock %} - ScriptFan.com</title>
 
         <!-- 全局样式 -->
@@ -26,30 +27,31 @@
 							<li class="active"><a href="/">首页</a></li>
                             <li><a href="#">活动</a></li>
                             {% if session.user %}
-                                <li><a href="{{ url_for('user.register') }}">注册</a></li>
-                                <li><a href="{{ url_for('user.login') }}">登陆</a></li>
-                            {% else %}
                                 <li><a href="{{ url_for('user.profile') }}">用户资料</a></li>
                                 <li><a href="{{ url_for('user.login') }}">退出</a></li>
+                            {% else %}
+                                <li><a href="{{ url_for('user.register') }}">注册</a></li>
+                                <li><a href="{{ url_for('user.login') }}">登陆</a></li>
                             {% endif %}
 						</ul>
-						<form class="navbar-search pull-left">
-							<input type="text" class="search-query" placeholder="Search" />
-						</form>
-						<ul class="nav pull-right">
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account<b class="caret"></b></a>
-								<ul class="dropdown-menu">
-								</ul>
-							</li>
-						</ul>
 					</div>
+                    <form class="navbar-search pull-left" action="">
+                        <input type="text" class="search-query span2" placeholder="Search">
+                    </form>
+                    <ul class="nav pull-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                            </ul>
+                        </li>
+                    </ul>
 				</div>
 			</div>
 		</div>
 		<div class="container">
-			<div class="span8">{% block content %}{% endblock %}</div>
-			<div class="span4">{% block sidebar %}{% endblock %}</div>
+			<div class="content span8">{% block content %}{% endblock %}</div>
+			<div class="sidebar span4">{% block sidebar %}{% endblock %}</div>
+			<div class="footer">{% block footer %}{% endblock %}</div>
 		</div>
     </body>
 </html>

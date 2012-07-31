@@ -3,8 +3,14 @@
 import time
 import logging
 from logging.handlers import RotatingFileHandler
-from flask import session, render_template, g, abort
-from scriptfan.extensions import *
+from flask import Flask, session, render_template, g, abort
+from extensions import *
+
+app = Flask(__name__)
+
+# 注册openid和db
+oid.init_app(app)
+db.init_app(app)
 
 def config_app(app, config):
     app.config.from_pyfile(config)
@@ -58,12 +64,11 @@ def dispatch_handlers(app):
         return render_template('error.html', **d), 500
 
 def dispatch_apps(app):
-    from scriptfan.views import sitemodular, postmodular
-    app.register_blueprint(sitemodular,  url_prefix='/')
-    app.register_blueprint(postmodular, url_prefix='/post')
+    from scriptfan.views import siteapp, userapp
+    app.register_blueprint(siteapp,  url_prefix='/')
+    app.register_blueprint(userapp,  url_prefix='/user')
 
     from scriptfan.utils.filters import dateformat, empty, time_passed
     app.jinja_env.filters['dateformat'] = dateformat
     app.jinja_env.filters['empty'] = empty
     app.jinja_env.filters['time_passed'] = time_passed
-
