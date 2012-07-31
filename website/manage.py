@@ -4,18 +4,23 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask
-from flaskext.script import Manager
+from flaskext.script import Manager, Shell
 from scriptfan import config_app, dispatch_handlers, dispatch_apps
 from scriptfan.extensions import *
 
-manager = Manager(app)
+manager = Manager(app, with_default_commands=False)
+
+def _make_context():
+    return dict(app=app, db=db, oid=oid)
+
+manager.add_command('shell', Shell(make_context=_make_context))
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
-def test(config):
+def runserver(config):
     config_app(app, config)
     dispatch_handlers(app)
     dispatch_apps(app)
-    app.run(host='0.0.0.0')
+    app.run(host='localhost', debug=True)
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
 def initdb(config='scriptfan.cfg'):
@@ -32,4 +37,3 @@ def initdb(config='scriptfan.cfg'):
 
 if __name__ == '__main__':
     manager.run()
-

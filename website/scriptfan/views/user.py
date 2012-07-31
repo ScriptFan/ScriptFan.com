@@ -6,7 +6,7 @@ from daimaduan.variables import db, oid
 
 usermodular = Blueprint("user", __name__, url_prefix="/user")
 
-@userapp.route('/login/', methods=['GET', 'POST'])
+@userapp.route('/login', methods=['GET', 'POST'])
 @oid.loginhandler
 def login():
     if g.user is not None:
@@ -24,7 +24,7 @@ def login():
                 session['user'] = str(user.id)
                 return redirect(request.args.get('next', '/'))
     g.form = form
-    return render_template('userapp/login.html',
+    return render_template('user/login.html',
                            next=oid.get_next_url(),
                            error=oid.fetch_error())
 
@@ -38,13 +38,13 @@ def create_or_login(resp):
         session.pop('openid')
         g.user = getUserObject(user_id=session['user'])
         return redirect(oid.get_next_url())
-    return redirect(url_for('userapp.create_profile',
+    return redirect(url_for('user.register',
                             next=oid.get_next_url(),
                             nickname=resp.nickname,
                             email=resp.email))
 
-@userapp.route('/create_profile', methods=['GET', 'POST'])
-def create_profile():
+@userapp.route('/register', methods=['GET', 'POST'])
+def register():
     form = ProfileForm(request.form)
     form.nickname.data = request.values.get('nickname')
     form.email.data = request.values.get('email')
@@ -61,7 +61,11 @@ def create_profile():
         session.pop('openid')
         return redirect(url_for('userapp.login'))
     g.form = form
-    return render_template('userapp/create_profile.html', next_url=oid.get_next_url())
+    return render_template('user/register.html', next_url=oid.get_next_url())
+
+@userapp.route('/profile', methods=['GET'])
+def profile():
+    return render_template('user/profile.html')
 
 @userapp.route('/logout', methods=['GET'])
 def logout():
