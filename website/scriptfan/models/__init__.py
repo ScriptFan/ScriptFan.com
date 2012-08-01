@@ -162,7 +162,7 @@ class Activity(db.Model):
     end_time = db.Column(db.DateTime) # 活动结束时间
     address = db.Column(db.String(255)) # 活动地址
     longitude = db.Column(db.Numeric(10, 7)) # 经度
-    Latitude = db.Column(db.Numeric(10, 7)) # 纬度
+    latitude = db.Column(db.Numeric(10, 7)) # 纬度
     created_time = db.Column(db.DateTime) # 活动创建时间
     modified_time = db.Column(db.DateTime) # 活动更新时间
 
