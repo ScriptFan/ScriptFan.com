@@ -44,12 +44,12 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(45), unique=True, nullable=False) # 登陆使用的
+    email = db.Column(db.String(50), unique=True, nullable=False) # 登陆使用的
     email_status = db.Column(db.Integer, nullable=True) # 邮箱可见度: 0-不公开 1-公开 2-向成员公开
-    nickname = db.Column(db.String(45), unique=True, nullable=False) # 昵称, 显示时用的
-    password = db.Column(db.String(45), nullable=True) # 密码
+    nickname = db.Column(db.String(50), unique=True, nullable=False) # 昵称, 显示时用的
+    password = db.Column(db.String(50), nullable=True) # 密码
     is_email_verified = db.Column(db.Boolean, nullable=False)
-    slug = db.Column(db.String(45), nullable=True) # 用户页面
+    slug = db.Column(db.String(50), nullable=True) # 用户页面
     created_time = db.Column(db.DateTime, nullable=False) # 用户注册时间
     modified_time = db.Column(db.DateTime, nullable=False) # 用户更新时间
     last_login_time = db.Column(db.DateTime) # 最后一次登陆时间
@@ -93,7 +93,7 @@ class UserOpenID(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # openid关联的用户
-    openid_src = db.Column(db.String(45), nullable=False) # openid的提供商，比如 google 
+    openid_src = db.Column(db.String(50), nullable=False) # openid的提供商，比如 google 
     openid_url = db.Column(db.String(255), nullable=False, unique=True) # 记录的 openid, 不能重复
 
 class Resource(db.Model):
@@ -104,7 +104,8 @@ class Resource(db.Model):
     __tablename__ = 'resources'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id')) # 发布者
-    filetype = db.Column(db.String(45)) # 类型: video, audio, image, slides, pdf, webpage, ...
+    filetype = db.Column(db.String(50)) # 类型: video, audio, image, slides, pdf, webpage, ...
+    url = db.Column(db.String(255)) # 资源地址，可以是外部地址，也可以是内部地址
     created_time = db.Column(db.DateTime)
     modified_time = db.Column(db.DateTime)
 
