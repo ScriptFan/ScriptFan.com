@@ -19,7 +19,7 @@ def runserver(config):
     config_app(app, config)
     dispatch_handlers(app)
     dispatch_apps(app)
-    app.run(host='localhost', debug=True)
+    app.run(host='0.0.0.0', debug=True)
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
 def initdb(config='scriptfan.cfg'):
