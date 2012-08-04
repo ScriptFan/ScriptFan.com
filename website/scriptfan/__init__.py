@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-import time
-import logging
-from logging.handlers import RotatingFileHandler
+import time, os
+import logging, logging.config
 from flask import Flask, session, render_template, g, abort
 from extensions import *
 
@@ -16,18 +15,12 @@ def config_app(app, config):
     app.config.from_pyfile(config)
     db.init_app(app)
     oid.init_app(app)
-    formatter = logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        )
-
-    file_handler = RotatingFileHandler(app.config['ERROR_LOG'],
-                                       maxBytes=100000,
-                                       backupCount=0)
-
-    file_handler.setLevel(logging.ERROR)
-    file_handler.setFormatter(formatter)
-    app.logger.addHandler(file_handler)
-
+    
+    path = os.path.dirname(__file__)
+    if not os.path.isdir('/var/log/scriptfan/'):
+        os.mkdir('/var/log/scriptfan')
+    logging.config.fileConfig(os.path.join(path, 'logging.cfg'))
+    
     @app.before_request
     def before_request():
         g.user = None
