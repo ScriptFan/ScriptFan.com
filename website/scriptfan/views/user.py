@@ -3,14 +3,13 @@
 import logging
 from pprint import pformat
 from flask import Blueprint, request, url_for, redirect, render_template, abort, flash, g
-from flask.ext.wtf import Form, TextField, PasswordField, Required, Email
-from flask.ext.wtf.html5 import EmailField
+from flask.ext import wtf
 from scriptfan.extensions import *
 from scriptfan.models import User, UserInfo
 userapp = Blueprint("user", __name__)
 
-class LoginForm(Form):
-    email = TextField('email', validators=[Required()])
+class LoginForm(wtf.Form):
+    email = wtf.TextField('email', validators=[wtf.Required()])
 
 @userapp.route('/login', methods=['GET', 'POST'])
 @oid.loginhandler
@@ -49,27 +48,35 @@ def create_or_login(resp):
                             nickname=resp.nickname,
                             email=resp.email))
 
-class RegisterForm(Form):
-    email = EmailField('email', validators=[Required(message=u'请填写电子邮件'), Email(message=u'无效的电子邮件')])
-    nickname = TextField('nickname', validators=[Required(message=u'请填写昵称')])
-    password = PasswordField('password', validators=[Required(message=u'请填写密码')])
+class RegisterForm(wtf.Form):
+    email = wtf.TextField('email', validators=[
+        wtf.Required(message=u'请填写电子邮件'), 
+        wtf.Email(message=u'无效的电子邮件')])
+    nickname = wtf.TextField('nickname', validators=[
+        wtf.Required(message=u'请填写昵称'),
+        wtf.Length(min=5, max=20, message=u'昵称应为5到20字符')])
+    password = wtf.PasswordField('password', validators=[
+        wtf.Required(message=u'请填写密码'),
+        wtf.Length(min=5, max=20, message=u'密码就为5到20位字符')])
+    repassword = wtf.PasswordField('repassword', validators=[
+        wtf.Required(message=u'请填写确认密码'),
+        wtf.EqualTo('password', message=u'再次输入的密码不一致')])
 
     def __init__(self, *args, **kargs):
-        Form.__init__(self, *args, **kargs)
+        wtf.Form.__init__(self, *args, **kargs)
         self.user = None
 
     def validate(self):
-        if not Form.validate(self):
-            return False
+        wtf.Form.validate(self)
 
         # 验证邮箱是否注册
-        user = User.query.filter_by(email=self.email.data).first()
-        if user:
-            self.email.errors.append(u'该邮箱已被注册')
-            return False
-
+        if not self.email.errors:
+            user = User.query.filter_by(email=self.email.data).first()
+            user and self.email.errors.append(u'该邮箱已被注册')
+        
         self.user = User(self.nickname.data, self.email.data)
-        return True
+        
+        return len(self.errors) == 0
 
 @userapp.route('/register', methods=['GET', 'POST'])
 def register():
