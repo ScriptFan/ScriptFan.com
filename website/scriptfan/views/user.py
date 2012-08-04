@@ -2,10 +2,10 @@
 #-*-coding:utf-8-*-
 import logging
 from pprint import pformat
-from flask import Blueprint, request, url_for, redirect, render_template, abort, flash, g
+from flask import Blueprint, request, session, url_for, redirect, render_template, flash, g
 from flask.ext import wtf, login
-from scriptfan.extensions import *
-from scriptfan.models import User, UserInfo
+from scriptfan.extensions import oid, db, login_manager
+from scriptfan.models import User
 userapp = Blueprint("user", __name__)
 
 class SigninForm(wtf.Form):
@@ -26,7 +26,7 @@ class SigninForm(wtf.Form):
             user = User.query.filter_by(email=self.email.data).first()
             if not user:
                 self.email.errors.append(u'该邮箱尚未在本站注册')
-            else if not user.check_password(self.password.data):
+            elif not user.check_password(self.password.data):
                 self.password.errors.append(u'密码错误')
             else:
                 self.user = user
@@ -50,7 +50,7 @@ def create_or_login(resp):
         flash(u'成功登入')
         session['user'] = str(user.id)
         session.pop('openid')
-        g.user = getUserObject(user_id=session['user'])
+        # g.user = getUserObject(user_id=session['user'])
         return redirect(oid.get_next_url())
     return redirect(url_for('user.signup',
                             next=oid.get_next_url(),
@@ -89,7 +89,7 @@ class SignupForm(wtf.Form):
 
 @userapp.route('/signup', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm(csrf_enabled=False)
+    form = SignupForm(csrf_enabled=False)
     logging.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
     if form.validate_on_submit():
         db.session.add(form.user)
