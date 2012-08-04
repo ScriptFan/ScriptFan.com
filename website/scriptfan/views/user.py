@@ -3,35 +3,44 @@
 import logging
 from pprint import pformat
 from flask import Blueprint, request, url_for, redirect, render_template, abort, flash, g
-from flask.ext import wtf
+from flask.ext import wtf, login
 from scriptfan.extensions import *
 from scriptfan.models import User, UserInfo
 userapp = Blueprint("user", __name__)
 
-class LoginForm(wtf.Form):
-    email = wtf.TextField('email', validators=[wtf.Required()])
+class SigninForm(wtf.Form):
+    email = wtf.TextField('email', validators=[
+        wtf.Required(message=u'请填写电子邮件'), 
+        wtf.Email(message=u'无效的电子邮件')])
+    password = wtf.PasswordField('password', validators=[
+        wtf.Required(message=u'请填写密码'),
+        wtf.Length(min=5, max=20, message=u'密应应为5到20位字符')])
 
-@userapp.route('/login', methods=['GET', 'POST'])
-@oid.loginhandler
-def login():
-    if g.user is not None:
-        return redirect(oid.get_next_url())
-    form = LoginForm(request.form, csrf_enabled=False)
-    if request.method == 'POST':
-        openid = request.form.get('openid', None)
-        if openid:
-            return oid.try_login(COMMON_PROVIDERS.get(openid, "fackeone"),
-                                 ask_for=['email', 'nickname'])
-        if form.validate():
-            user = User.query.filter_by(email=form.email.data).first()
-            if user:
-                user.last_login_time = datetime.now()
-                session['user'] = str(user.id)
-                return redirect(request.args.get('next', '/'))
-    g.form = form
-    return render_template('user/login.html',
-                           next=oid.get_next_url(),
-                           error=oid.fetch_error())
+    def __init__(self, *args, **kargs):
+        wtf.Form.__init__(self, *args, **kargs)
+        self.user = None
+
+    def validate(self):
+        # 验证邮箱是否注册
+        if wtf.Form.validate(self):
+            user = User.query.filter_by(email=self.email.data).first()
+            if not user:
+                self.email.errors.append(u'该邮箱尚未在本站注册')
+            else if not user.check_password(self.password.data):
+                self.password.errors.append(u'密码错误')
+            else:
+                self.user = user
+
+        return len(self.errors) == 0
+
+@userapp.route('/signin', methods=['GET', 'POST'])
+def signin():
+    form = SignupForm(csrf_enabled=False)
+    logging.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
+    if form.validate_on_submit():
+        return redirect(url_for('userapp.profile', user_id=form.user.id))
+    else:
+        return render_template('user/signin.html', form=form)
 
 @oid.after_login
 def create_or_login(resp):
@@ -43,12 +52,12 @@ def create_or_login(resp):
         session.pop('openid')
         g.user = getUserObject(user_id=session['user'])
         return redirect(oid.get_next_url())
-    return redirect(url_for('user.register',
+    return redirect(url_for('user.signup',
                             next=oid.get_next_url(),
                             nickname=resp.nickname,
                             email=resp.email))
 
-class RegisterForm(wtf.Form):
+class SignupForm(wtf.Form):
     email = wtf.TextField('email', validators=[
         wtf.Required(message=u'请填写电子邮件'), 
         wtf.Email(message=u'无效的电子邮件')])
@@ -57,10 +66,10 @@ class RegisterForm(wtf.Form):
         wtf.Length(min=5, max=20, message=u'昵称应为5到20字符')])
     password = wtf.PasswordField('password', validators=[
         wtf.Required(message=u'请填写密码'),
-        wtf.Length(min=5, max=20, message=u'密码就为5到20位字符')])
+        wtf.Length(min=5, max=20, message=u'密码应为5到20位字符')])
     repassword = wtf.PasswordField('repassword', validators=[
         wtf.Required(message=u'请填写确认密码'),
-        wtf.EqualTo('password', message=u'再次输入的密码不一致')])
+        wtf.EqualTo('password', message=u'两次输入的密码不一致')])
 
     def __init__(self, *args, **kargs):
         wtf.Form.__init__(self, *args, **kargs)
@@ -78,24 +87,24 @@ class RegisterForm(wtf.Form):
         self.user.set_password(self.password.data)
         return len(self.errors) == 0
 
-@userapp.route('/register', methods=['GET', 'POST'])
+@userapp.route('/signup', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(csrf_enabled=False)
-    logging.info('>>> Register user: ' + repr(dict(form.data, password='<MASK>')))
+    logging.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
     if form.validate_on_submit():
         db.session.add(form.user)
         db.session.commit()
-        return redirect(url_for('userapp.login'))
+        return redirect(url_for('userapp.signin'))
     else:
-        return render_template('user/register.html', form=form)
+        return render_template('user/signup.html', form=form)
 
 @userapp.route('/user/<slug>')
 @userapp.route('/user/<int:user_id>')
 def profile(slug=None, user_id=None):
     return render_template('user/profile.html')
 
-@userapp.route('/logout', methods=['GET'])
-def logout():
+@userapp.route('/signou', methods=['GET'])
+def signout():
     if 'user' in session:
         session.pop('user')
     return redirect('/')

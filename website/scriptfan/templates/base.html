@@ -28,10 +28,10 @@
                             <li><a href="#">活动</a></li>
                             {% if session.user %}
                                 <li><a href="{{ url_for('user.profile') }}">用户资料</a></li>
-                                <li><a href="{{ url_for('user.login') }}">退出</a></li>
+                                <li><a href="{{ url_for('user.signout') }}">退出</a></li>
                             {% else %}
-                                <li><a href="{{ url_for('user.register') }}">注册</a></li>
-                                <li><a href="{{ url_for('user.login') }}">登陆</a></li>
+                                <li><a href="{{ url_for('user.signup') }}">注册</a></li>
+                                <li><a href="{{ url_for('user.signin') }}">登陆</a></li>
                             {% endif %}
 						</ul>
 					</div>
