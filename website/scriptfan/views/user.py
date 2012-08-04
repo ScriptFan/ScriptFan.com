@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
 import logging
+from pprint import pformat
 from flask import Blueprint, request, url_for, redirect, render_template, abort, flash, g
-from flask.ext.wtf import Form, TextField, Required
+from flask.ext.wtf import Form, TextField, PasswordField, Required
 from scriptfan.extensions import *
-
+from scriptfan.models import User, UserInfo
 userapp = Blueprint("user", __name__)
 
 class LoginForm(Form):
@@ -47,30 +48,39 @@ def create_or_login(resp):
                             nickname=resp.nickname,
                             email=resp.email))
 
-class ProfileForm(Form):
+class RegisterForm(Form):
     email = TextField('email', validators=[Required()])
     nickname = TextField('nickname', validators=[Required()])
+    password = PasswordField('password', validators=[Required()])
+
+    def __init__(self, *args, **kargs):
+        Form.__init__(self, *args, **kargs)
+        self.user = None
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+
+        # 验证邮箱是否注册
+        user = User.query.filter_by(email=self.email.data).first()
+        if user:
+            self.email.errors.append(u'该邮箱已被注册')
+            return False
+
+        self.user = User(*self.data, info=UserInfo())
+        return True
 
 @userapp.route('/register', methods=['GET', 'POST'])
 def register():
-    logging.info('register')
-    form = ProfileForm(request.form)
-    form.nickname.data = request.values.get('nickname')
-    form.email.data = request.values.get('email')
-    if request.method == 'POST' and form.validate():
-        user = User(form.nickname.data,
-                    form.email.data)
-        user.openid = session['openid']
-        info = UserInfo()
-        user.info = info
-        db.session.add(user)
-        db.session.add(info)
+    form = RegisterForm(csrf_enabled=False)
+    logging.info('>>> Register user: ' + repr(dict(form.data, password='<MASK>')))
+    if form.validate_on_submit():
+        db.session.add(form.user)
         db.session.commit()
-        flash(u'资料建立成功')
-        session.pop('openid')
         return redirect(url_for('userapp.login'))
-    g.form = form
-    return render_template('user/register.html', next_url=oid.get_next_url())
+    else:
+        logging.info(form.errors)
+        return render_template('user/register.html', next_url=oid.get_next_url(), form=form)
 
 @userapp.route('/profile', methods=['GET'])
 def profile():

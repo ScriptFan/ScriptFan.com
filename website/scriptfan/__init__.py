@@ -15,7 +15,6 @@ def config_app(app, config):
     app.config.from_pyfile(config)
     db.init_app(app)
     oid.init_app(app)
-    
     path = os.path.dirname(__file__)
     if not os.path.isdir('/var/log/scriptfan/'):
         os.mkdir('/var/log/scriptfan')
