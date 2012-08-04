@@ -16,8 +16,9 @@ def config_app(app, config):
     db.init_app(app)
     oid.init_app(app)
     path = os.path.dirname(__file__)
-    if not os.path.isdir('/var/log/scriptfan/'):
-        os.mkdir('/var/log/scriptfan')
+    logdir = '/home/greatghoul/.scriptfan/'
+    if not os.path.isdir(logdir):
+        os.mkdir(logdir)
     logging.config.fileConfig(os.path.join(path, 'logging.cfg'))
     
     @app.before_request

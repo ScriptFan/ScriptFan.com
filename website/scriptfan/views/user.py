@@ -3,7 +3,8 @@
 import logging
 from pprint import pformat
 from flask import Blueprint, request, url_for, redirect, render_template, abort, flash, g
-from flask.ext.wtf import Form, TextField, PasswordField, Required
+from flask.ext.wtf import Form, TextField, PasswordField, Required, Email
+from flask.ext.wtf.html5 import EmailField
 from scriptfan.extensions import *
 from scriptfan.models import User, UserInfo
 userapp = Blueprint("user", __name__)
@@ -49,9 +50,9 @@ def create_or_login(resp):
                             email=resp.email))
 
 class RegisterForm(Form):
-    email = TextField('email', validators=[Required()])
-    nickname = TextField('nickname', validators=[Required()])
-    password = PasswordField('password', validators=[Required()])
+    email = EmailField('email', validators=[Required(message=u'请填写电子邮件'), Email(message=u'无效的电子邮件')])
+    nickname = TextField('nickname', validators=[Required(message=u'请填写昵称')])
+    password = PasswordField('password', validators=[Required(message=u'请填写密码')])
 
     def __init__(self, *args, **kargs):
         Form.__init__(self, *args, **kargs)
@@ -67,7 +68,7 @@ class RegisterForm(Form):
             self.email.errors.append(u'该邮箱已被注册')
             return False
 
-        self.user = User(*self.data, info=UserInfo())
+        self.user = User(self.nickname.data, self.email.data)
         return True
 
 @userapp.route('/register', methods=['GET', 'POST'])
@@ -79,11 +80,11 @@ def register():
         db.session.commit()
         return redirect(url_for('userapp.login'))
     else:
-        logging.info(form.errors)
-        return render_template('user/register.html', next_url=oid.get_next_url(), form=form)
+        return render_template('user/register.html', form=form)
 
-@userapp.route('/profile', methods=['GET'])
-def profile():
+@userapp.route('/user/<slug>')
+@userapp.route('/user/<int:user_id>')
+def profile(slug=None, user_id=None):
     return render_template('user/profile.html')
 
 @userapp.route('/logout', methods=['GET'])

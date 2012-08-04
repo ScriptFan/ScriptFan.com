@@ -2,6 +2,7 @@
 #-*-coding:utf-8-*-
 from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
+import hashlib
 
 db = SQLAlchemy()
 
@@ -23,13 +24,15 @@ class UserInfo(db.Model):
     __tablename__ = 'user_info'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     motoo = db.Column(db.String(255))
     introduction = db.Column(db.Text)
     phone = db.Column(db.String(15), unique=True, nullable=True) # 手机号码
     phone_status = db.Column(db.Integer, nullable=True) # 手机可见度: 0-不公开 1-公开 2-向成员公开
     photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User', backref='info', uselist=False)
+    
     def __init__(self, user_id):
         self.user_id = user_id
 
@@ -45,7 +48,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50), unique=True, nullable=False) # 登陆使用的
-    email_status = db.Column(db.Integer, nullable=True) # 邮箱可见度: 0-不公开 1-公开 2-向成员公开
+    email_status = db.Column(db.Integer, nullable=True, default=0) # 邮箱可见度: 0-不公开 1-公开 2-向成员公开
     nickname = db.Column(db.String(50), unique=True, nullable=False) # 昵称, 显示时用的
     password = db.Column(db.String(50), nullable=True) # 密码
     is_email_verified = db.Column(db.Boolean, nullable=False)
@@ -54,15 +57,10 @@ class User(db.Model):
     modified_time = db.Column(db.DateTime, nullable=False) # 用户更新时间
     last_login_time = db.Column(db.DateTime) # 最后一次登陆时间
     privilege = db.Column(db.Integer, default=3) # 权重：3-普通用户 4-管理员
-    info = db.relationship('UserInfo', uselist=False) # 用户附加信息
-    
-    # shared topics
-    topics = db.relationship('Topic', backref='speaker', lazy='dynamic')
 
     def __init__(self, nickname, email):
         self.nickname = nickname
         self.email = email
-        self.paste_num = 0
         self.created_time = self.modified_time = datetime.now()
         self.is_email_verified = True
 
@@ -70,13 +68,13 @@ class User(db.Model):
         return "<User (%s|%s)>" % (self.nickname, self.email)
 
     def set_password(self, password):
-        self.password = hashPassword(password)
+        self.password = hashlib.md5(password).hexdigest()
 
     @property
     def url(self):
         if self.slug:
-            return url_for('userapp.view', slug=self.slug)
-        return url_for('userapp.view', user_id=self.id)
+            return url_for('userapp.profile', slug=self.slug)
+        return url_for('userapp.profile', user_id=self.id)
 
     def get_avatar_url(self, size=20):
         return "http://www.gravatar.com/avatar/%s?size=%s&d=%s/static/images/avatar/default.jpg" % (
@@ -126,13 +124,16 @@ class Topic(db.Model):
     活动的话题
     """
     __tablename__ = 'topics'
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255)) # 话题名称
     intro = db.Column(db.Text) # 简要介绍
     rate_count = db.Column(db.Integer, default=0) # 投票数
-    user = db.relationship(User, uselist=False)
     followers = db.relationship(User, secondary=topic_users) # 参与者
     resources = db.relationship(Resource, secondary=topic_resources) # 话题相关资源
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship(User, backref='topics', lazy='dynamic')
 
 # 用户参与活动的跟踪表
 activity_users = db.Table('activity_users',
@@ -166,8 +167,10 @@ class Activity(db.Model):
     created_time = db.Column(db.DateTime) # 活动创建时间
     modified_time = db.Column(db.DateTime) # 活动更新时间
 
-    followers = db.relationship(User, secondary=activity_users) # 参与者
-    resources = db.relationship(Resource, secondary=activity_resources) # 话题相关资源
+    followers = db.relationship(User, secondary=activity_users, 
+            backref=db.backref('activities', lazy='dynamic')) # 参与者
+    resources = db.relationship(Resource, secondary=activity_resources, 
+            backref=db.backref('activities', lazy='dynamic')) # 话题相关资源
 
 class ActivityComment(db.Model):
     """
@@ -177,12 +180,15 @@ class ActivityComment(db.Model):
     __tablename__ = 'activity_comments'
 
     id = db.Column(db.Integer, primary_key=True)
-    user = db.relationship(User, uselist=False) # 作者
     author_name = db.Column(db.String(50), nullable=False) # 作者昵称
     author_email = db.Column(db.String(255)) # 作者邮件地址
     author_site = db.Column(db.String(255)) # 作者网址
     content = db.Column(db.Text, nullable=False) # 评论内容
     created_time = db.Column(db.DateTime) # 创建日期
     modified_time = db.Column(db.DateTime) # 更新日期
-
-    parent = db.relationship(Topic, uselist=False) # 回复评论的引用
+    
+    parent_id = db.Column(db.Integer, db.ForeignKey('activity_comments.id'), nullable=True)
+    children = db.relationship('ActivityComment', backref='parent', remote_side=[id]) # 回复评论的引用
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('comments', lazy='dynamic'))
