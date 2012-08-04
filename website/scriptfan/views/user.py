@@ -75,7 +75,7 @@ class RegisterForm(wtf.Form):
             user and self.email.errors.append(u'该邮箱已被注册')
         
         self.user = User(self.nickname.data, self.email.data)
-        
+        self.user.set_password(self.password.data)
         return len(self.errors) == 0
 
 @userapp.route('/register', methods=['GET', 'POST'])
