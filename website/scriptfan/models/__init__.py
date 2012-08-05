@@ -1,20 +1,22 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
+from flask import request, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
 import hashlib
 
 db = SQLAlchemy()
 
-def getUserObject(slug=None, user_id=None):
+def get_user(slug=None, user_id=None, email=None):
     user = None
-    if not slug and not user_id:
-        if 'user' in session:
-            user = g.user
+    
+    if email:
+        user = User.query.filter_by(email=email).first()
     elif slug:
         user = User.query.filter_by(slug=slug).first()
     elif user_id:
         user = User.query.filter_by(id=user_id).first()
+
     return user
 
 class UserInfo(db.Model):
@@ -63,7 +65,7 @@ class User(db.Model):
         self.email = email
         self.created_time = self.modified_time = datetime.now()
         self.is_email_verified = True
-
+    
     def __repr__(self):
         return "<User (%s|%s)>" % (self.nickname, self.email)
 
@@ -76,8 +78,8 @@ class User(db.Model):
     @property
     def url(self):
         if self.slug:
-            return url_for('userapp.profile', slug=self.slug)
-        return url_for('userapp.profile', user_id=self.id)
+            return url_for('user..profile', slug=self.slug)
+        return url_for('user.profile', user_id=self.id)
 
     def get_avatar_url(self, size=20):
         return "http://www.gravatar.com/avatar/%s?size=%s&d=%s/static/images/avatar/default.jpg" % (

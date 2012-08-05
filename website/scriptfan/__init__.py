@@ -7,14 +7,12 @@ from extensions import *
 
 app = Flask(__name__)
 
-# 注册openid和db
-oid.init_app(app)
-db.init_app(app)
-
 def config_app(app, config):
     app.config.from_pyfile(config)
     db.init_app(app)
     oid.init_app(app)
+    login_manager.init_app(app)
+
     path = os.path.dirname(__file__)
     logdir = '/home/greatghoul/.scriptfan/'
     if not os.path.isdir(logdir):

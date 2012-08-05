@@ -3,24 +3,26 @@
 {% block content %}
 <h1>用户登陆</h1>
 <form action="{{ url_for('user.signin') }}" class="form-horizontal" id="form-signin" method="post">
-    <fieldset>
-        <div class="control-group {{ form.email.errors and 'error' }}">
-            <label class="control-label">邮件</label>
-            <div class="controls">
-                {{ form.email }}
-                <span class="help-inline">{{ form.email.errors | first }}</span>
-            </div>
+    {{ form.hidden_tag() }}
+    <div class="control-group {{ form.email.errors and 'error' }}">
+        <label class="control-label">邮件</label>
+        <div class="controls">
+            {{ form.email }}
+            <span class="help-inline">{{ form.email.errors | first }}</span>
         </div>
-        <div class="control-group {{ form.password.errors and 'error' }}">
-            <label class="control-label">密码</label>
-            <div class="controls">
-                {{ form.password }}
-                <span class="help-inline">{{ form.password.errors | first }}</span>
-            </div>
+    </div>
+    <div class="control-group {{ form.password.errors and 'error' }}">
+        <label class="control-label">密码</label>
+        <div class="controls">
+            {{ form.password }}
+            <span class="help-inline">{{ form.password.errors | first }}</span>
         </div>
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">用户登陆</button>
-        </div>
-    </fieldset>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">用户登陆</button>&nbsp;&nbsp;
+        <label class="checkbox inline">
+            {{ form.remember }} 记住我的登陆信息
+        </label>
+    </div>
 </form>
 {% endblock %}
