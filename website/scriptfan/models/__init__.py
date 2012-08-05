@@ -78,12 +78,12 @@ class User(db.Model):
     @property
     def url(self):
         if self.slug:
-            return url_for('user..profile', slug=self.slug)
+            return url_for('user.profile', slug=self.slug)
         return url_for('user.profile', user_id=self.id)
 
     def get_avatar_url(self, size=20):
-        url_tpl = 'http://www.gravatar.com/avatar/%s?size=%s&d=%s/static/images/avatar/default.jpg'
-        return url_tpl % (md5(self.email), size, request.url_root)
+        url_tpl = 'http://www.gravatar.com/avatar/%s?size=%s&d=%s%s'
+        return url_tpl % (md5(self.email), size, request.url_root, url_for('static', filename='images/avatars/default.png'))
 
 class UserOpenID(db.Model):
     """

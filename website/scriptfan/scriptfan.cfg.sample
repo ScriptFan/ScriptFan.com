@@ -13,6 +13,7 @@ PAGE_SIZE=20
 
 # database settings
 SQLALCHEMY_DATABASE_URI='sqlite:///test.db'
+SQLALCHEMY_ECHO=True
 
 # LOGGING CONFIG
 LOGGER_NAME='scriptfan'

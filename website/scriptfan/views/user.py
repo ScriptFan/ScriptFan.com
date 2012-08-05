@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-from flask import Blueprint, session, url_for, redirect, render_template, flash, current_app as app
+from flask import Blueprint, url_for, redirect, render_template, flash, current_app as app
 from flask.ext import wtf, login
 from scriptfan.extensions import db, login_manager
 from scriptfan.models import get_user, User
 userapp = Blueprint("user", __name__)
 
-login_manager.login_view = 'login'
-login_manager.login_view = u'需要登陆后才能访问本页'
+class Anonymous(login.AnonymousUser):
+    user = User(u'游客', '')
 
 class LoginUser(login.UserMixin):
     """Wraps User object for Flask-Login"""
@@ -15,6 +15,10 @@ class LoginUser(login.UserMixin):
     def __init__(self, user):
         self.id = user.id
         self.user = user 
+
+login_manager.anonymous_user = Anonymous
+login_manager.login_view = 'user.signin'
+login_manager.login_message = u'需要登陆后才能访问本页'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -48,17 +52,16 @@ class SigninForm(wtf.Form):
 
         return len(self.errors) == 0
 
-@userapp.route('/signin', methods=['GET', 'POST'])
+@userapp.route('/signin/', methods=['GET', 'POST'])
 def signin():
     form = SigninForm(csrf_enabled=False)
-    userapp.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
+    app.logger.info('>>> Signin user: ' + repr(dict(form.data, password='<MASK>')))
     if form.validate_on_submit():
         login.login_user(LoginUser(form.user), remember=form.remember)
         flash(u'登陆成功')
         # 如果指定了 next ，跳转到 next 页面
         # 如果用户注册了 slug ，则跳转到 slug  的profile 页面，否则跳转到 userid 的 profile 页面
-        profile_context = form.user.slug and { 'slug': form.user.slug } or { 'user_id': form.user.id }
-        return redirect(form.next.data or url_for('user.profile', **profile_context))
+        return redirect(form.next.data or url_for('user.profile'))
     else:
         return render_template('user/signin.html', form=form)
 
@@ -108,12 +111,9 @@ class SignupForm(wtf.Form):
         self.user.set_password(self.password.data)
         return len(self.errors) == 0
 
-@userapp.route('/signup', methods=['GET', 'POST'])
+@userapp.route('/signup/', methods=['GET', 'POST'])
 def signup():
     form = SignupForm(csrf_enabled=False)
-    app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
-    app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
-    app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
     app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
     if form.validate_on_submit():
         db.session.add(form.user)
@@ -122,13 +122,15 @@ def signup():
     else:
         return render_template('user/signup.html', form=form)
 
+@userapp.route('/profile/')
 @userapp.route('/profile/<slug>')
 @userapp.route('/profile/<int:user_id>')
+@login.login_required
 def profile(slug=None, user_id=None):
     return render_template('user/profile.html')
 
-@userapp.route('/signou', methods=['GET'])
+@userapp.route('/signou/', methods=['GET'])
+@login.login_required
 def signout():
-    if 'user' in session:
-        session.pop('user')
-    return redirect('/')
+    login.logout_user()
+    return redirect(url_for('site.index'))

@@ -18,40 +18,45 @@
         {% block scripts %}{% endblock %}
     </head>
     <body>
-		<div class="navbar">
-			<div class="navbar-inner">
-				<div class="container">
-					<h1><a class="brand" href="/">ScriptFan.com</a></h1>
-					<div class="nav-collapse">
-						<ul class="nav">
-							<li class="active"><a href="/">首页</a></li>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <h1><a class="brand" href="/">ScriptFan.com</a></h1>
+                    <div class="nav-collapse">
+                        <ul class="nav">
+                            <li class="active"><a href="/">首页</a></li>
                             <li><a href="#">活动</a></li>
-                            {% if session.user %}
+                            {% if current_user.is_authenticated() %}
                                 <li><a href="{{ url_for('user.profile') }}">用户资料</a></li>
                                 <li><a href="{{ url_for('user.signout') }}">退出</a></li>
                             {% else %}
                                 <li><a href="{{ url_for('user.signup') }}">注册</a></li>
                                 <li><a href="{{ url_for('user.signin') }}">登陆</a></li>
                             {% endif %}
-						</ul>
-					</div>
+                        </ul>
+                    </div>
                     <form class="navbar-search pull-left" action="">
                         <input type="text" class="search-query span2" placeholder="Search">
                     </form>
                     <ul class="nav pull-right">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account<b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="{{ current_user.user.get_avatar_url(16) }}" width="16" height="16" style="vertical-align:middle;" />
+                                {{ current_user.user.nickname | default('Account') }}
+                                <b class="caret"></b>
+                            </a>
+
                             <ul class="dropdown-menu">
                             </ul>
                         </li>
                     </ul>
-				</div>
-			</div>
-		</div>
-		<div class="container">
-			<div class="content span8">{% block content %}{% endblock %}</div>
-			<div class="sidebar span4">{% block sidebar %}{% endblock %}</div>
-			<div class="footer">{% block footer %}{% endblock %}</div>
-		</div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="content span8">{% block content %}{% endblock %}</div>
+            <div class="sidebar span4">{% block sidebar %}{% endblock %}</div>
+            <div class="footer">{% block footer %}{% endblock %}</div>
+        </div>
     </body>
 </html>
