@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
+import os
 from flask import Flask, render_template, abort
 from extensions import oid, db, login_manager
 
-app = Flask(__name__)
+instance_path = os.path.abspath(os.path.dirname(__file__))
+app = Flask(__name__, instance_path=instance_path, instance_relative_config=True)
 
 def config_app(app, config):
+    app.debug_log_format = '[%(levelname)s] %(message)s'
     app.config.from_pyfile(config)
+    config_logger(app)
     db.init_app(app)
     oid.init_app(app)
     login_manager.init_app(app)
@@ -19,6 +23,14 @@ def config_app(app, config):
             db.session.rollback()
             abort(500)
         return response
+
+def config_logger(app):
+    # import logging, logging.config
+    # if not os.path.exists(app.config['LOGGER_DIR']):
+    #     os.makedirs(app.config['LOGGER_DIR'])
+    # logging.config.dictConfig(app.config['LOGGER_CONFIG'])
+    # app.logger.error(app.logger.name)
+    pass
 
 def dispatch_handlers(app):
     d = {}
