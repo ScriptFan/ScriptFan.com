@@ -3,7 +3,7 @@
 from flask import request, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
-import hashlib
+from scriptfan.utils.functions import md5
 
 db = SQLAlchemy()
 
@@ -70,10 +70,10 @@ class User(db.Model):
         return "<User (%s|%s)>" % (self.nickname, self.email)
 
     def set_password(self, password):
-        self.password = hashlib.md5(password).hexdigest()
+        self.password = md5(password)
 
     def check_password(self, password):
-        return self.password == hashlib.md5(password).hexdigest()
+        return self.password == md5(password)
 
     @property
     def url(self):
@@ -82,10 +82,8 @@ class User(db.Model):
         return url_for('user.profile', user_id=self.id)
 
     def get_avatar_url(self, size=20):
-        return "http://www.gravatar.com/avatar/%s?size=%s&d=%s/static/images/avatar/default.jpg" % (
-                hashlib.md5(self.email).hexdigest(),
-                size,
-                request.url_root)
+        url_tpl = 'http://www.gravatar.com/avatar/%s?size=%s&d=%s/static/images/avatar/default.jpg'
+        return url_tpl % (md5(self.email), size, request.url_root)
 
 class UserOpenID(db.Model):
     """

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 import hashlib
 
-def hashPassword(password):
+def md5(password):
     return hashlib.md5(password).hexdigest()

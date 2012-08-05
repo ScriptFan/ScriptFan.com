@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-import time, os
-import logging, logging.config
-from flask import Flask, session, render_template, g, abort
-from extensions import *
+from flask import Flask, render_template, abort
+from extensions import oid, db, login_manager
 
 app = Flask(__name__)
 
@@ -12,24 +10,12 @@ def config_app(app, config):
     db.init_app(app)
     oid.init_app(app)
     login_manager.init_app(app)
-
-    path = os.path.dirname(__file__)
-    logdir = '/home/greatghoul/.scriptfan/'
-    if not os.path.isdir(logdir):
-        os.mkdir(logdir)
-    logging.config.fileConfig(os.path.join(path, 'logging.cfg'))
     
-    @app.before_request
-    def before_request():
-        g.user = None
-        if 'user' in session:
-            g.user = User.query.filter_by(id=session['user']).first()
-
     @app.after_request
     def after_request(response):
         try:
             db.session.commit()
-        except Exception, e:
+        except Exception:
             db.session.rollback()
             abort(500)
         return response

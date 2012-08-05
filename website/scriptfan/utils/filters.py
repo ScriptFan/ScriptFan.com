@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
 from datetime import datetime
-import hashlib
-import re
 
 def dateformat(value, format="%Y-%m-%d %H:%M"):
     return value.strftime(format)

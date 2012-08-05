@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-import logging
-from flask import Blueprint, session, url_for, redirect, render_template, flash
+from flask import Blueprint, session, url_for, redirect, render_template, flash, current_app as app
 from flask.ext import wtf, login
 from scriptfan.extensions import db, login_manager
 from scriptfan.models import get_user, User
@@ -52,7 +51,7 @@ class SigninForm(wtf.Form):
 @userapp.route('/signin', methods=['GET', 'POST'])
 def signin():
     form = SigninForm(csrf_enabled=False)
-    logging.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
+    userapp.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
     if form.validate_on_submit():
         login.login_user(LoginUser(form.user), remember=form.remember)
         flash(u'登陆成功')
@@ -112,7 +111,10 @@ class SignupForm(wtf.Form):
 @userapp.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignupForm(csrf_enabled=False)
-    logging.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
+    app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
+    app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
+    app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
+    app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
     if form.validate_on_submit():
         db.session.add(form.user)
         db.session.commit()
