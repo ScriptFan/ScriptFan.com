@@ -1,9 +1,0 @@
-body > div.navbar > div.navbar-inner {
-    border-radius:0;
-}
-body > div.navbar > div.navbar-inner > div.container {
-    width:auto;
-}
-body > div.navbar > div.navbar-inner > div.container > div > form > input {
-    height:26px;
-}
