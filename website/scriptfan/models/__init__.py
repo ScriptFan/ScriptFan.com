@@ -53,18 +53,14 @@ class User(db.Model):
     email_status = db.Column(db.Integer, nullable=True, default=0) # 邮箱可见度: 0-不公开 1-公开 2-向成员公开
     nickname = db.Column(db.String(50), unique=True, nullable=False) # 昵称, 显示时用的
     password = db.Column(db.String(50), nullable=True) # 密码
-    is_email_verified = db.Column(db.Boolean, nullable=False)
+    is_email_verified = db.Column(db.Boolean, nullable=False, default=True)
     slug = db.Column(db.String(50), nullable=True) # 用户页面
-    created_time = db.Column(db.DateTime, nullable=False) # 用户注册时间
-    modified_time = db.Column(db.DateTime, nullable=False) # 用户更新时间
+    created_time = db.Column(db.DateTime, nullable=False, default=datetime.now) # 用户注册时间
+    modified_time = db.Column(db.DateTime, nullable=False, default=datetime.now) # 用户更新时间
     last_login_time = db.Column(db.DateTime) # 最后一次登陆时间
     privilege = db.Column(db.Integer, default=3) # 权重：3-普通用户 4-管理员
 
-    def __init__(self, nickname, email):
-        self.nickname = nickname
-        self.email = email
-        self.created_time = self.modified_time = datetime.now()
-        self.is_email_verified = True
+    openids = db.relationship('UserOpenID', backref=db.backref('user'))
     
     def __repr__(self):
         return "<User (%s|%s)>" % (self.nickname, self.email)
@@ -90,12 +86,12 @@ class UserOpenID(db.Model):
     用户绑定OpenID的表
     一个用户可以对应多个OpenID
     """
-    __tablename__ = 'user_openid'
+    __tablename__ = 'user_openids'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # openid关联的用户
-    openid_src = db.Column(db.String(50), nullable=False) # openid的提供商，比如 google 
-    openid_url = db.Column(db.String(255), nullable=False, unique=True) # 记录的 openid, 不能重复
+    openid = db.Column(db.String(255), nullable=False, unique=True) # 记录的 openid, 不能重复
+    provider = db.Column(db.String(50), nullable=False) # openid的提供商，比如 google 
 
 class Resource(db.Model):
     """

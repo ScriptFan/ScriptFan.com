@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-from flask import Blueprint, url_for, redirect, render_template, flash, current_app as app
-from flask.ext import wtf, login
-from scriptfan.extensions import db, login_manager
-from scriptfan.models import get_user, User
+from flask import Blueprint, request, session, url_for, redirect, render_template, flash, current_app as app
+from flask.ext import wtf, login 
+from flask.ext.login import current_user
+from scriptfan.extensions import db, oid, login_manager
+from scriptfan.models import get_user, User, UserOpenID
 userapp = Blueprint("user", __name__)
 
 class Anonymous(login.AnonymousUser):
-    user = User(u'游客', '')
+    user = User(nickname=u'游客', email='')
 
 class LoginUser(login.UserMixin):
     """Wraps User object for Flask-Login"""
@@ -34,6 +35,9 @@ class SigninForm(wtf.Form):
         wtf.Length(min=5, max=20, message=u'密应应为5到20位字符')])
     next = wtf.HiddenField('next')
     remember = wtf.BooleanField('remember')
+    
+    openid_identifier = wtf.HiddenField('openid_identifier')
+    openid_provider = wtf.HiddenField('openid_provider')
 
     def __init__(self, *args, **kargs):
         wtf.Form.__init__(self, *args, **kargs)
@@ -53,9 +57,19 @@ class SigninForm(wtf.Form):
         return len(self.errors) == 0
 
 @userapp.route('/signin/', methods=['GET', 'POST'])
+@oid.loginhandler
 def signin():
-    form = SigninForm(csrf_enabled=False)
+    if current_user.is_authenticated():
+        return redirect(url_for('user.profile'))
+
+    form = SigninForm(csrf_enabled=False, next=oid.get_next_url())
     app.logger.info('>>> Signin user: ' + repr(dict(form.data, password='<MASK>')))
+    
+    if form.is_submitted() and form.openid_identifier.data:
+        session['openid_provider'] = form.openid_provider.data
+        session['openid_identifier'] = form.openid_identifier.data
+        return oid.try_login(form.openid_identifier.data, ask_for=['email', 'nickname', 'fullname'])
+
     if form.validate_on_submit():
         login.login_user(LoginUser(form.user), remember=form.remember)
         flash(u'登陆成功')
@@ -63,23 +77,21 @@ def signin():
         # 如果用户注册了 slug ，则跳转到 slug  的profile 页面，否则跳转到 userid 的 profile 页面
         return redirect(form.next.data or url_for('user.profile'))
     else:
-        return render_template('user/signin.html', form=form)
+        return render_template('user/signin.html', form=form, openid_error=oid.fetch_error())
 
-# @oid.after_login
-# def create_or_login(resp):
-#     session['openid'] = resp.identity_url
-#     # user = get_user(openid=resp.identity_url)
-#     user = None
-#     if user is not None:
-#         flash(u'成功登入')
-#         session['user'] = str(user.id)
-#         session.pop('openid')
-#         # g.user = getUserObject(user_id=session['user'])
-#         return redirect(oid.get_next_url())
-#     return redirect(url_for('user.signup',
-#                             next=oid.get_next_url(),
-#                             nickname=resp.nickname,
-#                             email=resp.email))
+@oid.after_login
+def create_or_login(resp):
+    app.logger.info('>>> OpenID Response: openid=%s, provider=%s', resp.identity_url, session['openid_provider'])
+    session['current_openid'] = resp.identity_url
+    # TODO: 当使用新的OPENID登陆时，通过邮箱判定该用户以前是否注册过，邮箱未注册时，允许用户自己登陆以绑定帐号
+    user_openid = UserOpenID.query.filter_by(openid=resp.identity_url).first()
+    if user_openid:
+        flash(u'登陆成功')
+        app.logger.info(u'Logging with user: ' + user_openid.user.email)
+        login.login_user(LoginUser(user_openid.user), remember=True)
+        return redirect(oid.get_next_url())
+    return redirect(url_for('user.signup', next=oid.get_next_url(), 
+        email=resp.email, nickname=resp.nickname or resp.fullname))
 
 class SignupForm(wtf.Form):
     email = wtf.TextField('email', validators=[
@@ -87,13 +99,14 @@ class SignupForm(wtf.Form):
         wtf.Email(message=u'无效的电子邮件')])
     nickname = wtf.TextField('nickname', validators=[
         wtf.Required(message=u'请填写昵称'),
-        wtf.Length(min=5, max=20, message=u'昵称应为5到20字符')])
+        wtf.Length(min=2, max=20, message=u'昵称应为2到20字符')])
     password = wtf.PasswordField('password', validators=[
         wtf.Required(message=u'请填写密码'),
         wtf.Length(min=5, max=20, message=u'密码应为5到20位字符')])
     repassword = wtf.PasswordField('repassword', validators=[
         wtf.Required(message=u'请填写确认密码'),
         wtf.EqualTo('password', message=u'两次输入的密码不一致')])
+    next = wtf.HiddenField('next')
 
     def __init__(self, *args, **kargs):
         wtf.Form.__init__(self, *args, **kargs)
@@ -107,14 +120,21 @@ class SignupForm(wtf.Form):
             user = get_user(email=self.email.data)
             user and self.email.errors.append(u'该邮箱已被注册')
         
-        self.user = User(self.nickname.data, self.email.data)
+        self.user = User(email=self.email.data, nickname=self.nickname.data, openids=[
+            UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
         self.user.set_password(self.password.data)
+        
         return len(self.errors) == 0
 
 @userapp.route('/signup/', methods=['GET', 'POST'])
 def signup():
-    form = SignupForm(csrf_enabled=False)
+    if current_user.is_authenticated():
+        return redirect(url_for('user.profile'))
+    
+    app.logger.info('request.form: ' + repr(request.values))
+    form = SignupForm(request.values, csrf_enabled=False)
     app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
+
     if form.validate_on_submit():
         db.session.add(form.user)
         db.session.commit()
@@ -127,7 +147,10 @@ def signup():
 @userapp.route('/profile/<int:user_id>')
 @login.login_required
 def profile(slug=None, user_id=None):
+    # TODO: 用户资料修改及密码修改
     return render_template('user/profile.html')
+
+# TODO: 用户找回密码功能
 
 @userapp.route('/signou/', methods=['GET'])
 @login.login_required

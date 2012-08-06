@@ -2,6 +2,7 @@
 {% block title %}注册会员{% endblock %}
 {% block content %}
 <h1>用户注册</h1>
+
 <form action="{{ url_for('user.signup') }}" class="form-horizontal" id="form-signup" method="post">
     <div class="control-group {{ form.email.errors and 'error' }}">
         <label class="control-label">邮件</label>
@@ -31,6 +32,11 @@
             <span class="help-inline">{{ form.repassword.errors | first }}</span>
         </div>
     </div>
+    {% if session.current_openid %}
+    <div class="alert alert-info">
+        正在通过 <strong>{{ session.openid_provider }}</strong> OpenID 注册，填写密码以完成注册！
+    </div>
+    {% endif %}
     <div class="form-actions">
         <button type="submit" class="btn btn-primary">用户注册</button>
     </div>

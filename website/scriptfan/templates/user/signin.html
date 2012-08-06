@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block title %}会员登陆{% endblock %}
+
+{% block scripts %}
+        <script type="text/javascript" src="{{ url_for('static', filename='libs/jquery-openid/jquery-openid.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 <h1>用户登陆</h1>
 <form action="{{ url_for('user.signin') }}" class="form-horizontal" id="form-signin" method="post">
@@ -18,11 +23,17 @@
             <span class="help-inline">{{ form.password.errors | first }}</span>
         </div>
     </div>
+    {% if error %}
+        <div class="alert alert-error">
+            <strong>错误：</strong> {{ error }}
+        </div>
+    {% endif %}
     <div class="form-actions">
         <button type="submit" class="btn btn-primary">用户登陆</button>&nbsp;&nbsp;
         <label class="checkbox inline">
             {{ form.remember }} 记住我的登陆信息
         </label>
+        <div>使用 <a href="javascript:void(0);" rel="openid" data-provider="google">Gmail帐户</a> 登陆</div>
     </div>
 </form>
 {% endblock %}
