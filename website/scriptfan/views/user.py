@@ -5,6 +5,8 @@ from flask.ext import wtf, login
 from flask.ext.login import current_user
 from scriptfan.extensions import db, oid, login_manager
 from scriptfan.models import get_user, User, UserOpenID
+import re
+
 userapp = Blueprint("user", __name__)
 
 class Anonymous(login.AnonymousUser):
@@ -150,7 +152,40 @@ def profile(slug=None, user_id=None):
     # TODO: 用户资料修改及密码修改
     return render_template('user/profile.html')
 
+class UserInfoForm(wtf.Form):
+    nickname = wtf.TextField('nickname', validators=[
+        wtf.Required(message=u'请填写昵称')])
+    slug = wtf.TextField('slug', validators=[
+        wtf.Regexp(regex=r'[a-zA-Z0-9_-]{5,24}', message=u'域名为5到24位，由英文字母、数字或者符号(包括_-)组成')])
+    phone = wtf.TextField('phone', validators=[
+        wtf.Regexp(regex=r'^1\d{10}$', message=u'请输入有效的手机号码')])
+    phone_status = wtf.RadioField('phone_status', choices=[
+        (0, u'不公开'), (1, u'公开'), (2, u'仅向会员公开')])      
+    # photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
+    motoo = wtf.TextAreaField('motoo', validators=[
+        wtf.Length(min=0, max=255, message=u'座右铭最多为255个字符')])
+    introduction = wtf.TextAreaField('introduction', validators=[
+        wtf.Length(min=0, max=3000, message=u'个人介绍最多为3000个字')])
+
+@userapp.route('/edit')
+@login.login_required
+def edit():
+    form = UserInfoForm(csrf_enabled=False)
+    # TODO 处理更新用户资料的请求
+    # TODO 用户照片上传
+    return render_template('user/edit.html', form=form)
+
 # TODO: 用户找回密码功能
+
+@userapp.route('/password')
+@login.login_required
+def password():
+    return 'password'
+
+@userapp.route('/email')
+@login.login_required
+def email():
+    return 'email'
 
 @userapp.route('/signou/', methods=['GET'])
 @login.login_required

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}会员资料修改{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>修改用户资料 <small></small></h1>
+</div>
+<form action="{{ url_for('user.edit') }}" class="form-horizontal" id="form-signin" method="post">
+    {{ form.hidden_tag() }}
+    <div class="control-group {{ form.nickname.errors and 'error' }}">
+        <label class="control-label">昵称</label>
+        <div class="controls">
+            {{ form.nickname }}
+            <span class="help-inline">{{ form.nickname.errors | first }}</span>
+        </div>
+    </div>
+    <div class="control-group {{ form.slug.errors and 'error' }}">
+        <label class="control-label">域名</label>
+        <div class="controls">
+            {{ form.slug }}
+            <span class="help-inline">{{ form.slug.errors | first }}</span>
+        </div>
+    </div>
+    <div class="control-group {{ form.phone.errors and 'error' }}">
+        <label class="control-label">手机号码</label>
+        <div class="controls">
+            {{ form.phone }}
+            <span class="help-inline">{{ form.phone.errors | first }}</span>
+            <div>
+                {% for radio in form.phone_status %}
+                <label class="radio inline">
+                    {{ radio }} {{ radio.label }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="control-group {{ form.motoo.errors and 'error' }}">
+        <label class="control-label">座右铭</label>
+        <div class="controls">
+            {{ form.motoo }}
+            <span class="help-inline">{{ form.motoo.errors | first }}</span>
+        </div>
+    </div>
+    <div class="control-group {{ form.introduction.errors and 'error' }}">
+        <label class="control-label">个人介绍</label>
+        <div class="controls">
+            {{ form.introduction }}
+            <span class="help-block">{{ form.introduction.errors | first }}</span>
+        </div>
+    </div>
+    {% if error %}
+        <div class="alert alert-error">
+            <strong>错误：</strong> {{ error }}
+        </div>
+    {% endif %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">更新资料</button>
+    </div>
+</form>
+{% endblock %}

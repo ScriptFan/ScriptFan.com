@@ -26,8 +26,8 @@ class UserInfo(db.Model):
     __tablename__ = 'user_info'
 
     id = db.Column(db.Integer, primary_key=True)
-    motoo = db.Column(db.String(255))
-    introduction = db.Column(db.Text)
+    motoo = db.Column(db.String(255)) # 座右铭
+    introduction = db.Column(db.Text) # 个人简介
     phone = db.Column(db.String(15), unique=True, nullable=True) # 手机号码
     phone_status = db.Column(db.Integer, nullable=True) # 手机可见度: 0-不公开 1-公开 2-向成员公开
     photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
