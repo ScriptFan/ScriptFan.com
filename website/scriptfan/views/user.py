@@ -5,7 +5,7 @@ from flask.ext import wtf, login
 from flask.ext.login import current_user
 from scriptfan.extensions import db, oid, login_manager
 from scriptfan.models import get_user, User, UserOpenID
-import re
+# import re
 
 userapp = Blueprint("user", __name__)
 
@@ -191,4 +191,5 @@ def email():
 @login.login_required
 def signout():
     login.logout_user()
+    del session['current_openid']
     return redirect(url_for('site.index'))
