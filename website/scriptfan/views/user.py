@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-from flask import Blueprint, request, session, url_for, redirect, render_template, flash, current_app as app
+from flask import Blueprint, request, session, url_for, redirect
+from flask import render_template, flash
+from flask import current_app as app
 from flask.ext import wtf, login
 from flask.ext.login import current_user
 from scriptfan.extensions import db, oid, login_manager
@@ -27,7 +29,7 @@ login_manager.login_message = u'需要登陆后才能访问本页'
 
 @login_manager.user_loader
 def load_user(user_id):
-    user = User.query.get(user_id) 
+    user = User.query.get(user_id)
     return user and LoginUser(user) or None
 
 @userapp.route('/signin/', methods=['GET', 'POST'])
@@ -55,7 +57,8 @@ def signin():
 
 @oid.after_login
 def create_or_login(resp):
-    app.logger.info('>>> OpenID Response: openid=%s, provider=%s', resp.identity_url, session['openid_provider'])
+    app.logger.info('>>> OpenID Response: openid=%s, provider=%s',
+                    resp.identity_url, session['openid_provider'])
     session['current_openid'] = resp.identity_url
     # TODO: 当使用新的OPENID登陆时，通过邮箱判定该用户以前是否注册过，邮箱未注册时，允许用户自己登陆以绑定帐号
     user_openid = UserOpenID.query.filter_by(openid=resp.identity_url).first()
@@ -64,8 +67,9 @@ def create_or_login(resp):
         app.logger.info(u'Logging with user: ' + user_openid.user.email)
         login.login_user(LoginUser(user_openid.user), remember=True)
         return redirect(oid.get_next_url())
-    return redirect(url_for('user.signup', next=oid.get_next_url(), 
-        email=resp.email, nickname=resp.nickname or resp.fullname))
+    return redirect(url_for('user.signup', next=oid.get_next_url(),
+                                           email=resp.email,
+                                           nickname=resp.nickname or resp.fullname))
 
 @userapp.route('/signup/', methods=['GET', 'POST'])
 def signup():

@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
 from flask import request, url_for
-from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
+from scriptfan.extensions import *
 from scriptfan.utils.functions import md5
-
-db = SQLAlchemy()
 
 def get_user(slug=None, user_id=None, email=None):
     user = None
