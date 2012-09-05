@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}会员登陆{% endblock %}
+{% block content %}
+<h1>用户登陆</h1>
+<form action="{{ url_for('user.login') }}" class="form-horizontal" id="form-login" method="post">
+    <fieldset>
+        <div class="control-group">
+            <label class="control-label">邮件</label>
+            <div class="controls">
+                <input type="text" name="email" />
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">密码</label>
+            <div class="controls">
+                <input type="password" name="password" class="password" />
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">用户登陆</button>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}

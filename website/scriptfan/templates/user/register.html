@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}注册会员{% endblock %}
+{% block content %}
+<h1>用户注册</h1>
+<form action="{{ url_for('user.register') }}" class="form-horizontal" id="form-register" method="post">
+    <fieldset>
+        <div class="control-group">
+            <label class="control-label">邮件</label>
+            <div class="controls">
+                <input type="text" name="email" />
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">昵称</label>
+            <div class="controls">
+                <input type="text" name="nickname" />
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">密码</label>
+            <div class="controls">
+                <input type="password" name="password" class="password" />
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">确认密码</label>
+            <div class="controls">
+                <input type="password" class="repassword"/>
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">用户注册</button>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}

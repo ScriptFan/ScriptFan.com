@@ -1,0 +1,16 @@
+#-*-coding:utf-8-*-
+
+# debug
+DEBUG=True
+
+# error_log
+ERROR_LOG='error.log'
+
+# used for session
+SECRET_KEY='youshouldnotknowthis'
+
+# application side settings
+PAGE_SIZE=20
+
+# database settings
+SQLALCHEMY_DATABASE_URI='sqlite:///test.db'
