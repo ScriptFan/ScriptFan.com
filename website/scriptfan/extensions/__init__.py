@@ -3,7 +3,7 @@ from flaskext.openid import OpenID
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 
-__all__ = [ 'oid', 'db', 'login_manager']
+__all__ = [ 'oid', 'db', 'login_manager' ]
 
 oid = OpenID()
 db = SQLAlchemy()

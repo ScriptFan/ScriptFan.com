@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
-from flask.ext import wtf, login
+from flask import session
+from flask.ext import wtf
+from scriptfan.models import (get_user, User, UserInfo, UserOpenID)
 
 class SigninForm(wtf.Form):
     email = wtf.TextField('email', validators=[
@@ -61,16 +63,17 @@ class SignupForm(wtf.Form):
         self.user = User(email=self.email.data, nickname=self.nickname.data, openids=[
             UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
         self.user.set_password(self.password.data)
+        self.user.info = UserInfo()
         
         return len(self.errors) == 0
 
-class UserInfoForm(wtf.Form):
+class ProfileForm(wtf.Form):
     nickname = wtf.TextField('nickname', validators=[
         wtf.Required(message=u'请填写昵称')])
     slug = wtf.TextField('slug', validators=[
-        wtf.Regexp(regex=r'[a-zA-Z0-9_-]{5,24}', message=u'域名为5到24位，由英文字母、数字或者符号(包括_-)组成')])
+        wtf.Regexp(regex=r'([a-zA-Z0-9_-]{5,24})?', message=u'域名为5到24位，由英文字母、数字或者符号(包括_-)组成')])
     phone = wtf.TextField('phone', validators=[
-        wtf.Regexp(regex=r'^1\d{10}$', message=u'请输入有效的手机号码')])
+        wtf.Regexp(regex=r'^(1\d{10})?$', message=u'请输入有效的手机号码')])
     phone_status = wtf.RadioField('phone_status', choices=[
         (0, u'不公开'), (1, u'公开'), (2, u'仅向会员公开')])      
     # photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
@@ -78,3 +81,7 @@ class UserInfoForm(wtf.Form):
         wtf.Length(min=0, max=255, message=u'座右铭最多为255个字符')])
     introduction = wtf.TextAreaField('introduction', validators=[
         wtf.Length(min=0, max=3000, message=u'个人介绍最多为3000个字')])
+    
+    def __init__(self, *args, **kargs):
+        wtf.Form.__init__(self, *args, **kargs)
+        self.user = None

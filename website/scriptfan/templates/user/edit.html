@@ -22,6 +22,8 @@
                         <span class="help-inline">{{ form.nickname.errors | first }}</span>
                     </div>
                 </div>
+                
+                {% if not form.slug.value %}
                 <div class="control-group {{ form.slug.errors and 'error' }}">
                     <label class="control-label">域名</label>
                     <div class="controls">
@@ -29,6 +31,15 @@
                         <span class="help-inline">{{ form.slug.errors | first }}</span>
                     </div>
                 </div>
+                {% else %}
+                <div class="control-group">
+                    <label class="control-label">域名</label>
+                    <div class="controls">
+                        <span class="input-large uneditable-input">{{ form.slug.value }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                
                 <div class="control-group {{ form.phone.errors and 'error' }}">
                     <label class="control-label">手机号码</label>
                     <div class="controls">

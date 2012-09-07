@@ -2,7 +2,7 @@
 #-*-coding:utf-8-*-
 from flask import request, url_for
 from datetime import datetime
-from scriptfan.extensions import *
+from scriptfan.extensions import db
 from scriptfan.utils.functions import md5
 
 def get_user(slug=None, user_id=None, email=None):
@@ -30,14 +30,10 @@ class UserInfo(db.Model):
     phone_status = db.Column(db.Integer, nullable=True) # 手机可见度: 0-不公开 1-公开 2-向成员公开
     photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', backref='info', uselist=False)
     
-    def __init__(self, user_id):
-        self.user_id = user_id
-
     def __repr__(self):
-        return "<UserInfo (%s)>" % self.user_id
+        return "<UserInfo (%s)>" % self.user.id
 
 class User(db.Model):
     """
@@ -58,6 +54,8 @@ class User(db.Model):
     last_login_time = db.Column(db.DateTime) # 最后一次登陆时间
     privilege = db.Column(db.Integer, default=3) # 权重：3-普通用户 4-管理员
 
+    user_info_id = db.Column(db.Integer, db.ForeignKey('user_info.id'), nullable=False)
+    
     openids = db.relationship('UserOpenID', backref=db.backref('user'))
     
     def __repr__(self):

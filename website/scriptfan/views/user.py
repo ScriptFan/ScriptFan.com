@@ -3,11 +3,11 @@
 from flask import Blueprint, request, session, url_for, redirect
 from flask import render_template, flash
 from flask import current_app as app
-from flask.ext import wtf, login
+from flask.ext import login
 from flask.ext.login import current_user
 from scriptfan.extensions import db, oid, login_manager
-from scriptfan.models import get_user, User, UserOpenID
-from scriptfan.forms import *
+from scriptfan.models import (User, UserOpenID)
+from scriptfan.forms import (SignupForm, SigninForm, ProfileForm)
 
 # import re
 
@@ -95,13 +95,22 @@ def profile(slug=None, user_id=None):
     # TODO: 用户资料修改及密码修改
     return render_template('user/profile.html')
 
-@userapp.route('/edit')
+@userapp.route('/edit', methods=['GET', 'POST'])
 @login.login_required
 def edit():
-    form = UserInfoForm(csrf_enabled=False)
+    form = ProfileForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        return redirect(url_for('user.edit'))
+    else:
+        form.nickname.data = current_user.user.nickname
+        form.slug.data = current_user.user.slug
+        form.phone.data = current_user.user.info.phone
+        form.motoo.data = current_user.user.info.motoo
+        form.introduction.data = current_user.user.info.introduction
+
+        return render_template('user/edit.html', form=form)
     # TODO 处理更新用户资料的请求
     # TODO 用户照片上传
-    return render_template('user/edit.html', form=form)
 
 # TODO: 用户找回密码功能
 
