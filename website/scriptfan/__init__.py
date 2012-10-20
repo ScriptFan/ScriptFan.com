@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
 import os
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, url_for
 from extensions import oid, db, login_manager
 
 instance_path = os.path.abspath(os.path.dirname(__file__))
@@ -61,3 +61,5 @@ def dispatch_apps(app):
     app.jinja_env.filters['dateformat'] = dateformat
     app.jinja_env.filters['empty'] = empty
     app.jinja_env.filters['time_passed'] = time_passed
+    app.jinja_env.globals['static'] = (lambda filename: \
+            url_for('static', filename=filename))
