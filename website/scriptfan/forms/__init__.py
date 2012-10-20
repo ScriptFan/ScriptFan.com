@@ -75,7 +75,7 @@ class ProfileForm(wtf.Form):
     phone = wtf.TextField('phone', validators=[
         wtf.Regexp(regex=r'^(1\d{10})?$', message=u'请输入有效的手机号码')])
     phone_status = wtf.RadioField('phone_status', choices=[
-        (0, u'不公开'), (1, u'公开'), (2, u'仅向会员公开')])      
+        (0, u'不公开'), (1, u'公开'), (2, u'仅向会员公开')], default=0)
     # photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
     motoo = wtf.TextAreaField('motoo', validators=[
         wtf.Length(min=0, max=255, message=u'座右铭最多为255个字符')])
