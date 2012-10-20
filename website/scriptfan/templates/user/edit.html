@@ -1,84 +1,91 @@
 {% extends "base.html" %}
-{% block title %}会员资料修改{% endblock %}
+{% block title %}资料修改{% endblock %}
 
 {% block scripts %}
+<script type="text/javascript" src="{{ static('scripts/user-edit.js') }}"></script>
 {% endblock %}
 
 {% block content %}
-<div class="tabbable">
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#tab-basic" data-toggle="tab">基本资料</a></li>
-        <li><a href="#tab-email" data-toggle="tab">修改邮箱</a></li>
-        <li><a href="#tab-password" data-toggle="tab">修改密码</a></li>
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" id="tab-basic">
-            <form action="{{ url_for('user.edit') }}" class="form-horizontal" id="form-userinfo" method="post">
-                {{ form.hidden_tag() }}
-                <div class="control-group {{ form.nickname.errors and 'error' }}">
-                    <label class="control-label">昵称</label>
-                    <div class="controls">
-                        {{ form.nickname }}
-                        <span class="help-inline">{{ form.nickname.errors | first }}</span>
-                    </div>
-                </div>
-                
-                {% if not form.slug.value %}
-                <div class="control-group {{ form.slug.errors and 'error' }}">
-                    <label class="control-label">域名</label>
-                    <div class="controls">
-                        {{ form.slug }}
-                        <span class="help-inline">{{ form.slug.errors | first }}</span>
-                    </div>
-                </div>
-                {% else %}
-                <div class="control-group">
-                    <label class="control-label">域名</label>
-                    <div class="controls">
-                        <span class="input-large uneditable-input">{{ form.slug.value }}</span>
-                    </div>
-                </div>
-                {% endif %}
-                
-                <div class="control-group {{ form.phone.errors and 'error' }}">
-                    <label class="control-label">手机号码</label>
-                    <div class="controls">
-                        {{ form.phone }}
-                        <span class="help-inline">{{ form.phone.errors | first }}</span>
-                        <div>
-                            {% for radio in form.phone_status %}
-                            <label class="radio inline">
-                                {{ radio }} {{ radio.label }}
-                            </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <div class="control-group {{ form.motoo.errors and 'error' }}">
-                    <label class="control-label">座右铭</label>
-                    <div class="controls">
-                        {{ form.motoo }}
-                        <span class="help-inline">{{ form.motoo.errors | first }}</span>
-                    </div>
-                </div>
-                <div class="control-group {{ form.introduction.errors and 'error' }}">
-                    <label class="control-label">个人介绍</label>
-                    <div class="controls">
-                        {{ form.introduction }}
-                        <span class="help-block">{{ form.introduction.errors | first }}</span>
-                    </div>
-                </div>
-                {% if error %}
-                    <div class="alert alert-error">
-                        <strong>错误：</strong> {{ error }}
-                    </div>
-                {% endif %}
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">更新资料</button>
-                </div>
-            </form>
-        </div><!-- #tab-basic -->
-        
+<div class="page-header">
+  <h3>修改用户资料</h3>
+</div>
+
+<form action="{{ url_for('user.edit') }}" class="form-horizontal" id="form-user-edit" method="post">
+    {{ form.hidden_tag() }}
+    <div class="control-group">
+        <label class="control-label">昵称</label>
+        <div class="controls">
+            {{ form.nickname }}
+            <span class="help-inline"></span>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">电子邮箱</label>
+        <div class="controls">
+            <span class="input-large uneditable-input">greatghoul@gmail.com</span>
+            <button class="btn btn-link">修改邮箱</button>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">密码</label>
+        <div class="controls">
+            <input type="password" value="********" />
+            <button class="btn btn-link">修改密码</button>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">个性域名</label>
+        <div class="controls">
+            {% if form.slug.value %}
+            <a class="btn btn-link">{{ request.url_root + url_for('user.profile') + form.slug.value }}</span>
+            {% else %}
+            <div class="input-prepend">
+                <span class="add-on">{{ request.url_root + url_for('user.profile') }}</span><input class="span2" id="prependedInput" size="16" type="text" value="{{ form.slug.value }}" />
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">手机号码</label>
+        <div class="controls">
+            {{ form.phone }}
+            <span class="help-inline"></span>
+            <div>
+                {% for radio in form.phone_status %}
+                <label class="radio inline">
+                    {{ radio }} {{ radio.label }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">座右铭</label>
+        <div class="controls">
+            {{ form.motoo }}
+            <span class="help-inline"></span>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">个人介绍</label>
+        <div class="controls">
+            {{ form.introduction }}
+            <span class="help-block"></span>
+        </div>
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary" data-loading-text="提交中...">更新资料</button>
+    </div>
+</form>
+
+       <!-- 
         <div class="tab-pane" id="tab-email">
             <form action="" class="form-horizontal" id="form-email" method="post">
                 <div class="control-group">
@@ -95,7 +102,7 @@
                     <button type="submit" class="btn btn-primary">发送验证邮件</button>
                 </div>
             </form>
-        </div><!-- #tab-email -->
+        </div>
         
         <div class="tab-pane" id="tab-password">
             <form action="" class="form-horizontal" id="form-email" method="post">
@@ -123,6 +130,6 @@
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">更改密码</button>
                 </div>
-        </div>
-    </div><!-- .tab-content -->
+            </div>
+        -->
 {% endblock %}
