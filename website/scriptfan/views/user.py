@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-from flask import Blueprint, request, session, url_for, redirect
+import logging
+logger = logging.getLogger(__name__)
+
+from flask import Blueprint, request, session, url_for, redirect, jsonify, abort
 from flask import render_template, flash
 from flask import current_app as app
 from flask.ext import login
 from flask.ext.login import current_user
 from scriptfan.extensions import db, oid, login_manager
 from scriptfan.models import (User, UserOpenID)
-from scriptfan.forms import (SignupForm, SigninForm, ProfileForm)
+from scriptfan.forms.user import (SignupForm, SigninForm, ProfileForm)
 
 # import re
 
@@ -88,27 +91,52 @@ def signup():
         return render_template('user/signup.html', form=form)
 
 @userapp.route('/profile/')
-@userapp.route('/profile/<slug>')
-@userapp.route('/profile/<int:user_id>')
+@userapp.route('/profile/<slug_or_id>')
 @login.login_required
-def profile(slug=None, user_id=None):
-    # TODO: 用户资料修改及密码修改
-    return render_template('user/profile.html')
+def profile(slug_or_id=None):
+    if slug_or_id:
+        if slug_or_id.isdigit():
+            user = User.query.get(int(slug_or_id)).first()
+        else:
+            user = User.query.filter_by(slug=slug_or_id).first()
+        return user and render_template('user/profile.html', user=user) or abort(404)
+    else:
+        return render_template('user/profile.html', user=current_user.user)
 
-@userapp.route('/edit', methods=['GET', 'POST'])
+@userapp.route('/userinfo/', methods=['GET', 'POST'])
 @login.login_required
 def edit():
     form = ProfileForm(csrf_enabled=False)
-    if form.validate_on_submit():
-        return redirect(url_for('user.edit'))
+    if form.is_submitted():
+        logger.info('Updating user information...')
+        success = form.validate_on_submit()
+        if success:
+            try:
+                user = current_user.user
+                user.nickname = form.data['nickname']
+                user.info.phone = form.data['phone']
+                user.info.phone_status = form.data['phone_status']
+                user.info.motoo = form.data['motoo']
+                user.info.introduction = form.data['introduction']
+                user.slug = ''
+                if form.data['slug']:
+                    user.slug = form.data.get('slug')
+                return jsonify(success=True, messages=dict(success=u'用户资料更新成功'))
+            except Exception as e:
+                return jsonify(success=False, messages=dict(error=unicode(e)))
+        else:
+            return jsonify(success=False, messages=dict(error=u'用户资料更新失败'), \
+                           errors=form.errors)
     else:
-        form.nickname.data = current_user.user.nickname
-        form.slug.data = current_user.user.slug
-        form.phone.data = current_user.user.info.phone
-        form.motoo.data = current_user.user.info.motoo
-        form.introduction.data = current_user.user.info.introduction
-
+        # 如果是编辑用户信息，则使用用户当前信息填充表单
+        user = current_user.user
+        form.nickname.data = user.nickname
+        form.slug.data = user.slug
+        form.phone.data = user.info.phone
+        form.motoo.data = user.info.motoo
+        form.introduction.data = user.info.introduction
         return render_template('user/edit.html', form=form)
+
     # TODO 处理更新用户资料的请求
     # TODO 用户照片上传
 

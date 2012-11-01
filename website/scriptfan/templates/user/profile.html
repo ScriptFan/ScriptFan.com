@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}{{ current_user.user.nickname }}{% endblock %}
+{% block title %}{{ user.nickname }}{% endblock %}
 
 {% block content %}
 <div class="well">
-    <img src="{{ current_user.user.get_avatar_url(64) }}" />
-    <h4>欢迎 <strong>{{ current_user.user.nickname }}</strong></h4>
-    <div>电子邮件：<a href="mailto:{{ current_user.user.email }}">{{ current_user.user.email }}</a></div>
+    <img src="{{ user.get_avatar_url(64) }}" />
+    <h4>欢迎 <strong>{{ user.nickname }}</strong></h4>
+    <div>电子邮件：<a href="mailto:{{ user.email }}">{{ user.email }}</a></div>
 </div>
 {% endblock %}

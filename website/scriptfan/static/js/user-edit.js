@@ -7,7 +7,5 @@ $(function() {
     var $form = $('#form-user-edit');
     var $submit = $form.find(':submit');
 
-    $form.submit(function(event) {
-        event.preventDefault();
-    });
+    $form.bform();
 });

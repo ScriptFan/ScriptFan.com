@@ -14,6 +14,7 @@
         <!-- 全局脚本 -->
         <script type="text/javascript" src="{{ static('lib/jquery-1.7.2.min.js') }}"></script>
         <script type="text/javascript" src="{{ static('lib/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script type="text/javascript" src="{{ static('lib/bootstrap.bform.js') }}"></script>
 
         <!-- 页面脚本 -->
         {% block scripts %}{% endblock %}
@@ -21,16 +22,16 @@
     <body>
         <div class="navbar">
             <div class="navbar-inner">
-                <a class="brand" href="/">ScriptFan.com</a>
+                <a class="brand" href="/">ScriptFan</a>
                 <ul class="nav">
                     <li><a href="/">首页</a></li>
                     <li><a href="#">活动</a></li>
                     {% if current_user.is_authenticated() %}
-                        <li><a href="{{ url_for('user.profile') }}">用户资料</a></li>
+                        <li><a href="{{ url_for('user.profile') }}">我的页面</a></li>
                     {% endif %}
                 </ul>
                 <form class="navbar-search pull-left" action="">
-                    <input type="text" class="search-query span2" placeholder="Search">
+                    <input type="text" class="search-query input-large" placeholder="Search" />
                 </form>
                 <ul class="nav pull-right">
                     {% if current_user.is_authenticated() %}
@@ -50,8 +51,9 @@
             </div>
         </div>
         <div class="container">
-            <div class="content span8">{% block content %}{% endblock %}</div>
-            <div class="sidebar span4">{% block sidebar %}{% endblock %}</div>
+            <div class="alert-messages"></div>
+                {% block content %}{% endblock %}
+            </div>
             <div class="footer">{% block footer %}{% endblock %}</div>
         </div>
     </body>
