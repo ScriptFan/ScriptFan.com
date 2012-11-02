@@ -51,7 +51,10 @@ def dispatch_apps(app):
     app.register_blueprint(siteapp,  url_prefix='/')
     app.register_blueprint(userapp)
 
-    from scriptfan.utils.filters import dateformat, empty, time_passed
+    from scriptfan.utils.filters import dateformat, empty, time_passed, \
+                                        error_class, error_text
+    app.jinja_env.filters['error_class'] = error_class
+    app.jinja_env.filters['error_text'] = error_text
     app.jinja_env.filters['dateformat'] = dateformat
     app.jinja_env.filters['empty'] = empty
     app.jinja_env.filters['time_passed'] = time_passed

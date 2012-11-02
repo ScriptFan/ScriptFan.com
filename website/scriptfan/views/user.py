@@ -10,7 +10,7 @@ from flask.ext import login
 from flask.ext.login import current_user
 from scriptfan.extensions import db, oid, login_manager
 from scriptfan.models import (User, UserOpenID)
-from scriptfan.forms.user import (SignupForm, SigninForm, ProfileForm)
+from scriptfan.forms.user import (SignupForm, SigninForm, ProfileForm, EditPassForm)
 
 # import re
 
@@ -142,14 +142,21 @@ def edit():
 
 # TODO: 用户找回密码功能
 
-@userapp.route('/password')
+@userapp.route('/edit-pass', methods=['GET', 'POST'])
 @login.login_required
-def password():
-    return 'password'
+def edit_pass():
+    form = EditPassForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        current_user.user.set_password(form.password.data)
+        flash(u'用户密码已经更新', 'success')
+        return form.redirect('user.profile')
+    else:
+        form.errors and flash(u'用户密码未能更新', 'error')
+        return render_template('user/edit_pass.html', form=form)
 
 @userapp.route('/email')
 @login.login_required
-def email():
+def editemail():
     return 'email'
 
 @userapp.route('/signou/', methods=['GET'])

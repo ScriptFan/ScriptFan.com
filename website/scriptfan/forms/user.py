@@ -5,8 +5,10 @@
     定义用户相关页面所用到的表单
 """
 from flask import session
-from flask.ext import wtf
 from scriptfan.models import (get_user, User, UserInfo, UserOpenID)
+from scriptfan.forms import RedirectForm
+from flask.ext import wtf
+from flask.ext.login import current_user
 
 class SigninForm(wtf.Form):
     email = wtf.TextField('email', validators=[
@@ -90,3 +92,15 @@ class ProfileForm(wtf.Form):
         wtf.Form.__init__(self, *args, **kargs)
         self.user = None
 
+class EditPassForm(RedirectForm):
+    old_password= wtf.PasswordField(u'当前密码', validators=[wtf.Required(message=u'请提供当前密码')])
+    password = wtf.PasswordField(u'新密码', validators=[ \
+            wtf.Required(message=u'请填写新密码，不能少与5位字符'), \
+            wtf.EqualTo('confirm', message=u'两次输入的密码不一致'), \
+            wtf.Length(min=5, max=20, message=u'密码应为5到20位字符')
+    ])
+    confirm = wtf.PasswordField(u'确认密码', validators=[wtf.Required(message=u'请再次输入新密码')])
+
+    def validate_old_password(form, field):
+        if not current_user.user.check_password(field.data):
+            raise wtf.ValidationError(u'提供的原始密码不正确')

@@ -32,7 +32,7 @@
         <label class="control-label">密码</label>
         <div class="controls">
             <span class="input-large uneditable-input">●●●●●●●●</span>
-            <a href="#" class="btn btn-link">修改密码</a>
+            <a href="{{ url_for('user.edit_pass', next=url_for('user.edit')) }}" class="btn btn-link">修改密码</a>
         </div>
     </div>
 
@@ -48,7 +48,7 @@
             </div>
             <span class="help-block">设定你的个性域名，以便通过
                 <code>{{ request.url_root }}profile/yourname</code> 访问。<br />
-                <span class="label label-info">注意：域名设定后不能修改</span>
+                <span class="label label-info">注意：域名设定后不能修改</span></span>
             {% endif %}
         </div>
     </div>
@@ -111,32 +111,6 @@
             </form>
         </div>
         
-        <div class="tab-pane" id="tab-password">
-            <form action="" class="form-horizontal" id="form-email" method="post">
-                <div class="control-group">
-                    <label class="control-label">原始密码</label>
-                    <div class="controls">
-                        <input type="password" name="old_password" />
-                        <span class="help-inline">请提供原始密码</span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">新密码</label>
-                    <div class="controls">
-                        <input type="password" name="password" />
-                        <span class="help-inline">输入新密码</span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">确认新密码</label>
-                    <div class="controls">
-                        <input type="password" name="repassword" />
-                        <span class="help-inline">再次输入新密码</span>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">更改密码</button>
-                </div>
-            </div>
+
         -->
 {% endblock %}
