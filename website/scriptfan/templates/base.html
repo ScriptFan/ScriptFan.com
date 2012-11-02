@@ -1,21 +1,22 @@
 <!DOCTYPE html>
+{% import '_helpers.html' as tags %}
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{% block title %}{% endblock %} - ScriptFan.com</title>
 
         <!-- 全局样式 -->
-        <link type="text/css" rel="stylesheet" href="{{ static('lib/bootstrap/css/bootstrap.min.css') }}" />
-        <link type="text/css" rel="stylesheet" href="{{ static('css/styles.css') }}" />
+        {{ tags.style_tag('lib/bootstrap/css/bootstrap.min.css') }}
+        {{ tags.style_tag('css/styles.css') }}
 
         <!-- 页面样式 -->
         {% block styles %}{% endblock %}
 
         <!-- 全局脚本 -->
-        <script type="text/javascript" src="{{ static('lib/jquery-1.7.2.min.js') }}"></script>
-        <script type="text/javascript" src="{{ static('lib/bootstrap/js/bootstrap.min.js') }}"></script>
-        <script type="text/javascript" src="{{ static('lib/bootstrap.bform.js') }}"></script>
-        <script type="text/javascript" src="{{ static('js/application.js') }}"></script>
+        {{ tags.script_tag('lib/jquery-1.7.2.min.js') }}
+        {{ tags.script_tag('lib/bootstrap/js/bootstrap.min.js') }}
+        {{ tags.script_tag('lib/bootstrap.bform.js') }}
+        {{ tags.script_tag('js/application.js') }}
 
         <!-- 页面脚本 -->
         {% block scripts %}{% endblock %}

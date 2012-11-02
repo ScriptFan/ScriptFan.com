@@ -38,3 +38,11 @@ body > div.navbar > div.navbar-inner > div.container > div > form > input {
     margin-bottom: 20px;
     padding-bottom: 0;
 }
+
+.page-header .avatar-large {
+    margin-top: -10px;
+    margin-left: 10px;
+    width: 110px;
+    height: 110px;
+    background: #eeeeee,
+}

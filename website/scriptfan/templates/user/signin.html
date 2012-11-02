@@ -2,7 +2,7 @@
 {% block title %}会员登陆{% endblock %}
 
 {% block scripts %}
-        <script type="text/javascript" src="{{ static('lib/jquery-openid.js') }}"></script>
+{{ tags.script_tag('lib/jquery-openid.js') }}
 {% endblock %}
 
 {% block content %}
