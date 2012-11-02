@@ -28,7 +28,7 @@ body > div.navbar > div.navbar-inner > div.container > div > form > input {
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
 }
-.content .form,
+.content form,
 .content .form-actions {
     margin-bottom: 0;
 }

@@ -118,7 +118,6 @@ def edit():
                 user.info.phone_status = form.data['phone_status']
                 user.info.motoo = form.data['motoo']
                 user.info.introduction = form.data['introduction']
-                user.slug = ''
                 if form.data['slug']:
                     user.slug = form.data.get('slug')
                 return jsonify(success=True, messages=dict(success=u'用户资料更新成功'))
