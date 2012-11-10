@@ -122,7 +122,7 @@ class Topic(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255)) # 话题名称
-    intro = db.Column(db.Text) # 简要介绍
+    inro = db.Column(db.Text) # 简要介绍
     rate_count = db.Column(db.Integer, default=0) # 投票数
     followers = db.relationship(User, secondary=topic_users) # 参与者
     resources = db.relationship(Resource, secondary=topic_resources) # 话题相关资源

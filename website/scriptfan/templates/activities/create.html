@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}创建活动{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <h3>创建活动</h3>
+    </div>
+    
+    {% import 'activities/_form.html' as f %}
+    {{ f.form(form, action=url_for('activity.create')) }}
+</div>
+
+{% endblock %}

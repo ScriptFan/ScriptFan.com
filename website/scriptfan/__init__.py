@@ -47,8 +47,9 @@ def dispatch_handlers(app):
         return render_template('error.html', **d), 500
 
 def dispatch_apps(app):
-    from scriptfan.views import siteapp, userapp
+    from scriptfan.views import siteapp, userapp, activityapp
     app.register_blueprint(siteapp,  url_prefix='/')
+    app.register_blueprint(activityapp,  url_prefix='/activities')
     app.register_blueprint(userapp)
 
     from scriptfan.utils.filters import dateformat, empty, time_passed, \

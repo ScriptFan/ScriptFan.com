@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}社区活动{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <a href="{{ url_for('activity.create') }}" class="btn btn-success pull-right">发起活动</a>
+        <h3>社区活动</h3>
+    </div>
+</div>
+{% endblock %}

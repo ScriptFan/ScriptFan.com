@@ -1,0 +1,43 @@
+{% macro form(form, action=None, class="form-horizontal") -%}
+<form class="{{ class }}" action="{{ action }}" name="{{ form }}" id="form-{{ form }}" method="POST">
+    {{ form.hidden_tag() }}
+    <div class="control-group {{ form.title | error_class }}">
+        <label class="control-label">{{ form.title.label }}</label>
+        <div class="controls">
+            {{ form.title(class='input-xxlarge') }}
+            <span class="help-block">{{ form.title | error_text }}</span>
+        </div>
+    </div>
+    
+    <div class="control-group {{ form.start_time | error_class }} {{ form.end_time | error_class }}">
+        <label class="control-label">活动时间</label>
+        <div class="controls controls-row">
+            {{ form.start_time }}&nbsp;&nbsp;至&nbsp;&nbsp;{{ form.end_time }}
+            <span class="help-block">
+                {{ form.start_time | error_text }}
+                {{ form.end_time | error_text }}
+            </span>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">{{ form.address.label }}</label>
+        <div class="controls">
+            {{ form.address(class='input-xxlarge') }}
+            <span class="help-block"></span>
+        </div>
+    </div>
+    
+    <div class="control-group {{ form.content | error_class }}">
+        <label class="control-label">{{ form.content.label }}</label>
+        <div class="controls">
+            {{ form.content(class='input-xxlarge', rows='6') }}
+            <span class="help-block">{{ form.content | error_text }}</span>
+        </div>
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">发布活动</button>
+    </div>
+</form>
+{%- endmacro %}

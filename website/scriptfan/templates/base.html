@@ -27,7 +27,7 @@
                 <a class="brand" href="/">ScriptFan</a>
                 <ul class="nav">
                     <li><a href="/">首页</a></li>
-                    <li><a href="#">活动</a></li>
+                    <li><a href="{{ url_for('activity.index') }}">活动</a></li>
                     {% if current_user.is_authenticated() %}
                         <li><a href="{{ url_for('user.profile') }}">我的页面</a></li>
                     {% endif %}
