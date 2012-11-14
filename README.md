@@ -23,6 +23,7 @@ ScriptFan.com 是西安一个线下技术沙龙的官方网站程序, 沙龙的�
 
     $ git@github.com:kingheaven/ScriptFan.com.git
     $ cd ScriptFan.com
+    $ git checkout -b dev origin/dev
     $ sudo pip install -v -r requirements.txt
 
 **2. 数据库配置**
