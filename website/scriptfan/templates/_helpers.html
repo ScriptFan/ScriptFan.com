@@ -1,0 +1,7 @@
+{% macro script_tag(filename, scope=None) -%}
+<script type="text/javascript" src="{{ url_for(scope and ('%s.static' % scope) or 'static', filename=filename) }}"></script>
+{%- endmacro %}
+
+{%- macro style_tag(filename, scope=None) -%}
+<link rel="stylesheet" type="text/css" href="{{ url_for(scope and ('%s.static' % scope) or 'static', filename=filename) }}" />
+{%- endmacro %}

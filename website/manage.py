@@ -3,9 +3,11 @@
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from flask import Flask
+import logging
+logging.basicConfig(level=logging.INFO)
+
 from flaskext.script import Manager, Shell
-from scriptfan import app, db, config_app, dispatch_handlers, dispatch_apps
+from scriptfan import app, db, oid, config_app, dispatch_handlers, dispatch_apps
 
 manager = Manager(app, with_default_commands=False)
 
@@ -19,12 +21,11 @@ def runserver(config):
     config_app(app, config)
     dispatch_handlers(app)
     dispatch_apps(app)
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
 def initdb(config='scriptfan.cfg'):
     config_app(app, config)
-    from scriptfan.models import db
 
     try:
         db.drop_all()

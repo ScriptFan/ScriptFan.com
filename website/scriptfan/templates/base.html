@@ -1,57 +1,69 @@
 <!DOCTYPE html>
+{% import '_helpers.html' as tags %}
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{% block title %}{% endblock %} - ScriptFan.com</title>
 
         <!-- 全局样式 -->
-        <link type="text/css" rel="stylesheet" media="screen" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
-        <link type="text/css" rel="stylesheet" media="screen" href="{{ url_for('static', filename='css/styles.css')}}" />
+        {{ tags.style_tag('lib/bootstrap/css/bootstrap.min.css') }}
+        {{ tags.style_tag('css/styles.css') }}
 
         <!-- 页面样式 -->
         {% block styles %}{% endblock %}
 
         <!-- 全局脚本 -->
-        <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        {{ tags.script_tag('lib/jquery-1.7.2.min.js') }}
+        {{ tags.script_tag('lib/bootstrap/js/bootstrap.min.js') }}
+        {{ tags.script_tag('lib/bootstrap.bform.js') }}
+        {{ tags.script_tag('js/application.js') }}
 
         <!-- 页面脚本 -->
         {% block scripts %}{% endblock %}
     </head>
     <body>
-		<div class="navbar">
-			<div class="navbar-inner">
-				<div class="container">
-					<h1><a class="brand" href="/">ScriptFan.com</a></h1>
-					<div class="nav-collapse">
-						<ul class="nav">
-							<li class="active"><a href="/">首页</a></li>
-                            <li><a href="#">活动</a></li>
-                            {% if session.user %}
-                                <li><a href="{{ url_for('user.profile') }}">用户资料</a></li>
-                                <li><a href="{{ url_for('user.login') }}">退出</a></li>
-                            {% else %}
-                                <li><a href="{{ url_for('user.register') }}">注册</a></li>
-                                <li><a href="{{ url_for('user.login') }}">登陆</a></li>
-                            {% endif %}
-						</ul>
-					</div>
-                    <form class="navbar-search pull-left" action="">
-                        <input type="text" class="search-query span2" placeholder="Search">
-                    </form>
-                    <ul class="nav pull-right">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account<b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                            </ul>
-                        </li>
-                    </ul>
-				</div>
-			</div>
-		</div>
-		<div class="container">
-			<div class="content span8">{% block content %}{% endblock %}</div>
-			<div class="sidebar span4">{% block sidebar %}{% endblock %}</div>
-			<div class="footer">{% block footer %}{% endblock %}</div>
-		</div>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand" href="/">ScriptFan</a>
+                <ul class="nav">
+                    <li><a href="/">首页</a></li>
+                    <li><a href="{{ url_for('activity.index') }}">活动</a></li>
+                    {% if current_user.is_authenticated() %}
+                        <li><a href="{{ url_for('user.profile') }}">我的页面</a></li>
+                    {% endif %}
+                </ul>
+                <form class="navbar-search pull-left" action="">
+                    <input type="text" class="search-query input-large" placeholder="Search" />
+                </form>
+                <ul class="nav pull-right">
+                    {% if current_user.is_authenticated() %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="{{ current_user.user.get_avatar_url(16) }}" width="16" height="16" style="vertical-align:middle;" />{{ current_user.user.nickname | default('Account') }}<b class="caret"></b></a>
+
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('user.edit') }}"><i class="icon icon-user"></i> 修改资料</a></li>
+                            <li><a href="{{ url_for('user.signout') }}"><i class="icon icon-off"></i> 退出</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li><a href="{{ url_for('user.signup') }}">注册</a></li>
+                    <li><a href="{{ url_for('user.signin') }}">登陆</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="alert-messages">
+                {% for category, message in  get_flashed_messages(with_categories=true) %}
+                <div class="alert alert-{{ category | default('info') }}">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% block content %}{% endblock %}
+            <div class="footer">{% block footer %}{% endblock %}</div>
+        </div>
     </body>
 </html>

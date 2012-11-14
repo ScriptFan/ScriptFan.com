@@ -1,0 +1,32 @@
+[loggers]
+keys=root
+
+[logger_root]
+level=INFO
+handlers=console,file
+
+
+[handlers]
+keys=console,file
+
+[handler_console]
+class=StreamHandler
+level=DEBUG
+formatter=console
+args=(sys.stdout,)
+
+[handler_file]
+class=logging.handlers.TimedRotatingFileHandler
+level=DEBUG
+formatter=file
+args=('/var/log/scriptfan/scriptfan.log', 'D', 1, 30, 'utf-8')
+
+[formatters]
+keys=console,file
+
+[formatter_console]
+format=[%(levelname)s] %(message)s
+
+[formatter_file]
+format=[%(levelname)s] %(asctime)s - %(module)s.%(funcName)s() - %(message)s
+datefmt=%Y-%m-%d %H:%M:%S

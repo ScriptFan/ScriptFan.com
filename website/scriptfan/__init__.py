@@ -1,44 +1,27 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
-import time
 import logging
-from logging.handlers import RotatingFileHandler
-from flask import Flask, session, render_template, g, abort
-from extensions import *
+logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+import os
+from flask import Flask, render_template, abort, url_for
+from extensions import oid, db, login_manager
 
-# 注册openid和db
-oid.init_app(app)
-db.init_app(app)
+instance_path = os.path.abspath(os.path.dirname(__file__))
+app = Flask(__name__, instance_path=instance_path, instance_relative_config=True)
 
 def config_app(app, config):
+    logger.info('Setting up application...')
     app.config.from_pyfile(config)
     db.init_app(app)
     oid.init_app(app)
-    formatter = logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        )
-
-    file_handler = RotatingFileHandler(app.config['ERROR_LOG'],
-                                       maxBytes=100000,
-                                       backupCount=0)
-
-    file_handler.setLevel(logging.ERROR)
-    file_handler.setFormatter(formatter)
-    app.logger.addHandler(file_handler)
-
-    @app.before_request
-    def before_request():
-        g.user = None
-        if 'user' in session:
-            g.user = User.query.filter_by(id=session['user']).first()
-
+    login_manager.init_app(app)
+    
     @app.after_request
     def after_request(response):
         try:
             db.session.commit()
-        except Exception, e:
+        except Exception:
             db.session.rollback()
             abort(500)
         return response
@@ -64,11 +47,17 @@ def dispatch_handlers(app):
         return render_template('error.html', **d), 500
 
 def dispatch_apps(app):
-    from scriptfan.views import siteapp, userapp
+    from scriptfan.views import siteapp, userapp, activityapp
     app.register_blueprint(siteapp,  url_prefix='/')
-    app.register_blueprint(userapp,  url_prefix='/user')
+    app.register_blueprint(activityapp,  url_prefix='/activities')
+    app.register_blueprint(userapp)
 
-    from scriptfan.utils.filters import dateformat, empty, time_passed
+    from scriptfan.utils.filters import dateformat, empty, time_passed, \
+                                        error_class, error_text
+    app.jinja_env.filters['error_class'] = error_class
+    app.jinja_env.filters['error_text'] = error_text
     app.jinja_env.filters['dateformat'] = dateformat
     app.jinja_env.filters['empty'] = empty
     app.jinja_env.filters['time_passed'] = time_passed
+    app.jinja_env.globals['static'] = (lambda filename: \
+            url_for('static', filename=filename))
