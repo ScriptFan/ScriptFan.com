@@ -142,6 +142,7 @@ activity_resources = db.Table('activity_resources',
     db.Column('resource_id', db.Integer, db.ForeignKey('resources.id'), primary_key=True),
 )
 
+
 class Activity(db.Model):
     """
     活动表
@@ -166,7 +167,7 @@ class Activity(db.Model):
             backref=db.backref('activities', lazy='dynamic')) # 参与者
     resources = db.relationship(Resource, secondary=activity_resources, 
             backref=db.backref('activities', lazy='dynamic')) # 话题相关资源
-
+ 
 class ActivityComment(db.Model):
     """
     活动评论表

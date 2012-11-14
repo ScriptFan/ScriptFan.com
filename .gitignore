@@ -1,6 +1,7 @@
 *.pyc
 .DS_Store
 *.cfg
+*.ini
 *.log
 *.db
 /.idea
