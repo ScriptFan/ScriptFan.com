@@ -3,12 +3,12 @@
 {% block title %}创建活动{% endblock %}
 
 {% block styles %}
-{{ tags.style_tag('css/activity.css') }}
+{{ t.css('css/activity.css') }}
 {% endblock %}
 
 {% block scripts %}
-{{ tags.script_tag('http://maps.google.com/maps/api/js?v=3.exp&sensor=false&libraries=places', external=true) }}
-{{ tags.script_tag('js/activity.js') }}
+{{ t.js('http://maps.google.com/maps/api/js?v=3.exp&sensor=false&libraries=places', external=true) }}
+{{ t.js('js/activity.js') }}
 {% endblock %}
 
 {% block content %}

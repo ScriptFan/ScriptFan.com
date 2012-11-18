@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-{% import '_helpers.html' as tags %}
+{% import '_helpers.html' as t %}
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{% block title %}{% endblock %} - ScriptFan.com</title>
 
         <!-- 全局样式 -->
-        {{ tags.style_tag('lib/bootstrap/css/bootstrap.min.css') }}
-        {{ tags.style_tag('css/styles.css') }}
+        {{ t.css('lib/bootstrap/css/bootstrap.min.css') }}
+        {{ t.css('css/styles.css') }}
 
         <!-- 页面样式 -->
         {% block styles %}{% endblock %}
 
         <!-- 全局脚本 -->
-        {{ tags.script_tag('lib/jquery-1.7.2.min.js') }}
-        {{ tags.script_tag('lib/bootstrap/js/bootstrap.min.js') }}
-        {{ tags.script_tag('lib/bootstrap.bform.js') }}
-        {{ tags.script_tag('js/application.js') }}
+        {{ t.js('lib/jquery-1.7.2.min.js') }}
+        {{ t.js('lib/bootstrap/js/bootstrap.min.js') }}
+        {{ t.js('lib/bootstrap.bform.js') }}
+        {{ t.js('js/application.js') }}
 
         <!-- 页面脚本 -->
         {% block scripts %}{% endblock %}
