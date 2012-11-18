@@ -9,3 +9,4 @@ flask-principal >= 0.3
 mysql-python >= 1.2.4c1
 sqlalchemy >= 0.7
 alembic >= 0.4.0
+markdown2 >= 2.1.0
