@@ -34,8 +34,8 @@ ScriptFan.com 是西安一个线下技术沙龙的官方网站程序, 沙龙的�
 
 修改配置文件
 
-    $ cp website/scriptfan/scriptfan.cfg.sample cp website/scriptfan/scriptfan.cfg
-    $ cp website/alembic.ini.sample cp website/alembic.ini
+    $ cp website/scriptfan/scriptfan.cfg.sample website/scriptfan/scriptfan.cfg
+    $ cp website/alembic.ini.sample website/alembic.ini
 
 将 ``website/scriptfan/scriptfan.cfg`` 中的 ``SQLALCHEMY_DATABASE_URI`` 及 ``website/alembic.ini`` 中的 ``sqlalchemy.url`` 替换为你的数据库配置
 
