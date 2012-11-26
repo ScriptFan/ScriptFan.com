@@ -4,8 +4,9 @@
     ~~~~~~~~~~~~~~~~~~
     定义用户相关页面所用到的表单
 """
+
 from flask import session
-from scriptfan.models import (get_user, User, UserInfo, UserOpenID)
+from scriptfan.models import get_user, User, UserOpenID
 from scriptfan.forms import RedirectForm
 from flask.ext import wtf
 from flask.ext.login import current_user
@@ -40,6 +41,7 @@ class SigninForm(wtf.Form):
 
         return len(self.errors) == 0
 
+
 class SignupForm(wtf.Form):
     email = wtf.TextField('email', validators=[
         wtf.Required(message=u'请填写电子邮件'),
@@ -70,9 +72,9 @@ class SignupForm(wtf.Form):
         self.user = User(email=self.email.data, nickname=self.nickname.data, openids=[
             UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
         self.user.set_password(self.password.data)
-        self.user.info = UserInfo()
 
         return len(self.errors) == 0
+
 
 class ProfileForm(wtf.Form):
     nickname = wtf.TextField('nickname', validators=[wtf.Required(message=u'请填写昵称')])
@@ -91,6 +93,7 @@ class ProfileForm(wtf.Form):
     def __init__(self, *args, **kargs):
         wtf.Form.__init__(self, *args, **kargs)
         self.user = None
+
 
 class EditPassForm(RedirectForm):
     old_password= wtf.PasswordField(u'当前密码', validators=[wtf.Required(message=u'请提供当前密码')])

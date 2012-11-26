@@ -17,43 +17,43 @@ def get_user(slug=None, user_id=None, email=None):
 
     return user
 
-class UserInfo(db.Model):
-    """
-    用户信息表
-    """
-    __tablename__ = 'user_info'
-
-    id = db.Column(db.Integer, primary_key=True)
-    motoo = db.Column(db.String(255)) # 座右铭
-    introduction = db.Column(db.Text) # 个人简介
-    phone = db.Column(db.String(15)) # 手机号码
-    phone_status = db.Column(db.Integer) # 手机可见度: 0-不公开 1-公开 2-向成员公开
-    photo = db.Column(db.String(255)) # 存一张照片，既然有线下的聚会的，总得认得人才行
-
-    user = db.relationship('User', backref='info', uselist=False)
-    
-
 class User(db.Model):
-    """
-    用户表
-    修改email地址时需要经过验证
-    """
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(50), unique=True, nullable=False) # 登陆使用的
-    email_status = db.Column(db.Integer, nullable=True, default=0) # 邮箱可见度: 0-不公开 1-公开 2-向成员公开
-    nickname = db.Column(db.String(50), unique=True, nullable=False) # 昵称, 显示时用的
-    password = db.Column(db.String(50), nullable=True) # 密码
-    is_email_verified = db.Column(db.Boolean, nullable=False, default=True)
-    slug = db.Column(db.String(50), nullable=True) # 用户页面
-    created_time = db.Column(db.DateTime, nullable=False, default=datetime.now) # 用户注册时间
-    modified_time = db.Column(db.DateTime, nullable=False, default=datetime.now) # 用户更新时间
-    last_login_time = db.Column(db.DateTime) # 最后一次登陆时间
-    privilege = db.Column(db.Integer, default=3) # 权重：3-普通用户 4-管理员
-
-    user_info_id = db.Column(db.Integer, db.ForeignKey('user_info.id'), nullable=False)
-    
+    #: 用户页面的地址后缀，比如 http://scriptfan.com/profile/greatghoul 中的 greatghoul
+    # 如果要填写，不能重复，因为 slug 要能够唯一标识一个用户 
+    slug = db.Column(db.String(255), unique=True)
+    #: 用户的昵称，昵称只是用户的称呼，可能重复
+    nickname = db.Column(db.String(255), unique=True, nullable=False)
+    #: 用户的密码（经过MD5加密的）
+    password = db.Column(db.String(255))
+    #: 邮件地址，可以不填，如果填写，不能重复
+    email = db.Column(db.String(255), unique=True)
+    #: 邮件的隐私度，0为不公开，1为对会员公司，2为完全公开
+    email_privacy = db.Column(db.Integer, default=0)
+    #: 用户的联系电话，可以不填写, 但如果填写的话，不能重复
+    phone = db.Column(db.String(255), unique=True)
+    #: 电话的隐私度，参考 `email_privacy`
+    phone_privacy = db.Column(db.Integer, default=0)
+    #: 用户的照片，考虑到是线下社区，所以留张照片能够方便大家互相认识，可以不上传
+    photo = db.Column(db.String(255))
+    #: 照片的隐私度，参考 `email_privacy`
+    photo_privacy = db.Column(db.Integer, default=0)
+    #: 一句话的座右铭
+    motoo = db.Column(db.String(255))
+    #: 用户的自己介绍，会通过 markdown 转换成 html 文本
+    intro = db.Column(db.Text)
+    #: 上次登陆的时间
+    login_time = db.Column(db.DateTime)
+    #: 注册时间
+    created_time = db.Column(db.DateTime, default=datetime.now)
+    #: 上次更新资料的时间
+    updated_time = db.Column(db.DateTime, default=datetime.now)
+    #: 简单的权限控制，控制级别：3-普通用户 4-管理员 (目前就这么简单，后面再讨论）
+    privilege = db.Column(db.Integer, default=3)
+  
+    #: 用户 openid 的绑定列表
     openids = db.relationship('UserOpenID', backref=db.backref('user'))
     
     def __repr__(self):
@@ -76,18 +76,18 @@ class User(db.Model):
         return url_tpl % (md5(self.email), size, request.url_root, url_for('static', filename='images/avatars/default.png'))
 
 class UserOpenID(db.Model):
-    """
-    用户绑定OpenID的表
-    一个用户可以对应多个OpenID
-    """
+    """ OpenID绑定表 """
     __tablename__ = 'user_openids'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # openid关联的用户
-    openid = db.Column(db.String(255), nullable=False, unique=True) # 记录的 openid, 不能重复
-    provider = db.Column(db.String(50), nullable=False) # openid的提供商，比如 google 
+    #: openid 关联的用户 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    #: openid 授权的值
+    openid = db.Column(db.String(255), nullable=False, unique=True)
+    #: opendid 提供商, 例如 google
+    provider = db.Column(db.String(50), nullable=False)
 
-class Resource(db.Model):
+class Resource(db.Model): 
     """
     资源表
     汇集图片、视频、演示文稿等资源, 用于嵌入活动中
