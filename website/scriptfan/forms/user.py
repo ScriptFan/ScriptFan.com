@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+
 """
     forms/user.py
     ~~~~~~~~~~~~~~~~~~
@@ -6,74 +7,57 @@
 """
 
 from flask import session
-from scriptfan.models import get_user, User, UserOpenID
-from scriptfan.forms import RedirectForm
 from flask.ext import wtf
 from flask.ext.login import current_user
 
-class SigninForm(wtf.Form):
+from scriptfan.models import User, UserOpenID
+from scriptfan.forms import RedirectForm
+
+class SigninForm(RedirectForm):
     email = wtf.TextField('email', validators=[
         wtf.Required(message=u'请填写电子邮件'),
         wtf.Email(message=u'无效的电子邮件')])
     password = wtf.PasswordField('password', validators=[
-        wtf.Required(message=u'请填写密码'),
-        wtf.Length(min=5, max=20, message=u'密应应为5到20位字符')])
-    next = wtf.HiddenField('next')
+        wtf.Required(message=u'请填写密码')])
     remember = wtf.BooleanField('remember')
 
     openid_identifier = wtf.HiddenField('openid_identifier')
     openid_provider = wtf.HiddenField('openid_provider')
 
-    def __init__(self, *args, **kargs):
-        wtf.Form.__init__(self, *args, **kargs)
-        self.user = None
-
     def validate(self):
         # 验证邮箱是否注册
         if wtf.Form.validate(self):
-            user = get_user(email=self.email.data)
+            user = User.get_by_email(self.email.data)
             if not user:
-                self.email.errors.append(u'该邮箱尚未在本站注册')
+                self.email.errors.append(u'邮箱未注册')
             elif not user.check_password(self.password.data):
                 self.password.errors.append(u'密码错误')
-            else:
-                self.user = user
 
-        return len(self.errors) == 0
+        return not self.errors
 
 
-class SignupForm(wtf.Form):
+class SignupForm(RedirectForm):
     email = wtf.TextField('email', validators=[
         wtf.Required(message=u'请填写电子邮件'),
         wtf.Email(message=u'无效的电子邮件')])
     nickname = wtf.TextField('nickname', validators=[
-        wtf.Required(message=u'请填写昵称'),
-        wtf.Length(min=2, max=20, message=u'昵称应为2到20字符')])
+        wtf.Required(message=u'请填写昵称')])
     password = wtf.PasswordField('password', validators=[
-        wtf.Required(message=u'请填写密码'),
-        wtf.Length(min=5, max=20, message=u'密码应为5到20位字符')])
+        wtf.Required(message=u'请填写密码')])
     repassword = wtf.PasswordField('repassword', validators=[
-        wtf.Required(message=u'请填写确认密码'),
+        wtf.Required(message=u'再次填写密码'),
         wtf.EqualTo('password', message=u'两次输入的密码不一致')])
-    next = wtf.HiddenField('next')
-
-    def __init__(self, *args, **kargs):
-        wtf.Form.__init__(self, *args, **kargs)
-        self.user = None
 
     def validate(self):
-        wtf.Form.validate(self)
-
-        # 验证邮箱是否注册
         if not self.email.errors:
-            user = get_user(email=self.email.data)
+            user = User.get_by_email(self.email.data)
             user and self.email.errors.append(u'该邮箱已被注册')
 
-        self.user = User(email=self.email.data, nickname=self.nickname.data, openids=[
-            UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
-        self.user.set_password(self.password.data)
+        # self.user = User(email=self.email.data, nickname=self.nickname.data, openids=[
+        #     UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
+        # self.user.set_password(self.password.data)
 
-        return len(self.errors) == 0
+        return not self.errors
 
 
 class ProfileForm(wtf.Form):
@@ -107,3 +91,4 @@ class EditPassForm(RedirectForm):
     def validate_old_password(form, field):
         if not current_user.user.check_password(field.data):
             raise wtf.ValidationError(u'提供的原始密码不正确')
+

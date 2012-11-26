@@ -5,18 +5,6 @@ from datetime import datetime
 from scriptfan.extensions import db
 from scriptfan.utils.functions import md5
 
-def get_user(slug=None, user_id=None, email=None):
-    user = None
-    
-    if email:
-        user = User.query.filter_by(email=email).first()
-    elif slug:
-        user = User.query.filter_by(slug=slug).first()
-    elif user_id:
-        user = User.query.filter_by(id=user_id).first()
-
-    return user
-
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -64,6 +52,14 @@ class User(db.Model):
 
     def check_password(self, password):
         return self.password == md5(password)
+
+    @classmethod
+    def get_by_email(email):
+        return User.query.filter_by(email=email).first()
+
+    @classmethod
+    def get_by_slug(slug):
+        return User.query.filter_by(slug=slug).first()
 
     @property
     def url(self):
