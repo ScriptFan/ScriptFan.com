@@ -6,11 +6,10 @@
     定义用户相关页面所用到的表单
 """
 
-from flask import session
 from flask.ext import wtf
 from flask.ext.login import current_user
 
-from scriptfan.models import User, UserOpenID
+from scriptfan.models import User
 from scriptfan.forms import RedirectForm
 
 class SigninForm(RedirectForm):
@@ -42,23 +41,19 @@ class SignupForm(RedirectForm):
         wtf.Email(message=u'无效的电子邮件')])
     nickname = wtf.TextField('nickname', validators=[
         wtf.Required(message=u'请填写昵称')])
-    password = wtf.PasswordField('password', validators=[
+    password1 = wtf.PasswordField('password1', validators=[
         wtf.Required(message=u'请填写密码')])
-    repassword = wtf.PasswordField('repassword', validators=[
+    password2 = wtf.PasswordField('password2', validators=[
         wtf.Required(message=u'再次填写密码'),
-        wtf.EqualTo('password', message=u'两次输入的密码不一致')])
+        wtf.EqualTo('password1', message=u'两次输入的密码不一致')])
 
-    def validate(self):
-        if not self.email.errors:
-            user = User.get_by_email(self.email.data)
-            user and self.email.errors.append(u'该邮箱已被注册')
-
+    def validate_email(form, field):
+        if User.get_by_email(field.data):
+            raise wtf.ValidationError(u'该邮箱已被注册') 
+        print form.errors
         # self.user = User(email=self.email.data, nickname=self.nickname.data, openids=[
         #     UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
         # self.user.set_password(self.password.data)
-
-        return not self.errors
-
 
 class ProfileForm(wtf.Form):
     nickname = wtf.TextField('nickname', validators=[wtf.Required(message=u'请填写昵称')])

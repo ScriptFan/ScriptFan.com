@@ -12,31 +12,36 @@ body > div.navbar > div.navbar-inner > div.container > div > form > input {
     height:26px;
 }
 
-.container > .content {
-    -webkit-box-shadow: inset 0 1px 0 white,0 2px 5px #eee;
-    -moz-box-shadow: inset 0 1px 0 white,0 2px 5px #eee;
-    box-shadow: inset 0 1px 0 white,0 2px 5px #eee;
-    border: 1px solid #e6e6e6;
-    border-bottom-color: #d6d6d6;
-    background-color: #ffffff;
-    padding: 10px;
-    min-height: 38px;
-    border-radius: 6px;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    -moz-background-clip: padding;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-}
-.content form,
-.content .form-actions {
-    margin-bottom: 0;
+.content {
+    background-color: white;
+    padding: 20px;
+    -webkit-border-radius: 0 0 6px 6px;
+    -moz-border-radius: 0 0 6px 6px;
+    border-radius: 0 0 6px 6px;
+    -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
+    -moz-box-shadow: 0 2px 4px rgba(0,0,0,.15);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
 }
 
-.content .page-header {
-    margin-top: 0;
-    margin-bottom: 20px;
-    padding-bottom: 0;
+.form-horizontal {
+    margin-bottom: 0px;
+}
+
+.form-actions {
+    margin: auto -20px -20px -20px;
+}
+
+.page-header {
+    background-color: whiteSmoke;
+    padding: 20px 20px 10px;
+    margin: -20px -20px 20px;
+    height: 40px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 30px;
+    line-height: 1;
 }
 
 .page-header .avatar-large {

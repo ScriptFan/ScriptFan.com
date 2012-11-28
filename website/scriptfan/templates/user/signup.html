@@ -1,44 +1,44 @@
 {% extends "base.html" %}
 {% block title %}注册会员{% endblock %}
 {% block content %}
-<h1>用户注册</h1>
+<div class="content">
+    <div class="page-header">
+        <h1>{{ self.title() }}</h1>
+    </div>
 
-<form action="{{ url_for('user.signup') }}" class="form-horizontal" id="form-signup" method="post">
-    <div class="control-group {{ form.email.errors and 'error' }}">
-        <label class="control-label">邮件</label>
-        <div class="controls">
-            {{ form.email }}
-            <span class="help-inline">{{ form.email.errors | first }}</span>
+    <form action="{{ url_for('user.signup') }}" class="form-horizontal" id="form-signup" method="post">
+        <div class="control-group {{ form.email | error_class }}">
+            <label class="control-label">邮件</label>
+            <div class="controls">
+                {{ form.email }}
+                <span class="help-inline">{{ form.email | error_text }}</span>
+            </div>
         </div>
-    </div>
-    <div class="control-group {{ form.nickname.errors and 'error' }}">
-        <label class="control-label">昵称</label>
-        <div class="controls">
-            {{ form.nickname }}
-            <span class="help-inline">{{ form.nickname.errors | first }}</span>
+        <div class="control-group {{ form.nickname | error_class }}">
+            <label class="control-label">昵称</label>
+            <div class="controls">
+                {{ form.nickname }}
+                <span class="help-inline">{{ form.nickname | error_text }}</span>
+            </div>
         </div>
-    </div>
-    <div class="control-group {{ form.password.errors and 'error' }}">
-        <label class="control-label">密码</label>
-        <div class="controls">
-            {{ form.password }}
-            <span class="help-inline">{{ form.password.errors | first }}</span>
+        <div class="control-group {{ form.password1 | error_class }}">
+            <label class="control-label">密码</label>
+            <div class="controls">
+                {{ form.password1 }}
+                <span class="help-inline">{{ form.password1 | error_text }}</span>
+            </div>
         </div>
-    </div>
-    <div class="control-group {{ form.repassword.errors and 'error' }}">
-        <label class="control-label">确认密码</label>
-        <div class="controls">
-            {{ form.repassword }}
-            <span class="help-inline">{{ form.repassword.errors | first }}</span>
+        <div class="control-group {{ form.password2 | error_class }}">
+            <label class="control-label">确认密码</label>
+            <div class="controls">
+                {{ form.password2 }}
+                <span class="help-inline">{{ form.password2 | error_text }}</span>
+            </div>
         </div>
-    </div>
-    {% if session.current_openid %}
-    <div class="alert alert-info">
-        正在通过 <strong>{{ session.openid_provider }}</strong> OpenID 注册，填写密码以完成注册！
-    </div>
-    {% endif %}
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary">用户注册</button>
-    </div>
-</form>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">注册</button>
+            &nbsp;&nbsp;或者直接 <a href="#">使用Google登陆</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

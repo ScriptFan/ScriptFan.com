@@ -9,8 +9,8 @@ from flask import current_app as app
 from flask.ext import login
 from flask.ext.login import current_user
 from scriptfan.extensions import db, oid, login_manager
-from scriptfan.models import (User, UserOpenID)
-from scriptfan.forms.user import (SignupForm, SigninForm, ProfileForm, EditPassForm)
+from scriptfan.models import User, UserOpenID
+from scriptfan.forms.user import SignupForm, SigninForm, ProfileForm, EditPassForm
 
 # import re
 
@@ -79,13 +79,13 @@ def signup():
     if current_user.is_authenticated():
         return redirect(url_for('user.profile'))
     
-    app.logger.info('request.form: ' + repr(request.values))
-    form = SignupForm(request.values, csrf_enabled=False)
-    app.logger.info('>>> Signup user: ' + repr(dict(form.data, password='<MASK>')))
-
+    form = SignupForm(csrf_enabled=False)
     if form.validate_on_submit():
-        db.session.add(form.user)
-        db.session.commit()
+        user = User()
+        form.populate_obj(user)
+        user.set_password(form.password1.data)
+        db.session.add(user)
+        flash(u'注册成功', 'success')
         return redirect(url_for('user.signin'))
     else:
         return render_template('user/signup.html', form=form)
@@ -164,3 +164,4 @@ def signout():
     login.logout_user()
     del session['current_openid']
     return redirect(url_for('site.index'))
+

@@ -54,11 +54,11 @@ class User(db.Model):
         return self.password == md5(password)
 
     @classmethod
-    def get_by_email(email):
+    def get_by_email(cls, email):
         return User.query.filter_by(email=email).first()
 
     @classmethod
-    def get_by_slug(slug):
+    def get_by_slug(cls, slug):
         return User.query.filter_by(slug=slug).first()
 
     @property
