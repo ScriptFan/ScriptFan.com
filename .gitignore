@@ -5,3 +5,4 @@
 *.log
 *.db
 /.idea
+venv/

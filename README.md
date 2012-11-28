@@ -16,15 +16,17 @@ ScriptFan.com 是西安一个线下技术沙龙的官方网站程序, 沙龙的�
 
 ## 贡献代码，从这里开始
 
-> 欢迎熟悉 Python, Flask,SqlAlchemy 的朋友一起参与开发 ，数据库的 Migration 工具采用 SqlAlchemy 作者开发的 [alembic](http://alembic.readthedocs.org/en/latest/tutorial.html#editing-the-ini-file), 方便在开发过程中持续的改进数据库结构, 有兴趣参与开发的同学需要先学习下.  
-> 申请开发权限，请联系 david.scriptfan#gmail.com  
+> 欢迎熟悉 Python, Flask, SqlAlchemy 的朋友一起参与开发 ，数据库的 Migration 工具采用 SqlAlchemy 作者开发的 [alembic](http://alembic.readthedocs.org/en/latest/tutorial.html#editing-the-ini-file), 方便在开发过程中持续的改进数据库结构, 有兴趣参与开发的同学需要先学习下.
+> 申请开发权限，请联系 david.scriptfan#gmail.com
 
 **1. 下载项目并安装依赖库**
 
     $ git@github.com:kingheaven/ScriptFan.com.git
     $ cd ScriptFan.com
     $ git checkout -b dev origin/dev
-    $ sudo pip install -v -r requirements.txt
+	$ virtualenv venv
+	$ . venv/bin/activate
+    (venv) $ pip install -v -r requirements.txt
 
 **2. 数据库配置**
 
@@ -32,8 +34,8 @@ ScriptFan.com 是西安一个线下技术沙龙的官方网站程序, 沙龙的�
 
 修改配置文件
 
-    $ cp website/scriptfan/scriptfan.cfg.sample cp website/scriptfan/scriptfan.cfg
-    $ cp website/alembic.ini.sample cp website/alembic.ini
+    $ cp website/scriptfan/scriptfan.cfg.sample website/scriptfan/scriptfan.cfg
+    $ cp website/alembic.ini.sample website/alembic.ini
 
 将 ``website/scriptfan/scriptfan.cfg`` 中的 ``SQLALCHEMY_DATABASE_URI`` 及 ``website/alembic.ini`` 中的 ``sqlalchemy.url`` 替换为你的数据库配置
 
