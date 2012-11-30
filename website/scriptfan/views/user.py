@@ -12,8 +12,6 @@ from scriptfan.extensions import db, oid, login_manager
 from scriptfan.models import User, UserOpenID
 from scriptfan.forms.user import SignupForm, SigninForm, ProfileForm, EditPassForm
 
-# import re
-
 userapp = Blueprint("user", __name__)
 
 class Anonymous(login.AnonymousUser):
@@ -36,27 +34,19 @@ def load_user(user_id):
     return user and LoginUser(user) or None
 
 @userapp.route('/signin/', methods=['GET', 'POST'])
-@oid.loginhandler
 def signin():
     if current_user.is_authenticated():
         return redirect(url_for('user.profile'))
 
-    form = SigninForm(csrf_enabled=False, next=oid.get_next_url())
-    app.logger.info('>>> Signin user: ' + repr(dict(form.data, password='<MASK>')))
+    form = SigninForm(csrf_enabled=False)
+    app.logger.info('* Signin user: %s', form.email.data)
     
-    if form.is_submitted() and form.openid_identifier.data:
-        session['openid_provider'] = form.openid_provider.data
-        session['openid_identifier'] = form.openid_identifier.data
-        return oid.try_login(form.openid_identifier.data, ask_for=['email', 'nickname', 'fullname'])
-
     if form.validate_on_submit():
         login.login_user(LoginUser(form.user), remember=form.remember)
-        flash(u'登陆成功')
-        # 如果指定了 next ，跳转到 next 页面
-        # 如果用户注册了 slug ，则跳转到 slug  的profile 页面，否则跳转到 userid 的 profile 页面
-        return redirect(form.next.data or url_for('user.profile'))
-    else:
-        return render_template('user/signin.html', form=form, openid_error=oid.fetch_error())
+        flash(u'登陆成功', 'success')
+        return form.redirect('user.profile')
+    return render_template('user/signin.html', form=form)
+
 
 @oid.after_login
 def create_or_login(resp):
@@ -80,11 +70,13 @@ def signup():
         return redirect(url_for('user.profile'))
     
     form = SignupForm(csrf_enabled=False)
+    app.logger.info(u' * Signup with email: %(email)s, nickname: %(nickname)s', form.data)
     if form.validate_on_submit():
         user = User()
         form.populate_obj(user)
         user.set_password(form.password1.data)
         db.session.add(user)
+        app.logger.info(u'New user added: %s', user)
         flash(u'注册成功', 'success')
         return redirect(url_for('user.signin'))
     else:
@@ -158,10 +150,11 @@ def edit_pass():
 def editemail():
     return 'email'
 
-@userapp.route('/signou/', methods=['GET'])
+@userapp.route('/signout/', methods=['GET'])
 @login.login_required
 def signout():
     login.logout_user()
-    del session['current_openid']
+    if 'current_openid' in session:
+        del session['current_openid']
     return redirect(url_for('site.index'))
 

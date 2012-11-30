@@ -1,5 +1,11 @@
 {% extends "base.html" %}
+
 {% block title %}注册会员{% endblock %}
+
+{% block scripts %}
+{{ t.js('lib/jquery-openid.js') }}
+{% endblock %}
+
 {% block content %}
 <div class="content">
     <div class="page-header">
@@ -37,8 +43,9 @@
         </div>
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">注册</button>
-            &nbsp;&nbsp;或者直接 <a href="#">使用Google登陆</a>
+            &nbsp;&nbsp;或者直接 <a href="javascript:void(0);" rel="openid" data-provider="google">使用Google登陆</a>
         </div>
-    </form>
-</div>
+    </form><!-- #form-signup -->
+</div><!-- .content -->
 {% endblock %}
+

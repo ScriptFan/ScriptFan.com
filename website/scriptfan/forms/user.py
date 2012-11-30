@@ -24,14 +24,16 @@ class SigninForm(RedirectForm):
     openid_provider = wtf.HiddenField('openid_provider')
 
     def validate(self):
-        # 验证邮箱是否注册
-        if wtf.Form.validate(self):
-            user = User.get_by_email(self.email.data)
-            if not user:
-                self.email.errors.append(u'邮箱未注册')
-            elif not user.check_password(self.password.data):
-                self.password.errors.append(u'密码错误')
+        if self.errors: return False
 
+        user = User.get_by_email(self.email.data)
+        if not user:
+            self.email.errors.append(u'该邮箱未注册') 
+        elif not user.check_password(self.password.data):
+            self.password.errors.append(u'密码错误')
+        else:
+            self.user = user
+        
         return not self.errors
 
 
@@ -50,7 +52,6 @@ class SignupForm(RedirectForm):
     def validate_email(form, field):
         if User.get_by_email(field.data):
             raise wtf.ValidationError(u'该邮箱已被注册') 
-        print form.errors
         # self.user = User(email=self.email.data, nickname=self.nickname.data, openids=[
         #     UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
         # self.user.set_password(self.password.data)

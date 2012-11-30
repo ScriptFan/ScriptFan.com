@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block title %}会员登陆{% endblock %}
 
 {% block scripts %}
@@ -6,34 +7,35 @@
 {% endblock %}
 
 {% block content %}
-<h1>用户登陆</h1>
-<form action="{{ url_for('user.signin') }}" class="form-horizontal" id="form-signin" method="post">
-    {{ form.hidden_tag() }}
-    <div class="control-group {{ form.email.errors and 'error' }}">
-        <label class="control-label">邮件</label>
-        <div class="controls">
-            {{ form.email }}
-            <span class="help-inline">{{ form.email.errors | first }}</span>
-        </div>
+<div class="content">
+    <div class="page-header">
+        <h1>{{ self.title() }}</h1>
     </div>
-    <div class="control-group {{ form.password.errors and 'error' }}">
-        <label class="control-label">密码</label>
-        <div class="controls">
-            {{ form.password }}
-            <span class="help-inline">{{ form.password.errors | first }}</span>
+    
+    <form action="{{ url_for('user.signin') }}" class="form-horizontal" id="form-signin" method="post">
+        {{ form.hidden_tag() }}
+        <div class="control-group {{ form.email | error_class }}">
+            <label class="control-label">邮件</label>
+            <div class="controls">
+                {{ form.email }}
+                <span class="help-inline">{{ form.email | error_text }}</span>
+            </div>
         </div>
-    </div>
-    {% if error %}
-        <div class="alert alert-error">
-            <strong>错误：</strong> {{ error }}
+        <div class="control-group {{ form.password | error_class }}">
+            <label class="control-label">密码</label>
+            <div class="controls">
+                {{ form.password }}
+                <span class="help-inline">{{ form.password | error_text }}</span>
+            </div>
         </div>
-    {% endif %}
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary">用户登陆</button>&nbsp;&nbsp;
-        <label class="checkbox inline">
-            {{ form.remember }} 记住我的登陆信息
-        </label>
-        <div>使用 <a href="javascript:void(0);" rel="openid" data-provider="google">Gmail帐户</a> 登陆</div>
-    </div>
-</form>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">用户登陆</button>&nbsp;&nbsp;
+            <label class="checkbox inline">
+                {{ form.remember }} 记住我的登陆信息
+            </label>
+            <div>使用 <a href="javascript:void(0);" rel="openid" data-provider="google">Gmail帐户</a> 登陆</div>
+        </div>
+    </form><!-- #form-signin -->
+</div><!-- .content -->
 {% endblock %}
+

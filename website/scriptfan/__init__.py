@@ -11,6 +11,7 @@ instance_path = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__, instance_path=instance_path, instance_relative_config=True)
 
 def config_app(app, config):
+    app.debug_log_format = '[%(levelname)s] %(message)s'
     logger.info('Setting up application...')
     app.config.from_pyfile(config)
     db.init_app(app)

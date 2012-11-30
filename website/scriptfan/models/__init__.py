@@ -45,7 +45,7 @@ class User(db.Model):
     openids = db.relationship('UserOpenID', backref=db.backref('user'))
     
     def __repr__(self):
-        return "<User (%s|%s)>" % (self.nickname, self.email)
+        return u'<User (%s|%s)>' % (self.nickname, self.email)
 
     def set_password(self, password):
         self.password = md5(password)
