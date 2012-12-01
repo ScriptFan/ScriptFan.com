@@ -97,8 +97,8 @@ def profile(slug_or_id=None):
 def edit():
     form = ProfileForm(csrf_enabled=False)
     if form.validate_on_submit():
-        app.logger.info(' * Updating user information...')
-        app.logger.info(form.data)
+        app.logger.info(u'* Updating user information...')
+        app.logger.info(u'Form data: %s', repr(form.data))
         if not form.data['slug']:
             form.slug.data = current_user.user.slug
         form.populate_obj(current_user.user)
