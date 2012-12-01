@@ -38,10 +38,10 @@
                 <ul class="nav pull-right">
                     {% if current_user.is_authenticated() %}
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="{{ current_user.user.get_avatar_url(16) }}" width="16" height="16" style="vertical-align:middle;" />{{ current_user.user.nickname | default('Account') }}<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ current_user.user.get_avatar_url(16) }}" width="16" height="16" style="vertical-align:middle;" /> {{ current_user.user.nickname | default('Account') }} <b class="caret"></b></a>
 
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('user.edit') }}"><i class="icon icon-user"></i> 修改资料</a></li>
+                            <li><a href="{{ url_for('user.general') }}"><i class="icon icon-user"></i> 修改资料</a></li>
                             <li><a href="{{ url_for('user.signout') }}"><i class="icon icon-off"></i> 退出</a></li>
                         </ul>
                     </li>

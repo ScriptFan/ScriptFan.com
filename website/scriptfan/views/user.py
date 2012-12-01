@@ -7,7 +7,7 @@ from flask.ext import login
 from flask.ext.login import current_user
 from scriptfan.extensions import db, oid, login_manager
 from scriptfan.models import User, UserOpenID
-from scriptfan.forms.user import SignupForm, SigninForm, ProfileForm, EditPassForm
+from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, EditPasswordForm
 
 userapp = Blueprint("user", __name__)
 
@@ -92,10 +92,10 @@ def profile(slug_or_id=None):
     else:
         return render_template('user/profile.html', user=current_user.user)
 
-@userapp.route('/userinfo/', methods=['GET', 'POST'])
+@userapp.route('/general', methods=['GET', 'POST'])
 @login.login_required
-def edit():
-    form = ProfileForm(csrf_enabled=False)
+def general():
+    form = EditProfileForm(csrf_enabled=False)
     if form.validate_on_submit():
         app.logger.info(u'* Updating user information...')
         app.logger.info(u'Form data: %s', repr(form.data))
@@ -103,28 +103,27 @@ def edit():
             form.slug.data = current_user.user.slug
         form.populate_obj(current_user.user)
         flash(u'用户资料已经更新', 'success')
-        return form.redirect('user.edit')
+        return form.redirect('user.general')
     
     # 如果是编辑用户信息，则使用用户当前信息填充表单
     form.process(obj=current_user.user)
-    return render_template('user/edit.html', form=form)
+    return render_template('user/general.html', form=form)
 
     # TODO 处理更新用户资料的请求
     # TODO 用户照片上传
 
 # TODO: 用户找回密码功能
 
-@userapp.route('/edit-pass', methods=['GET', 'POST'])
+@userapp.route('/password', methods=['GET', 'POST'])
 @login.login_required
-def edit_pass():
-    form = EditPassForm(csrf_enabled=False)
+def password():
+    form = EditPasswordForm(csrf_enabled=False)
     if form.validate_on_submit():
         current_user.user.set_password(form.password.data)
         flash(u'用户密码已经更新', 'success')
-        return form.redirect('user.profile')
-    else:
-        form.errors and flash(u'用户密码未能更新', 'error')
-        return render_template('user/edit_pass.html', form=form)
+        return form.redirect('user.general')
+    form.errors and flash(u'用户密码未能更新', 'error')
+    return render_template('user/password.html', form=form)
 
 @userapp.route('/email')
 @login.login_required

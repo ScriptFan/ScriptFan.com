@@ -1,9 +1,9 @@
 #-*- coding: utf-8 -*-
 
 """
-    forms/user.py
-    ~~~~~~~~~~~~~~~~~~
-    定义用户相关页面所用到的表单
+    scriptfan/forms/user.py
+    ~~~~~~~~~~~~~~~~~~~~~~~
+    定义用户相关页面所用到的表单, 包括注册、登陆、基本资料修改、密码修改、邮箱修改等。
 """
 
 from flask.ext import wtf
@@ -24,7 +24,7 @@ class SigninForm(RedirectForm):
     openid_provider = wtf.HiddenField('openid_provider')
 
     def validate(self):
-        if self.errors: return False
+        if not super(RedirectForm, self).validate(): return False
 
         user = User.get_by_email(self.email.data)
         if not user:
@@ -56,7 +56,7 @@ class SignupForm(RedirectForm):
         #     UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
         # self.user.set_password(self.password.data)
 
-class ProfileForm(RedirectForm):
+class EditProfileForm(RedirectForm):
     nickname = wtf.TextField('nickname', validators=[wtf.Required(message=u'请填写昵称')])
     # FIXME: 验证 slug 是否已经被占用
     slug = wtf.TextField('slug', validators=[
@@ -71,14 +71,14 @@ class ProfileForm(RedirectForm):
     intro = wtf.TextAreaField('introduction', validators=[
         wtf.Length(min=0, max=3000, message=u'个人介绍最多为3000个字')])
 
-class EditPassForm(RedirectForm):
-    old_password= wtf.PasswordField(u'当前密码', validators=[wtf.Required(message=u'请提供当前密码')])
-    password = wtf.PasswordField(u'新密码', validators=[ \
-            wtf.Required(message=u'请填写新密码，不能少与5位字符'), \
-            wtf.EqualTo('confirm', message=u'两次输入的密码不一致'), \
-            wtf.Length(min=5, max=20, message=u'密码应为5到20位字符')
-    ])
-    confirm = wtf.PasswordField(u'确认密码', validators=[wtf.Required(message=u'请再次输入新密码')])
+class EditPasswordForm(RedirectForm):
+    old_password = wtf.PasswordField(u'当前密码', validators=[wtf.Required(message=u'请提供当前密码')])
+    password = wtf.PasswordField(u'新密码', validators=[
+            wtf.Required(message=u'请填写新密码，不能少与5位字符'),
+            wtf.Length(min=5, max=20, message=u'密码应为5到20位字符')])
+    confirm = wtf.PasswordField(u'确认密码', validators=[
+        wtf.Required(message=u'请再次输入新密码'),
+        wtf.EqualTo('password', message=u'两次输入的密码不一致')])
 
     def validate_old_password(form, field):
         if not current_user.user.check_password(field.data):

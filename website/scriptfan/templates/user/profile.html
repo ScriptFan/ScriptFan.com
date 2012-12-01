@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "layout.html" %}
 
 {% block title %}{{ user.nickname }}{% endblock %}
 
@@ -9,9 +9,9 @@
 {% block content %}
 <div class="content">
     <div class="page-header">
-        <h3>{{ user.nickname }} 的资料
+        <h1>{{ user.nickname }} 的资料
             <img src="{{ user.get_avatar_url(110) }}" class="pull-right img-polaroid avatar-large" />
-        </h3>
+        </h1>
     </div>
 
     <div class="well well-small section section-userinfo">
