@@ -62,7 +62,7 @@ class ProfileForm(wtf.Form):
         wtf.Regexp(regex=r'^([a-zA-Z][a-zA-Z0-9_-]{4,23})?$', message=u'长度应为5~24位，仅能包含数字、英文字母及下划线(_)和减号(-)，并且需要以字母开头')])
     phone = wtf.TextField('phone', validators=[
         wtf.Regexp(regex=r'^(1\d{10})?$', message=u'请输入有效的手机号码')])
-    phone_status = wtf.RadioField('phone_status', choices=[
+    phone_privacy = wtf.RadioField('phone_privacy', choices=[
         ('0', u'不公开'), ('1', u'公开'), ('2', u'仅向会员公开')], default='0')
     # photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
     motoo = wtf.TextAreaField('motoo', validators=[

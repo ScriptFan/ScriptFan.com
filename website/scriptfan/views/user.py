@@ -106,10 +106,10 @@ def edit():
             try:
                 user = current_user.user
                 user.nickname = form.data['nickname']
-                user.info.phone = form.data['phone']
-                user.info.phone_status = form.data['phone_status']
-                user.info.motoo = form.data['motoo']
-                user.info.introduction = form.data['introduction']
+                user.phone = form.data['phone']
+                user.phone_privacy = form.data['phone_privacy']
+                user.motoo = form.data['motoo']
+                user.intro = form.data['introduction']
                 if form.data['slug']:
                     user.slug = form.data.get('slug')
                 return jsonify(success=True, messages=dict(success=u'用户资料更新成功'))
@@ -123,9 +123,11 @@ def edit():
         user = current_user.user
         form.nickname.data = user.nickname
         form.slug.data = user.slug
-        form.phone.data = user.info.phone
-        form.motoo.data = user.info.motoo
-        form.introduction.data = user.info.introduction
+        form.phone.data = user.phone
+        form.phone_privacy.data = unicode(user.phone_privacy)
+        form.motoo.data = user.motoo
+        form.introduction.data = user.intro
+        form.user_email = user.email
         return render_template('user/edit.html', form=form)
 
     # TODO 处理更新用户资料的请求

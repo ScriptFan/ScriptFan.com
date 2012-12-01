@@ -24,7 +24,7 @@
         <div class="control-group">
             <label class="control-label">电子邮箱</label>
             <div class="controls">
-                <span class="input-large uneditable-input">greatghoul@gmail.com</span>
+                <span class="input-large uneditable-input">{{ form.user_email }}</span>
                 <a href="#" class="btn btn-link">修改邮箱</a>
             </div>
         </div>
@@ -64,7 +64,7 @@
 
         <div class="control-group">
             <div class="controls">
-                {% for radio in form.phone_status %}
+                {% for radio in form.phone_privacy %}
                 <label class="radio inline">
                     {{ radio }} {{ radio.label }}
                 </label>

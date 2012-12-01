@@ -17,16 +17,16 @@
     <div class="well well-small section section-userinfo">
         <div>电子邮件：<a href="mailto:{{ user.email }}">{{ user.email }}</a></div>
         {% if user.id == current_user.user.id %}
-            <div>手机号码：{{ user.info.phone }}</div>
+            <div>手机号码：{{ user.phone }}</div>
         {% elif not current_user.is_anonymous() %}
-            {% if user.info.phone_status in (1, 2) %}
-                <div>手机号码：{{ user.info.phone }}</div>
+            {% if user.phone_privacy in (1, 2) %}
+                <div>手机号码：{{ user.phone }}</div>
             {% endif %}
-        {% elif user.info.phone_status == 1 %}
-            <div>手机号码：{{ user.info.phone }}</div>
+        {% elif user.phone_privacy == 1 %}
+            <div>手机号码：{{ user.phone }}</div>
         {% endif %}
-        <div>座右铭：<span>{{ user.info.motoo }}</span></div>
-        <div>个人介绍：<span>{{ user.info.introduction }}</span></div>
+        <div>座右铭：<span>{{ user.motoo }}</span></div>
+        <div>个人介绍：<span>{{ user.intro }}</span></div>
         <div>注册日期：<span>{{ user.created_time | dateformat }}</span></div>
     </div>
 </div>
