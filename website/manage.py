@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 import logging
 logging.basicConfig(level=logging.INFO)
 
-from flaskext.script import Manager, Shell
+from flask.ext.script import Manager, Shell
 from scriptfan import app, db, oid, config_app, dispatch_handlers, dispatch_apps
 
 manager = Manager(app, with_default_commands=False)

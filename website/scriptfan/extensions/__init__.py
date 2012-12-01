@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from flaskext.openid import OpenID
+from flask.ext.openid import OpenID
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 
