@@ -1,4 +1,4 @@
-flask >= 0.8
+flask >= 0.9
 flask-script >= 0.3.3
 flask-sqlalchemy >= 0.16
 flask-login >= 0.1.3
