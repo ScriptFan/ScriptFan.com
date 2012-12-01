@@ -8,16 +8,16 @@
 {% block content %}
 <div class="content">
     <div class="page-header">
-        <h3>修改用户资料</h3>
+        <h1>修改用户资料</h1>
     </div>
 
-    <form id="form-user-edit" class="bform form-horizontal" action="{{ url_for('user.edit') }}" method="post">
+    <form id="form-user-edit" class="form-horizontal" action="{{ url_for('user.edit') }}" method="post">
         {{ form.hidden_tag() }}
-        <div class="control-group">
+        <div class="control-group {{ form.nickname | error_class }}">
             <label class="control-label">昵称</label>
             <div class="controls">
                 {{ form.nickname }}
-                <span class="help-inline"></span>
+                <span class="help-inline">{{ form.nickname | error_text }}</span>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="control-group">
+        <div class="control-group {{ form.slug | error_text }}">
             <label class="control-label">个性域名</label>
             <div class="controls">
                 {% if form.slug.data %}
@@ -46,6 +46,7 @@
                 {% else %}
                 <div class="input-prepend">
                     {{ form.slug(placeholder='user-slug') }}
+                    <label class="help-inline">{{ form.slug | error_text }}</span>
                 </div>
             <span class="help-block">设定你的个性域名，以便通过
                 <code>{{ request.url_root }}profile/yourname</code> 访问。<br />
@@ -54,11 +55,11 @@
             </div>
         </div>
 
-        <div class="control-group" style="margin-bottom: 0;">
+        <div class="control-group {{ form.phone | error_class }}" style="margin-bottom: 0;">
             <label class="control-label">手机号码</label>
             <div class="controls">
                 {{ form.phone }}
-                <span class="help-inline"></span>
+                <span class="help-inline">{{ form.phone | error_text }}</span>
             </div>
         </div>
 
@@ -83,7 +84,7 @@
         <div class="control-group">
             <label class="control-label">个人介绍</label>
             <div class="controls">
-                {{ form.introduction }}
+                {{ form.intro }}
                 <span class="help-block"></span>
             </div>
         </div>

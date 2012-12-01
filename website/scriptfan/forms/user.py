@@ -56,8 +56,9 @@ class SignupForm(RedirectForm):
         #     UserOpenID(provider=session['openid_provider'], openid=session['current_openid'])])
         # self.user.set_password(self.password.data)
 
-class ProfileForm(wtf.Form):
+class ProfileForm(RedirectForm):
     nickname = wtf.TextField('nickname', validators=[wtf.Required(message=u'请填写昵称')])
+    # FIXME: 验证 slug 是否已经被占用
     slug = wtf.TextField('slug', validators=[
         wtf.Regexp(regex=r'^([a-zA-Z][a-zA-Z0-9_-]{4,23})?$', message=u'长度应为5~24位，仅能包含数字、英文字母及下划线(_)和减号(-)，并且需要以字母开头')])
     phone = wtf.TextField('phone', validators=[
@@ -67,13 +68,8 @@ class ProfileForm(wtf.Form):
     # photo = db.Column(db.String(255), nullable=True) # 存一张照片，既然有线下的聚会的，总得认得人才行
     motoo = wtf.TextAreaField('motoo', validators=[
         wtf.Length(min=0, max=255, message=u'座右铭最多为255个字符')])
-    introduction = wtf.TextAreaField('introduction', validators=[
+    intro = wtf.TextAreaField('introduction', validators=[
         wtf.Length(min=0, max=3000, message=u'个人介绍最多为3000个字')])
-
-    def __init__(self, *args, **kargs):
-        wtf.Form.__init__(self, *args, **kargs)
-        self.user = None
-
 
 class EditPassForm(RedirectForm):
     old_password= wtf.PasswordField(u'当前密码', validators=[wtf.Required(message=u'请提供当前密码')])
