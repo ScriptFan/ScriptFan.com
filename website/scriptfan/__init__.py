@@ -50,8 +50,8 @@ def dispatch_handlers(app):
 def dispatch_apps(app):
     from scriptfan.views import siteapp, userapp, activityapp
     app.register_blueprint(siteapp,  url_prefix='/')
-    app.register_blueprint(activityapp,  url_prefix='/activities')
-    app.register_blueprint(userapp)
+    app.register_blueprint(userapp, url_prefix='/user')
+    app.register_blueprint(activityapp,  url_prefix='/event')
 
     from scriptfan.utils.filters import dateformat, empty, time_passed, \
                                         error_class, error_text, markdown

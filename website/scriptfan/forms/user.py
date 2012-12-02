@@ -8,7 +8,7 @@
 
 from flask.ext import wtf
 from flask.ext.login import current_user
-
+# from flask.ext.openid import 
 from scriptfan.models import User
 from scriptfan.forms import RedirectForm
 
@@ -49,6 +49,9 @@ class SignupForm(RedirectForm):
         wtf.Required(message=u'再次填写密码'),
         wtf.EqualTo('password1', message=u'两次输入的密码不一致')])
 
+    openid_identifier = wtf.HiddenField('openid_identifier')
+    openid_provider = wtf.HiddenField('openid_provider')
+    
     def validate_email(form, field):
         if User.get_by_email(field.data):
             raise wtf.ValidationError(u'该邮箱已被注册') 

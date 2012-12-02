@@ -2,10 +2,6 @@
 
 {% block title %}会员登陆{% endblock %}
 
-{% block scripts %}
-{{ t.js('lib/jquery-openid.js') }}
-{% endblock %}
-
 {% block content %}
 <div class="content">
     <div class="page-header">
@@ -33,7 +29,7 @@
             <label class="checkbox inline">
                 {{ form.remember }} 记住我的登陆信息
             </label>
-            <div>使用 <a href="javascript:void(0);" rel="openid" data-provider="google">Gmail帐户</a> 登陆</div>
+            <div>使用 <a href="{{ url_for('user.openid', provider='google') }}">Gmail帐户</a> 登陆</div>
         </div>
     </form><!-- #form-signin -->
 </div><!-- .content -->
