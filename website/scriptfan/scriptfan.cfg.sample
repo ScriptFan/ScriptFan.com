@@ -12,7 +12,7 @@ SECRET_KEY='youshouldnotknowthis'
 PAGE_SIZE=20
 
 # database settings
-SQLALCHEMY_DATABASE_URI='mysql://root:root@localhost/scriptfan_dev?charset=utf8'
+SQLALCHEMY_DATABASE_URI='sqlite:///db.sqlite'
 SQLALCHEMY_ECHO=False
 
 # LOGGING CONFIG
