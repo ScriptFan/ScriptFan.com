@@ -25,8 +25,8 @@
             <div class="navbar-inner">
                 <a class="brand" href="/">ScriptFan</a>
                 <ul class="nav">
-                    <li><a href="/">首页</a></li>
-                    <li><a href="{{ url_for('activity.index') }}">活动</a></li>
+                    <li><a href="/">{{ _("Index") }}</a></li>
+                    <li><a href="{{ url_for('activity.index') }}">{{ _("Activities") }}</a></li>
                     {% if current_user.is_authenticated() %}
                         <li><a href="{{ url_for('user.profile') }}">我的页面</a></li>
                     {% endif %}
@@ -45,8 +45,8 @@
                         </ul>
                     </li>
                     {% else %}
-                    <li><a href="{{ url_for('user.signup') }}">注册</a></li>
-                    <li><a href="{{ url_for('user.signin') }}">登陆</a></li>
+                    <li><a href="{{ url_for('user.signup') }}">{{ _("Signup") }}</a></li>
+                    <li><a href="{{ url_for('user.signin') }}">{{ _("Sign In") }}</a></li>
                     {% endif %}
                 </ul>
             </div>

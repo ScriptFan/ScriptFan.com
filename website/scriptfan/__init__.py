@@ -1,11 +1,10 @@
-#!/usr/bin/env python
 #-*-coding:utf-8-*-
 import logging
 logger = logging.getLogger(__name__)
 
 import os
 from flask import Flask, render_template, abort, url_for
-from extensions import oid, db, login_manager
+from extensions import oid, db, login_manager, babel
 
 instance_path = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__, instance_path=instance_path, instance_relative_config=True)
@@ -17,7 +16,8 @@ def config_app(app, config):
     db.init_app(app)
     oid.init_app(app)
     login_manager.init_app(app)
-    
+    babel.init_app(app)
+
     @app.after_request
     def after_request(response):
         try:

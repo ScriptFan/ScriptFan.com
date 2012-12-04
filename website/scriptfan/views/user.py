@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*-coding:utf-8-*-
 from datetime import datetime
 from flask import Blueprint, session, url_for, redirect, abort
