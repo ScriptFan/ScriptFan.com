@@ -69,8 +69,8 @@ class EditProfileForm(RedirectForm):
 
 
 class EditPasswordForm(RedirectForm):
-    old_password = wtf.PasswordField(u'当前密码', validators=[
-        wtf.Required(message=u'请提供当前密码')])
+    old_password = wtf.PasswordField(u'当前密码', validators=[])
+        #wtf.Required(message=u'请提供当前密码')])
     password = wtf.PasswordField(u'新密码', validators=[
         wtf.Required(message=u'请填写新密码，不能少与5位字符'),
         wtf.Length(min=5, max=20, message=u'密码应为5到20位字符')])
@@ -79,6 +79,7 @@ class EditPasswordForm(RedirectForm):
         wtf.EqualTo('password', message=u'两次输入的密码不一致')])
 
     def validate_old_password(form, field):
-        if not current_user.user.check_password(field.data):
+        # 当用户密码为空时，跳过原始密码验证，是否存在安全隐患？
+        if current_user.user.password and (not current_user.user.check_password(field.data)):
             raise wtf.ValidationError(u'提供的原始密码不正确')
 
