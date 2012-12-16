@@ -44,6 +44,7 @@ def login_user(user, remember=False):
 @oid.loginhandler
 def openid(provider):
     # 如果用户已经登陆，跳转到用户资料页面
+    # FIXME: 使用OpenID登陆，会发生循环跳转
     if current_user.is_authenticated():
         return redirect(url_for('user.profile'))
 

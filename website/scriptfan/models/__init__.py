@@ -97,32 +97,32 @@ class Resource(db.Model):
     modified_time = db.Column(db.DateTime)
 
 # 活动相关资源
-topic_resources = db.Table('topic_resources',
-    db.Column('topic_id', db.Integer, db.ForeignKey('topics.id'), primary_key=True),
-    db.Column('resource_id', db.Integer, db.ForeignKey('resources.id'), primary_key=True),
-)
+# topic_resources = db.Table('topic_resources',
+#     db.Column('topic_id', db.Integer, db.ForeignKey('topics.id'), primary_key=True),
+#     db.Column('resource_id', db.Integer, db.ForeignKey('resources.id'), primary_key=True),
+# )
 
 # 用户参与投票的跟踪表（活动关闭后可清除此表数据）
-topic_users = db.Table('topic_users',
-    db.Column('topic_id', db.Integer, db.ForeignKey('topics.id'), primary_key=True),
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-)
+# topic_users = db.Table('topic_users',
+#     db.Column('topic_id', db.Integer, db.ForeignKey('topics.id'), primary_key=True),
+#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+# )
 
-class Topic(db.Model):
-    """
-    活动的话题
-    """
-    __tablename__ = 'topics'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255)) # 话题名称
-    inro = db.Column(db.Text) # 简要介绍
-    rate_count = db.Column(db.Integer, default=0) # 投票数
-    followers = db.relationship(User, secondary=topic_users) # 参与者
-    resources = db.relationship(Resource, secondary=topic_resources) # 话题相关资源
-
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    user = db.relationship(User, backref='topics', lazy='dynamic')
+# class Topic(db.Model):
+#     """
+#     活动的话题
+#     """
+#     __tablename__ = 'topics'
+#     
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(255)) # 话题名称
+#     inro = db.Column(db.Text) # 简要介绍
+#     rate_count = db.Column(db.Integer, default=0) # 投票数
+#     followers = db.relationship(User, secondary=topic_users) # 参与者
+#     resources = db.relationship(Resource, secondary=topic_resources) # 话题相关资源
+# 
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+#     user = db.relationship(User, backref='topics', lazy='dynamic')
 
 # 用户参与活动的跟踪表
 activity_users = db.Table('activity_users',
