@@ -1,3 +1,3 @@
 $(function() {
-    $('.alert-messages .alert').delay(5000).slideUp();
+    $('.flash .alert').delay(3000).fadeOut();
 });

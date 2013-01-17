@@ -150,8 +150,6 @@ def general():
     if form.validate_on_submit():
         app.logger.info(u'* Updating user information...')
         app.logger.info(u'Form data: %s', repr(form.data))
-        if not form.data['slug']:
-            form.slug.data = current_user.user.slug
         form.populate_obj(current_user.user)
         flash(u'用户资料已经更新', 'success')
         return form.redirect('user.general')

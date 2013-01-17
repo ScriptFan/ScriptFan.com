@@ -52,18 +52,18 @@
             </div>
         </div>
         <div class="container">
-            <div class="alert-messages">
+            <div class="flash">
                 {% for category, message in  get_flashed_messages(with_categories=true) %}
-                <div class="alert alert-{{ category | default('info') }}">
+                <div class="alert alert-{{ category | default('info') }} fade in">
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     {{ message | safe }}
                 </div>
                 {% endfor %}
             </div>
             
-            {% if current_user.user  %}
+            {% if current_user.is_authenticated() %}
                 {% if not skip_slug_info and not current_user.user.slug %}
-                <div class="alert alert-info">
+                <div class="alert alert-info fade in">
                     <i class="icon icon-info-sign"></i>
                     你尚未设置个性域名，个性域名提供更友好的页面页面地址。
                     {# TODO: 添加个性域名提示不再显示功能 #}
@@ -73,7 +73,7 @@
                 {% endif %}
                 
                 {% if not skip_password_info and not current_user.user.password %}
-                <div class="alert alert-warning">
+                <div class="alert alert-warning fade in">
                     <i class="icon icon-exclamation-sign"></i>
                     你尚未设置密码，为了帐号的安全，请尽快设置密码。
                     {# TODO: 添加密码设置提示不再显示功能 #}
