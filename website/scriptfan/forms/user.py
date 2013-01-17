@@ -53,10 +53,6 @@ class SignupForm(RedirectForm):
 class EditProfileForm(RedirectForm):
     nickname = wtf.TextField('nickname', validators=[
         wtf.Required(message=u'请填写昵称')])
-    # FIXME: 验证 slug 是否已经被占用
-    slug = wtf.TextField('slug', validators=[
-        wtf.Regexp(regex=r'^([a-zA-Z][a-zA-Z0-9_-]{4,23})?$', 
-            message=u'长度应为5~24位，仅能包含数字、英文字母及下划线(_)和减号(-)，并且需要以字母开头')])
     phone = wtf.TextField('phone', validators=[
         wtf.Regexp(regex=r'^(1\d{10})?$', message=u'请输入有效的手机号码')])
     phone_privacy = wtf.RadioField('phone_privacy', choices=[
@@ -82,4 +78,11 @@ class EditPasswordForm(RedirectForm):
         # 当用户密码为空时，跳过原始密码验证，是否存在安全隐患？
         if current_user.user.password and (not current_user.user.check_password(field.data)):
             raise wtf.ValidationError(u'提供的原始密码不正确')
+
+
+class EditSlugForm(RedirectForm):
+    # FIXME: 验证 slug 是否已经被占用
+    slug = wtf.TextField('slug', validators=[
+        wtf.Regexp(regex=r'^([a-zA-Z][a-zA-Z0-9_-]{4,23})?$', 
+            message=u'长度应为5~24位，仅能包含数字、英文字母及下划线(_)和减号(-)，并且需要以字母开头')])
 

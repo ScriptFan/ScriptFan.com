@@ -8,7 +8,7 @@ from flask.ext.login import current_user
 from flask.ext.openid import COMMON_PROVIDERS
 from scriptfan.extensions import db, oid, login_manager
 from scriptfan.models import User, UserOpenID
-from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, EditPasswordForm
+from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, EditPasswordForm, EditSlugForm
 
 userapp = Blueprint("user", __name__)
 
@@ -164,6 +164,20 @@ def general():
     # TODO 用户照片上传
 
 # TODO: 用户找回密码功能
+
+# 更新用户slug功能
+@userapp.route('/slug', methods=['GET', 'POST'])
+@login.login_required
+def slug():
+    form = EditSlugForm()
+    if form.validate_on_submit():
+        form.populate_obj(current_user.user)
+        flash(u'修改域名已经设置', 'success')
+        return redirect(url_for('user.profile', slug=current_user.user.slug))
+
+    form.process(obj=current_user.user)
+    return render_template('user/slug.html', form=form, skip_slug_info=True)
+
 
 @userapp.route('/password', methods=['GET', 'POST'])
 @login.login_required

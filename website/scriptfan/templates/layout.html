@@ -60,6 +60,28 @@
                 </div>
                 {% endfor %}
             </div>
+            
+            {% if current_user.user  %}
+                {% if not skip_slug_info and not current_user.user.slug %}
+                <div class="alert alert-info">
+                    <i class="icon icon-info-sign"></i>
+                    你尚未设置个性域名，个性域名提供更友好的页面页面地址。
+                    {# TODO: 添加个性域名提示不再显示功能 #}
+                    <a href="#" class="pull-right" data-dismiss="alert" style="margin-left:10px;"><i class="icon icon-remove-circle"></i> 不再提示</a>
+                    <a href="{{ url_for('user.slug') }}" class="pull-right"><i class="icon icon-share"></i> 前往设置</a>
+                </div>
+                {% endif %}
+                
+                {% if true or not skip_password_info and not current_user.user.password %}
+                <div class="alert alert-warning">
+                    <i class="icon icon-exclamation-sign"></i>
+                    你尚未设置密码，为了帐号的安全，请尽快设置密码。
+                    {# TODO: 添加密码设置提示不再显示功能 #}
+                    <a href="#" class="pull-right" data-dismiss="alert" style="margin-left:10px;"><i class="icon icon-remove-circle"></i> 不再提示</a>
+                    <a href="{{ url_for('user.password') }}" class="pull-right"><i class="icon icon-share"></i> 前往设置</a>
+                </div>
+                {% endif %}
+            {% endif %}
 
             {% block content %}{% endblock %}
             <div class="footer">{% block footer %}{% endblock %}</div>
