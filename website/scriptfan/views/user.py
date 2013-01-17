@@ -187,8 +187,9 @@ def password():
         current_user.user.set_password(form.password.data)
         flash(u'用户密码已经更新', 'success')
         return form.redirect('user.general')
+
     form.errors and flash(u'用户密码未能更新', 'error')
-    return render_template('user/password.html', form=form)
+    return render_template('user/password.html', form=form, skip_password_info=True)
 
 @userapp.route('/email')
 @login.login_required

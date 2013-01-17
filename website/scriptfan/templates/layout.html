@@ -72,7 +72,7 @@
                 </div>
                 {% endif %}
                 
-                {% if true or not skip_password_info and not current_user.user.password %}
+                {% if not skip_password_info and not current_user.user.password %}
                 <div class="alert alert-warning">
                     <i class="icon icon-exclamation-sign"></i>
                     你尚未设置密码，为了帐号的安全，请尽快设置密码。
