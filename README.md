@@ -50,3 +50,4 @@ ScriptFan.com 是西安一个线下技术沙龙的官方网站程序, 沙龙的�
 
 **5. 更新i18n语言文件**
     在website/scriptfan目录下, 执行``pybabel extract -F babel.cfg -o message.pot .``生成待翻译的文件, 翻译完成后, 执行``pybabel update -i messages.pot -d translations``更新翻译, 执行``pybabel compile -d translations``编译语言文件即可.
+
