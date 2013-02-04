@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
 from flask import request, url_for
+from flask import current_app as app
 from datetime import datetime
 from scriptfan.extensions import db
 from scriptfan.utils.functions import md5
@@ -47,11 +48,12 @@ class User(db.Model):
     def __repr__(self):
         return u'<User (%s|%s)>' % (self.nickname, self.email)
 
+    # 增加一段扰乱信息，这样更难破解
     def set_password(self, password):
-        self.password = md5(password)
+        self.password = md5(password + app.config['PASSWORD_SALT'])
 
     def check_password(self, password):
-        return self.password == md5(password)
+        return self.password == md5(password + app.config['PASSWORD_SALT'])
 
     @classmethod
     def get_by_email(cls, email):

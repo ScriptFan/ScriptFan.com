@@ -20,3 +20,6 @@ LOGGER_NAME='scriptfan'
 
 # babel
 BABEL_DEFAULT_LOCALE='zh_CN'
+
+# 密码盐，用于增加密码的安全性
+PASSWORD_SALT = 'udontkown@must#complicated'
