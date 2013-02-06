@@ -39,6 +39,25 @@ def login_user(user, remember=False):
     app.logger.info('* Updated current user: %s, %s', user.id, user.email)
 
 # TODO: 开发资料修改页面中的OpenID绑定功能
+@userapp.route('/openid/manage')
+@login.login_required
+def openid_manage():
+    return render_template('user/openid.html')
+
+@userapp.route('/openid/delete/<id>', methods=['POST'])
+@login.login_required
+def openid_delete(id):
+    openid = UserOpenID.query.filter_by(id=id).first()
+    user = current_user.user
+    if openid:
+        if len(user.openids)==1 and not user.password:
+            flash(u'你只绑定了唯一一个OpenID，并且还没有设置密码, 不可以解除绑定哦！',
+                    'warning')
+        else:
+            current_user.user.openids.remove(openid)
+            flash(u'成功解除与 <strong>%s</strong> 的绑定!' % openid.provider, 
+                    'success')
+    return redirect(url_for('user.openid_manage'))
 
 @userapp.route('/openid/<provider>/', methods=['GET'])
 @oid.loginhandler

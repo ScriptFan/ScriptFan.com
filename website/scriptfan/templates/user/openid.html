@@ -1,0 +1,43 @@
+{% extends "user/layout.html" %}
+
+{% block title %}
+管理服务绑定
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    function reconfirm(provider) {
+		if(confirm('你真的要解除与 '+provider+' 的绑定吗？')){
+			return true;
+		}else{
+			return false;
+		}
+    }
+</script>
+{% endblock %}
+
+{% block content_body %}
+{% if current_user.user.openids %}
+<table class="table table-hover">
+    <thead>
+        <tr><th></th><th>已绑定的OpenID</th><th>解除绑定</th></tr>
+    </thead>
+    <tbody>
+    {% for openid in current_user.user.openids %}
+    <tr class="info">
+        <td class="span2">{{ loop.index }}</td>
+        <td>{{ openid.provider }}</td>
+		<td class="span3">
+			<form action="{{ url_for('user.openid_delete', id=openid.id) }}"
+				method="POST" onsubmit="return reconfirm('{{ openid.provider }}')">
+				<button class="btn btn-warning" type="submit">解除绑定</button>
+			</form>
+		</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>你还没有绑定OpenID哦</p>
+{% endif %}
+{% endblock %}
