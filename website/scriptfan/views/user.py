@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 from datetime import datetime
-from flask import Blueprint, session, url_for, redirect, abort
+from flask import Blueprint, session, request, url_for, redirect, abort
 from flask import render_template, flash
 from flask import current_app as app
 from flask.ext import login
@@ -40,22 +40,33 @@ def login_user(user, remember=False):
 
 # TODO: 开发资料修改页面中的OpenID绑定功能
 
+
 @userapp.route('/openid/<provider>/', methods=['GET'])
 @oid.loginhandler
-def openid(provider):
-    # 如果用户已经登陆，跳转到用户资料页面
-    # FIXME: 使用OpenID登陆，会发生循环跳转
+def openid(provider, next=None):
     if current_user.is_authenticated():
+        app.logger.info('User authenticated, redirecting to profile page')
         return redirect(url_for('user.profile'))
-
+    
+    next_url = oid.get_next_url()
     if provider not in COMMON_PROVIDERS:
-        flash(u'暂不支持使用 <strong>%s</strong> 登陆，请联系管理员' % provider, 'warning')
-        return redirect(oid.get_next_url()) 
+        app.logger.warning('Invalid openid provider: %s' % provider)
+        flash(u'暂不支持 <strong>%s</strong> 登陆' % provider, 'warning')
+        return redirect(next_url) 
 
-    session['openid_provider'] = provider 
-    app.logger.info('* Signin with openid: %s', provider)
+    session['openid_provider'] = provider
+    app.logger.info('Signin with openid: %s, callback: %s', provider, next_url)
+
+    openid_error = oid.fetch_error()
+    if openid_error:
+        app.logger.error(openid_error)
+        flash(u'登陆失败: ' + openid_error)
+        return redirect(oid.get_next_url())
+
+    app.logger.info(COMMON_PROVIDERS.get(provider))
     return oid.try_login(COMMON_PROVIDERS.get(provider), \
                          ask_for=['email', 'fullname', 'nickname'])
+
 
 @userapp.route('/signin/', methods=['GET', 'POST'])
 def signin():
@@ -66,20 +77,19 @@ def signin():
     form = SigninForm(csrf_enabled=False)
     
     if form.validate_on_submit():
-        app.logger.info('* Signin user: %s', form.email.data)
+        app.logger.info('Signin user: %s', form.email.data)
         login_user(form.user, remember=form.remember)
         flash(u'登陆成功', 'success')
         return form.redirect('user.profile')
-    
-    if oid.fetch_error():
-        flash(oid.fetch_error(), 'error')
-
+   
     return render_template('user/signin.html', form=form)
 
 
 @oid.after_login
 def create_or_login(resp):
-    app.logger.info('* OpenID Response: %s, %s, %s', resp.email, resp.fullname, resp.nickname)
+    app.logger.info('OpenID Response: %s, %s, %s', resp.email, \
+                                                   resp.fullname, \
+                                                   resp.nickname)
      
     # 如果openid未注册，先自动注册用户，并绑定openid
     user = User.query.join(User.openids) \
@@ -114,7 +124,7 @@ def signup():
         return redirect(url_for('user.profile'))
     
     form = SignupForm(csrf_enabled=False)
-    app.logger.info(u' * Signup with email: %(email)s, nickname: %(nickname)s', form.data)
+    app.logger.info('Signup with email: %(email)s, nickname: %(nickname)s', form.data)
     
     if form.validate_on_submit():
         user = User()
@@ -124,9 +134,6 @@ def signup():
         app.logger.info(u'New user added: %s', user)
         flash(u'注册成功', 'success')
         return redirect(url_for('user.signin'))
-    
-    if oid.fetch_error():
-        flash(oid.fetch_error(), 'error')
     
     return render_template('user/signup.html', form=form)
 
