@@ -1,0 +1,59 @@
+{% extends "user/layout.html" %}
+
+{% block title %}
+管理服务绑定
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    // FIXME 这个默认的确定框挺丑的，有没有更好的提示框啊？
+    function delete_openid(provider) {
+        $("#form-openid-manage input[name='method']").val('delete');
+        $("#form-openid-manage input[name='provider']").val(provider);
+        if(confirm('你真的要解除与 '+provider+' 的绑定吗？')){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    function add_openid(provider) {
+        $("#form-openid-manage input[name='method']").val('add');
+        $("#form-openid-manage input[name='provider']").val(provider);
+        if(confirm('确认要绑定到'+provider+'吗？')){
+            return true;
+        }else{
+            return false;
+        }
+    }
+</script>
+{% endblock %}
+
+{% block content_body %}
+<form id="form-openid-manage" action="{{ url_for('user.openid_manage') }}" method="POST">
+{{ form.hidden_tag() }}
+{% for errors in  form.errors.values() %}
+<div class="alert alert-error fade in">{% for error in errors %} {{ error }} {% endfor %}</div>
+{% endfor %}
+<table class="table table-hover">
+    <thead>
+        <tr><th></th><th>可绑定的OpenID</th><th>绑定情况</th><th>添加/解除绑定</th></tr>
+    </thead>
+    <tbody>
+    {% for provider, registed in providers %}
+    <tr>
+        <td class="span2">{{ loop.index }}</td>
+        <td>{{ provider }}</td>
+        <td class="span3">{% if registed %}已绑定{% else %}未绑定{% endif %}</td>
+        <td class="span3">
+            {% if registed %}
+            <button class="btn btn-warning" type="submit" onclick="return delete_openid('{{ provider }}')">解除绑定</button>
+            {% else %}
+            <button class="btn btn-success" type="submit" onclick="return add_openid('{{ provider }}')">添加绑定</button>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</form>
+{% endblock %}
