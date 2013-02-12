@@ -10,6 +10,7 @@ from flask.ext import wtf
 from flask.ext.login import current_user
 from scriptfan.models import User
 from scriptfan.forms import RedirectForm
+from flask.ext.openid import COMMON_PROVIDERS
 
 class SigninForm(RedirectForm):
     email = wtf.TextField('email', validators=[
@@ -86,3 +87,8 @@ class EditSlugForm(RedirectForm):
         wtf.Regexp(regex=r'^([a-zA-Z][a-zA-Z0-9_-]{4,23})?$', 
             message=u'长度应为5~24位，仅能包含数字、英文字母及下划线(_)和减号(-)，并且需要以字母开头')])
 
+class ManageOpenIDForm(RedirectForm):
+    method = wtf.HiddenField('method', validators=[
+        wtf.AnyOf(['add', 'delete'], message=u'不支持该操作'), ])
+    provider = wtf.HiddenField('provider', validators=[
+        wtf.AnyOf(COMMON_PROVIDERS, message=u'还不能绑定到该OpenID'), ])
