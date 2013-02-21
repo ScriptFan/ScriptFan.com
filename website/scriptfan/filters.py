@@ -1,7 +1,17 @@
-#!/usr/bin/env python
 #-*-coding:utf-8-*-
+"""
+    scriptfan.filters
+    ~~~~~~~~~~~~~~~~~~
+
+    Jiaja2 filters for scriptfan
+"""
+
 from datetime import datetime
 import markdown2
+
+__all__ = ['dateformat', 'empty', 'markdown', \ 
+           'error_class', 'error_text', 'time_passed']
+
 
 def dateformat(value, format="%Y-%m-%d %H:%M"):
     return value.strftime(format)
@@ -13,8 +23,10 @@ def empty(value, text=None):
             return text
     return value
 
+
 def markdown(value):
     return value and markdown2.markdown(value) or ''
+
 
 def error_class(filed):
     """ 用于显示 bootstrap 表单的 control-group 中添加 ``error`` 类
