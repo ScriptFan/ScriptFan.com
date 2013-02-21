@@ -1,24 +1,30 @@
-#!/usr/bin/env python
-#-*-coding:utf-8-*-
-import logging
-logger = logging.getLogger(__name__)
+# -*- coding: utf-8 -*-
+"""
+    scriptfan.views.events
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Views controllers for events
+"""
 
 from flask import Blueprint, render_template, redirect, flash, url_for
-from scriptfan.extensions import db
-from scriptfan.forms.activity import ActivityForm
-from scriptfan.models import Activity
+from scriptfan import db
+from scriptfan.forms import EventForm
+from scriptfan.models import Event
 
 from flask.ext.login import current_user
 from datetime import datetime
 
-activityapp = Blueprint("activity", __name__)
 
-@activityapp.route('/', methods=['GET'])
+blueprint = Blueprint("events", __name__)
+
+
+@blueprint.route('/', methods=['GET'])
 def index():
     activities = Activity.query.all()
     return render_template('activities/index.html', activities=activities)
 
-@activityapp.route('/create', methods=['GET', 'POST'])
+
+@blueprint.route('/create', methods=['GET', 'POST'])
 def create():
     form = ActivityForm(cref_enabled=False)
     if form.validate_on_submit():
