@@ -1,5 +1,3 @@
-from scriptfan import db
-
 # -*-coding: utf-8-*-
 """
     scriptfan.models.resource
@@ -7,6 +5,9 @@ from scriptfan import db
 
     Model for table: resources
 """
+
+from scriptfan import db
+
 
 class Resource(db.Model): 
     """

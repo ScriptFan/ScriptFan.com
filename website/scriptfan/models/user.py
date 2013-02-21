@@ -1,13 +1,16 @@
 # -*-coding: utf-8-*-
 """
-    scriptfan.models.user
+    scriptfan.models.users
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Model for table: users
 """
 
 from scriptfan import db
+from flask import current_app as app
+from scriptfan.functions import md5
 from datetime import datetime
+from flask import url_for, request
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -46,7 +49,7 @@ class User(db.Model):
     privilege = db.Column(db.Integer, default=3)
   
     #: 用户 openid 的绑定列表
-    openids = db.relationship('UserOpenID', backref=db.backref('user'))
+    openids = db.relationship('UserOpenID', backref=db.backref('users'))
     
     def __repr__(self):
         return u'<User (%s|%s)>' % (self.nickname, self.email)
@@ -69,8 +72,8 @@ class User(db.Model):
     @property
     def url(self):
         if self.slug:
-            return url_for('user.profile', slug=self.slug)
-        return url_for('user.profile', user_id=self.id)
+            return url_for('users.profile', slug=self.slug)
+        return url_for('users.profile', user_id=self.id)
 
     def get_avatar_url(self, size=20):
         url_tpl = 'http://www.gravatar.com/avatar/%s?size=%s&d=%s%s'

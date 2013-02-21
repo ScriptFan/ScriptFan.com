@@ -3,7 +3,7 @@
     scriptfan
     ~~~~~~~~~~~~~~
 
-    Module to initialize and conig flask application.
+    Module to initialize and config flask application.
 """
 
 import os
@@ -25,7 +25,7 @@ instance_path = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__, instance_path=instance_path, \
                       instance_relative_config=True)
 app.debug_log_format = '[%(levelname)s] %(message)s'
-
+app.debug = True
 
 # Configuration application
 def config_app(app, config):
@@ -73,19 +73,19 @@ def dispatch_handlers(app):
 
 def register_blueprints(app):
     app.logger.info('Register blueprints...')
-    from scriptfan.views import siteapp, userapp, activityapp
-    app.register_blueprint(siteapp,  url_prefix='/')
-    app.register_blueprint(userapp, url_prefix='/user')
-    app.register_blueprint(activityapp,  url_prefix='/event')
+    from scriptfan.views import home, events, users
+    app.register_blueprint(home.blueprint,   url_prefix='/')
+    app.register_blueprint(users.blurprint,  url_prefix='/users')
+    app.register_blueprint(events.blueprint, url_prefix='/events')
 
 
 def register_jinja_env(app):
     app.logger.info('Register jinja filters...')
     from scriptfan import filters
    
-    for filter in filters:
+    for filter in filters.__all__:
         app.logger.info('- Register filter: %s' % filter)
-        app.jinja_env.filters[filter] = filter 
+        app.jinja_env.filters[filter] = getattr(filters, filter)
     
     app.logger.info('Register jinja variables...')
     app.jinja_env.globals['static'] = (lambda filename: \

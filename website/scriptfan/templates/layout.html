@@ -26,9 +26,9 @@
                 <a class="brand" href="/">ScriptFan</a>
                 <ul class="nav">
                     <li><a href="/">{{ _("Index") }}</a></li>
-                    <li><a href="{{ url_for('activity.index') }}">{{ _("Activities") }}</a></li>
+                    <li><a href="{{ url_for('events.index') }}">{{ _("Activities") }}</a></li>
                     {% if current_user.is_authenticated() %}
-                        <li><a href="{{ url_for('user.profile') }}">我的页面</a></li>
+                        <li><a href="{{ url_for('users.profile') }}">我的页面</a></li>
                     {% endif %}
                 </ul>
                 <form class="navbar-search pull-left" action="">
@@ -40,13 +40,13 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ current_user.user.get_avatar_url(16) }}" width="16" height="16" style="vertical-align:middle;" /> {{ current_user.user.nickname | default('Account') }} <b class="caret"></b></a>
 
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('user.general') }}"><i class="icon icon-user"></i> 修改资料</a></li>
-                            <li><a href="{{ url_for('user.signout') }}"><i class="icon icon-off"></i> 退出</a></li>
+                            <li><a href="{{ url_for('users.general') }}"><i class="icon icon-user"></i> 修改资料</a></li>
+                            <li><a href="{{ url_for('users.signout') }}"><i class="icon icon-off"></i> 退出</a></li>
                         </ul>
                     </li>
                     {% else %}
-                    <li><a href="{{ url_for('user.signup') }}">{{ _("Signup") }}</a></li>
-                    <li><a href="{{ url_for('user.signin') }}">{{ _("Sign In") }}</a></li>
+                    <li><a href="{{ url_for('users.signup') }}">{{ _("Signup") }}</a></li>
+                    <li><a href="{{ url_for('users.signin') }}">{{ _("Sign In") }}</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -68,7 +68,7 @@
                     你尚未设置个性域名，个性域名提供更友好的页面页面地址。
                     {# TODO: 添加个性域名提示不再显示功能 #}
                     <a href="#" class="pull-right" data-dismiss="alert" style="margin-left:10px;"><i class="icon icon-remove-circle"></i> 不再提示</a>
-                    <a href="{{ url_for('user.slug') }}" class="pull-right"><i class="icon icon-share"></i> 前往设置</a>
+                    <a href="{{ url_for('users.slug') }}" class="pull-right"><i class="icon icon-share"></i> 前往设置</a>
                 </div>
                 {% endif %}
                 
@@ -78,7 +78,7 @@
                     你尚未设置密码，为了帐号的安全，请尽快设置密码。
                     {# TODO: 添加密码设置提示不再显示功能 #}
                     <a href="#" class="pull-right" data-dismiss="alert" style="margin-left:10px;"><i class="icon icon-remove-circle"></i> 不再提示</a>
-                    <a href="{{ url_for('user.password') }}" class="pull-right"><i class="icon icon-share"></i> 前往设置</a>
+                    <a href="{{ url_for('users.password') }}" class="pull-right"><i class="icon icon-share"></i> 前往设置</a>
                 </div>
                 {% endif %}
             {% endif %}

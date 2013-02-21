@@ -1,6 +1,8 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+    scriptfan.views
+    ~~~~~~~~~~~~~~~~~~~~
+    View controllers package
+"""
 
-from site import siteapp
-from user import userapp
-from post import postapp
-from activity import activityapp
+import events, post, home, users

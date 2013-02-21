@@ -6,6 +6,8 @@
     Model for table: user_openids
 """
 
+from scriptfan import db
+
 class UserOpenID(db.Model):
     """ 用户OpenID绑定表 """
 

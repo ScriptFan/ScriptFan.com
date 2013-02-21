@@ -9,6 +9,7 @@
 from .user import User
 from .user_openid import UserOpenID
 from .event import Event
+from .resource import Resource
 
 # 活动相关资源
 # topic_resources = db.Table('topic_resources',
@@ -36,19 +37,9 @@ from .event import Event
 #     resources = db.relationship(Resource, secondary=topic_resources) # 话题相关资源
 # 
 #     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-#     user = db.relationship(User, backref='topics', lazy='dynamic')
+#     users = db.relationship(User, backref='topics', lazy='dynamic')
 
-# 用户参与活动的跟踪表
-# activity_users = db.Table('activity_users',
-#     db.Column('activity_id', db.Integer, db.ForeignKey('activities.id'), primary_key=True),
-#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-# )
-# 
-# # 活动相关资源
-# activity_resources = db.Table('activity_resources',
-#     db.Column('activity_id', db.Integer, db.ForeignKey('activities.id'), primary_key=True),
-#     db.Column('resource_id', db.Integer, db.ForeignKey('resources.id'), primary_key=True),
-# )
+
 
 
 #  
@@ -71,4 +62,4 @@ from .event import Event
 #     children = db.relationship('ActivityComment', backref='parent', remote_side=[id]) # 回复评论的引用
 #     
 #     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-#     user = db.relationship('User', backref=db.backref('comments', lazy='dynamic'))
+#     users = db.relationship('User', backref=db.backref('comments', lazy='dynamic'))

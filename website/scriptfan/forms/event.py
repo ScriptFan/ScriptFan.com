@@ -1,14 +1,15 @@
 #-*- coding: utf-8 -*-
 """
-    forms/activity.py
-    ~~~~~~~~~~~~~~~~~~
-    定义活动相关的表单
+    scriptfan.forms.event
+    ~~~~~~~~~~~~~~~~~~~~~~~
+    Forms for events
 """
 
 from flask.ext import wtf
-from scriptfan.forms import RedirectForm
+from scriptfan.forms.base import RedirectForm
 
-class ActivityForm(RedirectForm):
+
+class EventForm(RedirectForm):
     title = wtf.TextField(u'活动标题', validators=[ \
             wtf.Required(message=u'请为活动填写一个标题')])
     content = wtf.TextAreaField(u'活动简介', validators=[ \
