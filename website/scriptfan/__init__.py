@@ -1,18 +1,40 @@
-#-*-coding:utf-8-*-
-import logging
-logger = logging.getLogger(__name__)
+# -*- coding: utf-8 -*-
+"""
+    scriptfan
+    ~~~~~~~~~~~~~~
+
+    Module to initialize and config flask application.
+"""
 
 import os
 from flask import Flask, render_template, abort, url_for
-from extensions import oid, db, login_manager, babel
+from flask.ext.openid import OpenID
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.login import LoginManager
+from flask.ext.babel import Babel
 
+# Create extension instances
+oid = OpenID()
+db = SQLAlchemy()
+login_manager = LoginManager()
+babel = Babel()
+
+
+# Create flask application instance
 instance_path = os.path.abspath(os.path.dirname(__file__))
-app = Flask(__name__, instance_path=instance_path, instance_relative_config=True)
+app = Flask(__name__, instance_path=instance_path, \
+                      instance_relative_config=True)
+app.debug_log_format = '[%(levelname)s] %(message)s'
+app.debug = True
 
+# Configuration application
 def config_app(app, config):
-    app.debug_log_format = '[%(levelname)s] %(message)s'
-    logger.info('Setting up application...')
+    app.logger.info('Setting up application...')
+   
+    app.logger.info('- Loading config file: %s' % config)
     app.config.from_pyfile(config)
+
+    app.logger.info('- Setting up extensions...')
     db.init_app(app)
     oid.init_app(app)
     login_manager.init_app(app)
@@ -26,6 +48,7 @@ def config_app(app, config):
             db.session.rollback()
             abort(500)
         return response
+
 
 def dispatch_handlers(app):
     d = {}
@@ -47,19 +70,23 @@ def dispatch_handlers(app):
         d['message'] = u'您所访问的页面出错啦! 待会再来吧!'
         return render_template('error.html', **d), 500
 
-def dispatch_apps(app):
-    from scriptfan.views import siteapp, userapp, activityapp
-    app.register_blueprint(siteapp,  url_prefix='/')
-    app.register_blueprint(userapp, url_prefix='/user')
-    app.register_blueprint(activityapp,  url_prefix='/event')
 
-    from scriptfan.utils.filters import dateformat, empty, time_passed, \
-                                        error_class, error_text, markdown
-    app.jinja_env.filters['error_class'] = error_class
-    app.jinja_env.filters['error_text'] = error_text
-    app.jinja_env.filters['markdown'] = markdown
-    app.jinja_env.filters['dateformat'] = dateformat
-    app.jinja_env.filters['empty'] = empty
-    app.jinja_env.filters['time_passed'] = time_passed
+def register_blueprints(app):
+    app.logger.info('Register blueprints...')
+    from scriptfan.views import home, events, users
+    app.register_blueprint(home.blueprint,   url_prefix='/')
+    app.register_blueprint(users.blurprint,  url_prefix='/users')
+    app.register_blueprint(events.blueprint, url_prefix='/events')
+
+
+def register_jinja_env(app):
+    app.logger.info('Register jinja filters...')
+    from scriptfan import filters
+   
+    for filter in filters.__all__:
+        app.logger.info('- Register filter: %s' % filter)
+        app.jinja_env.filters[filter] = getattr(filters, filter)
+    
+    app.logger.info('Register jinja variables...')
     app.jinja_env.globals['static'] = (lambda filename: \
             url_for('static', filename=filename))

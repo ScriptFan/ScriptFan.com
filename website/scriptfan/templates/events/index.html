@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}社区活动{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <a href="{{ url_for('events.create') }}" class="btn btn-success pull-right">发起活动</a>
+        <h3>社区活动</h3>
+    </div>
+
+    <ul class="event-list">
+        {% for event in events %}
+        <li class="event event-{{ event.id }}">
+            <div class="event-head">
+                <h3>{{ event.title }}</h3>
+                <span class="event-date" style="float:right">{{ event.created_time | dateformat }}</span>
+            </div>
+            <div class="event-content">
+                {{ event.content | markdown | safe }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

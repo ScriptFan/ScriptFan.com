@@ -32,6 +32,8 @@ ScriptFan.com 是西安一个线下技术沙龙的官方网站程序, 沙龙的�
 
 在本地数据库中建立一个数据库，如 ``scriptfan_dev``
 
+**注意：** 请确保数据库、表及字段的 Collation 为 utf8 (utf8_bin) 类型
+
 修改配置文件
 
     $ cp website/scriptfan/scriptfan.cfg.sample website/scriptfan/scriptfan.cfg

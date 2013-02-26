@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 
 """
-    scriptfan/forms/user.py
+    scriptfan/forms/users.py
     ~~~~~~~~~~~~~~~~~~~~~~~
     定义用户相关页面所用到的表单, 包括注册、登陆、基本资料修改、密码修改、邮箱修改等。
 """
@@ -9,7 +9,7 @@
 from flask.ext import wtf
 from flask.ext.login import current_user
 from scriptfan.models import User
-from scriptfan.forms import RedirectForm
+from scriptfan.forms.base import RedirectForm
 from flask.ext.openid import COMMON_PROVIDERS
 
 class SigninForm(RedirectForm):
@@ -86,6 +86,7 @@ class EditSlugForm(RedirectForm):
     slug = wtf.TextField('slug', validators=[
         wtf.Regexp(regex=r'^([a-zA-Z][a-zA-Z0-9_-]{4,23})?$', 
             message=u'长度应为5~24位，仅能包含数字、英文字母及下划线(_)和减号(-)，并且需要以字母开头')])
+
 
 class ManageOpenIDForm(RedirectForm):
     method = wtf.HiddenField('method', validators=[
