@@ -8,7 +8,7 @@
         <h1>{{ self.title() }}</h1>
     </div>
     
-    <form action="{{ url_for('user.signin') }}" class="form-horizontal" id="form-signin" method="post">
+    <form action="{{ url_for('users.signin') }}" class="form-horizontal" id="form-signin" method="post">
         {{ form.hidden_tag() }}
         <div class="control-group {{ form.email | error_class }}">
             <label class="control-label">邮件</label>
@@ -29,7 +29,7 @@
             <label class="checkbox inline">
                 {{ form.remember }} 记住我的登陆信息
             </label>
-            <div>使用 <a href="{{ url_for('user.openid', provider='google') }}">Gmail帐户</a> 登陆</div>
+            <div>使用 <a href="{{ url_for('users.openid', provider='google') }}">Gmail帐户</a> 登陆</div>
         </div>
     </form><!-- #form-signin -->
 </div><!-- .content -->
