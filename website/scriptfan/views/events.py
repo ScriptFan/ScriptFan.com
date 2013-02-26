@@ -11,7 +11,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, redirect, flash, url_for
 from scriptfan import db
 from scriptfan.forms import EventForm
-from scriptfan.models import Event
+from scriptfan.models import Event, EventDuration
 
 from flask.ext.login import current_user
 
@@ -29,8 +29,12 @@ def index():
 def create():
     form = EventForm(cref_enabled=False)
     if form.validate_on_submit():
+        # TODO: Create event for more than one day.
         event = Event()
+        duration = EventDuration()
         form.populate_obj(event)
+        form.populate_obj(duration)
+        event.durations.append(duration)
 
         # 装填用户和创建时间等信息
         event.user_id = current_user.user.id
