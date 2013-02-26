@@ -1,9 +1,0 @@
-<ul class="well well-small nav nav-pills nav-stacked span3" id="navs-settings">
-    {% if not current_user.user.slug %}
-    <li class="slug"><a href="{{ url_for('user.slug') }}">设置修改域名</a></li>
-    {% endif %}
-    <li class="general"><a href="{{ url_for('user.general') }}">修改我的资料</a></li>
-    <li class="email"><a href="#">修改登陆邮箱</a></li>
-    <li class="password"><a href="{{ url_for('user.password') }}">{{ current_user.user.password and '修改密码' or '设置密码' }}</a></li>
-    <li class="services"><a href="{{ url_for('user.openid_manage') }}">管理服务绑定</a></li>
-</ul>

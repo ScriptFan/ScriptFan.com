@@ -1,4 +1,10 @@
-#-*-coding:utf-8-*-
+# -*- coding: utf-8 -*-
+"""
+    scriptfan.functions
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Common unctions.
+"""
+
 import hashlib
 from urlparse import urlparse, urljoin
 from flask import request

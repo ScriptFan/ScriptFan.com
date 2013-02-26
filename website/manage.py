@@ -4,7 +4,8 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask.ext.script import Manager, Shell
-from scriptfan import app, db, oid, config_app, dispatch_handlers, dispatch_apps
+from scriptfan import app, db, oid, config_app, dispatch_handlers, \
+                      register_blueprints, register_jinja_env
 
 manager = Manager(app, with_default_commands=False)
 
@@ -17,7 +18,8 @@ manager.add_command('shell', Shell(make_context=_make_context))
 def runserver(config):
     config_app(app, config)
     dispatch_handlers(app)
-    dispatch_apps(app)
+    register_blueprints(app)
+    register_jinja_env(app)
     app.run(host='0.0.0.0')
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')

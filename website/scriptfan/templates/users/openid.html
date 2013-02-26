@@ -1,4 +1,4 @@
-{% extends "user/layout.html" %}
+{% extends "users/layout.html" %}
 
 {% block title %}
 管理服务绑定
@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block content_body %}
-<form id="form-openid-manage" action="{{ url_for('user.openid_manage') }}" method="POST">
+<form id="form-openid-manage" action="{{ url_for('users.openid_manage') }}" method="POST">
 {{ form.hidden_tag() }}
 {% for errors in  form.errors.values() %}
 <div class="alert alert-error fade in">{% for error in errors %} {{ error }} {% endfor %}</div>

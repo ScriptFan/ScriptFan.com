@@ -1,4 +1,4 @@
-{% extends "user/layout.html" %}
+{% extends "users/layout.html" %}
 
 {% block title %}修改基本资料{% endblock %}
 
@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content_body %}
-<form id="form-general" class="form-horizontal" action="{{ url_for('user.general') }}" method="post">
+<form id="form-general" class="form-horizontal" action="{{ url_for('users.general') }}" method="post">
     {{ form.hidden_tag() }}
     
     <div class="control-group {{ form.nickname | error_class }}">

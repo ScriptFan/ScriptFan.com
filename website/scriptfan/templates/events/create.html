@@ -3,12 +3,12 @@
 {% block title %}创建活动{% endblock %}
 
 {% block styles %}
-{{ t.css('css/activity.css') }}
+{{ t.css('css/event.css') }}
 {% endblock %}
 
 {% block scripts %}
 {{ t.js('http://maps.google.com/maps/api/js?v=3.exp&sensor=false&libraries=places', external=true) }}
-{{ t.js('js/activity.js') }}
+{{ t.js('js/event.js') }}
 {% endblock %}
 
 {% block content %}
@@ -17,8 +17,8 @@
         <h3>创建活动</h3>
     </div>
     
-    {% import 'activities/_form.html' as f %}
-    {{ f.form(form, action=url_for('activity.create')) }}
+    {% import 'events/_form.html' as f %}
+    {{ f.form(form, action=url_for('events.create')) }}
 </div>
 
 {% endblock %}

@@ -1,5 +1,5 @@
 {% macro form(form, action=None, class="form-horizontal") -%}
-<form class="{{ class }}" action="{{ action }}" name="activity_form" method="POST">
+<form class="{{ class }}" action="{{ action }}" name="event_form" method="POST">
     {{ form.hidden_tag() }}
     <div class="control-group {{ form.title | error_class }}">
         <label class="control-label">{{ form.title.label }}</label>
@@ -12,7 +12,9 @@
     <div class="control-group {{ form.start_time | error_class }} {{ form.end_time | error_class }}">
         <label class="control-label">活动时间</label>
         <div class="controls controls-row">
-            {{ form.start_time }}&nbsp;&nbsp;至&nbsp;&nbsp;{{ form.end_time }}
+            {{ form.date(class='input-small', placeholder='请输入日期') }}&nbsp;&nbsp;
+            {{ form.start_time(class='input-mini') }} -
+            {{ form.end_time(class='input-mini') }}
             <span class="help-block">
                 {{ form.start_time | error_text }}
                 {{ form.end_time | error_text }}
