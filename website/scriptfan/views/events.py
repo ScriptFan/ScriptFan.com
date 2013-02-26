@@ -38,6 +38,6 @@ def create():
         event.created_time = datetime.now()
         db.session.add(event)
         flash(u'活动%s发布成功.' % form.data.get('title'), 'success') 
-        return redirect(url_for('.index'))
+        return redirect(url_for('events.index'))
     else:
         return render_template('events/create.html', form=form)

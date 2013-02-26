@@ -17,8 +17,8 @@
         <h3>创建活动</h3>
     </div>
     
-    {% import 'activities/_form.html' as f %}
-    {{ f.form(form, action=url_for('event.create')) }}
+    {% import 'events/_form.html' as f %}
+    {{ f.form(form, action=url_for('events.create')) }}
 </div>
 
 {% endblock %}
