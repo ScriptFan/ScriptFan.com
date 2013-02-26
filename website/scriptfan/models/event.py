@@ -45,7 +45,7 @@ event_users = db.Table('event_users',
 
 # 活动相关资源
 event_resources = db.Table('event_resources',
-    db.Column('activity_id', db.Integer, db.ForeignKey('events.id'),
+    db.Column('event_id', db.Integer, db.ForeignKey('events.id'),
               primary_key=True),
     db.Column('resource_id', db.Integer, db.ForeignKey('resources.id'),
               primary_key=True),

@@ -38,28 +38,3 @@ from .resource import Resource
 # 
 #     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 #     users = db.relationship(User, backref='topics', lazy='dynamic')
-
-
-
-
-#  
-# class ActivityComment(db.Model):
-#     """
-#     活动评论表
-#     如果是未注册用户使用openid注册，则仅将openid记录在cookie中
-#     """
-#     __tablename__ = 'activity_comments'
-# 
-#     id = db.Column(db.Integer, primary_key=True)
-#     author_name = db.Column(db.String(50), nullable=False) # 作者昵称
-#     author_email = db.Column(db.String(255)) # 作者邮件地址
-#     author_site = db.Column(db.String(255)) # 作者网址
-#     content = db.Column(db.Text, nullable=False) # 评论内容
-#     created_time = db.Column(db.DateTime) # 创建日期
-#     modified_time = db.Column(db.DateTime) # 更新日期
-#     
-#     parent_id = db.Column(db.Integer, db.ForeignKey('activity_comments.id'), nullable=True)
-#     children = db.relationship('ActivityComment', backref='parent', remote_side=[id]) # 回复评论的引用
-#     
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-#     users = db.relationship('User', backref=db.backref('comments', lazy='dynamic'))

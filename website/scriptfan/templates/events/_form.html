@@ -1,5 +1,5 @@
 {% macro form(form, action=None, class="form-horizontal") -%}
-<form class="{{ class }}" action="{{ action }}" name="activity_form" method="POST">
+<form class="{{ class }}" action="{{ action }}" name="event_form" method="POST">
     {{ form.hidden_tag() }}
     <div class="control-group {{ form.title | error_class }}">
         <label class="control-label">{{ form.title.label }}</label>
