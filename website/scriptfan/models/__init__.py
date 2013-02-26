@@ -9,6 +9,7 @@
 from .user import User
 from .user_openid import UserOpenID
 from .event import Event
+from .event_duration import EventDuration
 from .resource import Resource
 
 # 活动相关资源

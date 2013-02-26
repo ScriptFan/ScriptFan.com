@@ -49,7 +49,7 @@ class User(db.Model):
     privilege = db.Column(db.Integer, default=3)
   
     #: 用户 openid 的绑定列表
-    openids = db.relationship('UserOpenID', backref=db.backref('users'))
+    openids = db.relationship('UserOpenID', backref=db.backref('user'))
     
     def __repr__(self):
         return u'<User (%s|%s)>' % (self.nickname, self.email)
