@@ -25,10 +25,10 @@
             <div class="navbar-inner">
                 <a class="brand" href="/">ScriptFan</a>
                 <ul class="nav">
-                    <li><a href="/">{{ _("Index") }}</a></li>
-                    <li><a href="{{ url_for('events.index') }}">{{ _("Activities") }}</a></li>
+                    <li><a href="/">{{ _("index") }}</a></li>
+                    <li><a href="{{ url_for('events.index') }}">{{ _("event") }}</a></li>
                     {% if current_user.is_authenticated() %}
-                        <li><a href="{{ url_for('users.profile') }}">我的页面</a></li>
+                        <li><a href="{{ url_for('users.profile') }}">{{ _("my_profile") }}</a></li>
                     {% endif %}
                 </ul>
                 <form class="navbar-search pull-left" action="">
@@ -40,13 +40,13 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ current_user.user.get_avatar_url(16) }}" width="16" height="16" style="vertical-align:middle;" /> {{ current_user.user.nickname | default('Account') }} <b class="caret"></b></a>
 
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('users.general') }}"><i class="icon icon-user"></i> 修改资料</a></li>
-                            <li><a href="{{ url_for('users.signout') }}"><i class="icon icon-off"></i> 退出</a></li>
+                            <li><a href="{{ url_for('users.general') }}"><i class="icon icon-user"></i>{{ _("manage") }}</a></li>
+                            <li><a href="{{ url_for('users.signout') }}"><i class="icon icon-off"></i>{{ _("logout") }}</a></li>
                         </ul>
                     </li>
                     {% else %}
-                    <li><a href="{{ url_for('users.signup') }}">{{ _("Signup") }}</a></li>
-                    <li><a href="{{ url_for('users.signin') }}">{{ _("Sign In") }}</a></li>
+                    <li><a href="{{ url_for('users.signup') }}">{{ _("signup") }}</a></li>
+                    <li><a href="{{ url_for('users.signin') }}">{{ _("signin") }}</a></li>
                     {% endif %}
                 </ul>
             </div>
