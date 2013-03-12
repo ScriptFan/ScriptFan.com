@@ -11,7 +11,7 @@ script_location = migrate
 # the 'revision' command, regardless of autogenerate
 # revision_environment = false
 
-sqlalchemy.url = mysql://root:root@localhost/scriptfan_dev?charset=utf8&use_unicode=1
+sqlalchemy.url = mysql+mysqlconnector://root:root@localhost/scriptfan_dev?charset=utf8&use_unicode=1
 
 
 # Logging configuration
