@@ -11,6 +11,8 @@ from .user_openid import UserOpenID
 from .event import Event
 from .event_duration import EventDuration
 from .resource import Resource
+from .article import Article
+from .category import Category
 
 # 活动相关资源
 # topic_resources = db.Table('topic_resources',
