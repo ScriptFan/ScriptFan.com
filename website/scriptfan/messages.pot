@@ -1,4 +1,7 @@
 # ScriptFan.com
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
 
 msgid "index"
 msgstr "首页"
@@ -13,4 +16,4 @@ msgid "signin"
 msgstr "登陆"
 
 msgid "logout"
-msgstr ""
+msgstr "注销"
