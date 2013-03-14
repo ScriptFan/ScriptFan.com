@@ -18,4 +18,3 @@ from flask.ext.login import current_user
 
 blueprint = Blueprint("articles", __name__)
 
-
