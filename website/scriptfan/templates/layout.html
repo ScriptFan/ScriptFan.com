@@ -11,14 +11,6 @@
 
         <!-- 页面样式 -->
         {% block styles %}{% endblock %}
-
-        <!-- 全局脚本 -->
-        {{ t.js('lib/jquery-1.8.3.min.js') }}
-        {{ t.js('lib/bootstrap/js/bootstrap.min.js') }}
-        {{ t.js('js/application.js') }}
-
-        <!-- 页面脚本 -->
-        {% block scripts %}{% endblock %}
     </head>
     <body>
         <div class="navbar">
@@ -27,6 +19,7 @@
                 <ul class="nav">
                     <li><a href="/">{{ _("index") }}</a></li>
                     <li><a href="{{ url_for('events.index') }}">{{ _("event") }}</a></li>
+                    <li><a href="{{ url_for('articles.index') }}">{{ _("articles") }}</a></li>
                     {% if current_user.is_authenticated() %}
                         <li><a href="{{ url_for('users.profile') }}">{{ _("my_profile") }}</a></li>
                     {% endif %}
@@ -86,5 +79,13 @@
             {% block content %}{% endblock %}
             <div class="footer">{% block footer %}{% endblock %}</div>
         </div>
+
+        <!-- 全局脚本 -->
+        {{ t.js('lib/jquery-1.8.3.min.js') }}
+        {{ t.js('lib/bootstrap/js/bootstrap.min.js') }}
+        {{ t.js('js/application.js') }}
+
+        <!-- 页面脚本 -->
+        {% block scripts %}{% endblock %}
     </body>
 </html>

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ _('articles') }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <a href="{{ url_for('articles.create') }}" class="btn btn-success pull-right">{{ _('articles.create') }}</a>
+        <h3>{{ _('articles') }}</h3>
+    </div>
+
+    <ul class="article-list">
+        {% for article in articles %}
+        <li class="article article-{{ article.id }}">
+            <div class="article-head">
+                <h3>{{ article.title }}</h3>
+                <span class="article-date" style="float:right">{{ article.created_time | dateformat }}</span>
+            </div>
+            <div class="article-content">
+                {{ article.content | markdown | safe }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

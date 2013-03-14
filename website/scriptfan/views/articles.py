@@ -18,3 +18,11 @@ from flask.ext.login import current_user
 
 blueprint = Blueprint("articles", __name__)
 
+@blueprint.route('/', methods=['GET'])
+def index():
+    articles = Article.query.all()
+    return render_template('articles/index.html')
+
+@blueprint.route('/create', methods=['GET', 'POST'])
+def create():
+    return 'Not implemented' 

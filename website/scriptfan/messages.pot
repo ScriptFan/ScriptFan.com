@@ -7,6 +7,12 @@ msgstr ""
 msgid "index"
 msgstr "首页"
 
+msgid "articles"
+msgstr "博客"
+
+msgid "articles.create"
+msgstr "发布文章"
+
 msgid "event"
 msgstr "活动"
 
