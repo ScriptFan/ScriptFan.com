@@ -15,8 +15,6 @@ class ArticleForm(RedirectForm):
 
     title = wtf.TextField('email', validators=[
         wtf.Required(message=u'请填写标题')]
-    type = wtf.PasswordField('type', validators=[
-        wtf.Required(message=u'请选择类型')])
     content = wtf.TextArea('content', validators=[wtf.Required(message=u'文章内容不能为空']))
     # TODO: Fill article category dropdown with categories
     category_id = wtf.SelectField('category_id')

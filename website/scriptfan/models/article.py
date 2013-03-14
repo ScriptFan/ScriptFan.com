@@ -14,8 +14,6 @@ class Article(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    #: Article type news/posts/annoncements
-    type = db.Column(db.Integer)
     content = db.Column(db.Text, nullable=True)
     #: Parsed html content
     content_html = db.Column(db.Text)
