@@ -238,6 +238,7 @@ def signup():
     
     return render_template('users/signup.html', form=form)
 
+# FIXME: Slug should not be same as an exists user_id
 @blurprint.route('/profile/')
 @blurprint.route('/profile/<slug_or_id>')
 @login.login_required
@@ -279,7 +280,7 @@ def slug():
     if form.validate_on_submit():
         form.populate_obj(current_user.user)
         flash(u'修改域名已经设置', 'success')
-        return redirect(url_for('users.profile', slug=current_user.user.slug))
+        return redirect(url_for('users.profile', slug_or_id=current_user.user.slug))
 
     form.process(obj=current_user.user)
     return render_template('users/slug.html', form=form, skip_slug_info=True)
