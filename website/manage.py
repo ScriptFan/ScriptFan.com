@@ -20,6 +20,7 @@ def runserver(config):
     dispatch_handlers(app)
     register_blueprints(app)
     register_jinja_env(app)
+    os.environ.setdefault('WERKZEUG_RUN_MAIN', 'true')
     app.run(host='0.0.0.0')
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
