@@ -46,4 +46,4 @@ ScriptFan.com 是西安一个线下技术沙龙的官方网站程序, 沙龙的�
 
 **4. 启动本地开发服务器**
 
-    $ python manager.py runserver
+    $ python manage.py runserver
