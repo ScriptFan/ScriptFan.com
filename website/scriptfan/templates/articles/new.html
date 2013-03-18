@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ _('views.articles.new.title') }}{% endblock %}
+
+{% block styles %}
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/articles.css') }}" />
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='lib/epiceditor/js/epiceditor.min.js') }}"></script>
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <h1>{{ _('views.articles.new.title') }}</h1>
+    </div>
+
+    {% include 'articles/_form.html' %}
+</div>
+{% endblock %}
+

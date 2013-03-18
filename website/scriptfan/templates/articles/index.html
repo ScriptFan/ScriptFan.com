@@ -6,15 +6,15 @@
 <div class="content">
     <div class="page-header">
         <a href="{{ url_for('articles.create') }}" class="btn btn-success pull-right">{{ _('articles.create') }}</a>
-        <h3>{{ _('articles') }}</h3>
+        <h1>{{ _('articles') }}</h1>
     </div>
 
     <ul class="article-list">
         {% for article in articles %}
         <li class="article article-{{ article.id }}">
             <div class="article-head">
-                <h3>{{ article.title }}</h3>
-                <span class="article-date" style="float:right">{{ article.created_time | dateformat }}</span>
+                <a href="{{ url_for('.show', article_id=article.id) }}"><h3>{{ article.title }}</h3></a>
+                <span class="article-date" style="float:right"><i class="icon icon-time"></i> {{ article.created_time | dateformat }}</span>
             </div>
             <div class="article-content">
                 {{ article.content | markdown | safe }}

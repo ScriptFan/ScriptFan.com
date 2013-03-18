@@ -10,7 +10,19 @@ msgstr "首页"
 msgid "articles"
 msgstr "博客"
 
+msgid "models.article.title"
+msgstr "标题"
+
 msgid "articles.create"
+msgstr "发布文章"
+
+msgid "articles.edit"
+msgstr "编辑文章"
+
+msgid "views.articles.edit.title"
+msgstr "编辑文章：%%s"
+
+msgid "views.articles.new.title"
 msgstr "发布文章"
 
 msgid "event"

@@ -1,0 +1,19 @@
+<form class="form-vertical" id="form-article-create" method="post">
+    {{ form.hidden_tag() }}
+    <div class="control-group {{ form.title | error_class }}">
+        <div class="controls">
+            {{ form.title(placeholder=_('models.article.title'), class='input-xxlarge') }}
+            <span class="help-block">{{ form.title | error_text }}</span>
+        </div>
+    </div>
+    <div class="control-group {{ form.content | error_class }}">
+        <div class="controls">
+            {{ form.content(style='display: none;') }}
+            <div id='epiceditor'></div>
+            <span class="help-block">{{ form.content | error_text }}</span>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">提交</button>
+    </div>
+</form>
