@@ -1,17 +1,14 @@
-# Translations template for PROJECT.
-# Copyright (C) 2013 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
-#
-#, fuzzy
+# ScriptFan.com
+# vim: ft=config
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-03-18 21:30+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2013-03-18 21:22+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,42 +16,44 @@ msgstr ""
 
 #: templates/index.html:2 templates/layout.html:20
 msgid "index"
-msgstr ""
+msgstr "首页"
 
 #: templates/layout.html:21
 msgid "event"
-msgstr ""
+msgstr "活动"
 
 #: templates/layout.html:22 templates/articles/index.html:3
 #: templates/articles/index.html:9
 msgid "articles"
-msgstr ""
+msgstr "博客"
 
 #: templates/layout.html:24
 msgid "my_profile"
-msgstr ""
+msgstr "个人页面"
 
 #: templates/layout.html:36
 msgid "manage"
-msgstr ""
+msgstr "设置"
 
 #: templates/layout.html:37
 msgid "logout"
-msgstr ""
+msgstr "注销"
 
 #: templates/layout.html:41
 msgid "signup"
-msgstr ""
+msgstr "注册"
 
 #: templates/layout.html:42
 msgid "signin"
-msgstr ""
+msgstr "登陆"
 
 #: templates/articles/index.html:8 views/articles.py:31
+#, fuzzy
 msgid "create_article"
-msgstr ""
+msgstr "发表文章"
 
 #: views/articles.py:46
+#, fuzzy
 msgid "edit_article"
-msgstr ""
+msgstr "修改文章"
 
