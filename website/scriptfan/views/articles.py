@@ -27,12 +27,28 @@ def index():
 
 @blueprint.route('/create', methods=['GET', 'POST'])
 def create():
-    form = ArticleForm(request.form)
-    if request.method == 'POST' and form.validate():
+    title = u'发表文章'
+    form = ArticleForm()
+    if form.validate_on_submit():
         article = Article(title=form.title.data,
                           content=form.content.data)
         db.session.add(article)
         db.session.commit()
         flash('Add article successfully!')
         return redirect(url_for('.create'))
-    return render_template('articles/create.html', form=form)
+    return render_template('articles/form.html',
+                           form=form, title=title)
+
+
+@blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
+def update(article_id):
+    title = u'修改文章'
+    article = Article.get_by_id(article_id)
+    form = ArticleForm(obj=article)
+    if form.validate_on_submit():
+        form.populate_obj(article)
+        article.put()
+        flash('Update article successfully!')
+        return redirect(url_for('.index'))
+    return render_template('articles/form.html',
+                           form=form, title=title)
