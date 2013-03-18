@@ -9,6 +9,7 @@
 from flask import (Blueprint, render_template, redirect,
                    flash, url_for, request)
 from flask.ext.login import current_user
+from flask.ext.babel import gettext as _
 
 from scriptfan import db
 from scriptfan.forms.articles import ArticleForm
@@ -27,7 +28,7 @@ def index():
 
 @blueprint.route('/create', methods=['GET', 'POST'])
 def create():
-    title = u'发表文章'
+    title = _("articles.create")
     form = ArticleForm()
     if form.validate_on_submit():
         article = Article(title=form.title.data,
@@ -42,7 +43,7 @@ def create():
 
 @blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
 def update(article_id):
-    title = u'修改文章'
+    title = _("articles.update")
     article = Article.get_by_id(article_id)
     form = ArticleForm(obj=article)
     if form.validate_on_submit():
