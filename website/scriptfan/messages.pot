@@ -25,6 +25,9 @@ msgstr "编辑文章：%%s"
 msgid "views.articles.new.title"
 msgstr "发布文章"
 
+msgid "articles.update"
+msgstr "编辑文章"
+
 msgid "event"
 msgstr "活动"
 
@@ -42,3 +45,12 @@ msgstr "登陆"
 
 msgid "logout"
 msgstr "注销"
+
+msgid "title"
+msgstr "标题"
+
+msgid "content"
+msgstr "内容"
+
+msgid "submit"
+msgstr "提交"
