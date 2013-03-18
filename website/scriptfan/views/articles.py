@@ -47,7 +47,7 @@ def update(article_id):
     form = ArticleForm(obj=article)
     if form.validate_on_submit():
         form.populate_obj(article)
-        article.put()
+        db.session.commit()
         flash('Update article successfully!')
         return redirect(url_for('.index'))
     return render_template('articles/form.html',
