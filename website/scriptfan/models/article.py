@@ -22,3 +22,6 @@ class Article(db.Model):
     created_time = db.Column(db.DateTime, default=datetime.now)
     updated_time = db.Column(db.DateTime, default=datetime.now)
 
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
