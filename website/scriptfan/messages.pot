@@ -39,3 +39,6 @@ msgstr "标题"
 
 msgid "content"
 msgstr "内容"
+
+msgid "submit"
+msgstr "提交"
