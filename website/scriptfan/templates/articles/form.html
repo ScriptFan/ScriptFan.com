@@ -8,7 +8,7 @@
         <h1>{{ self.title() }}</h1>
     </div>
 
-    <form action="{{ url_for('articles.create') }}" class="form-horizontal" id="form-create" method="post">
+    <form class="form-horizontal" id="form-create" method="post">
         {{ form.hidden_tag() }}
         <div class="control-group {{ form.title | error_class }}">
             <label class="control-label">标题</label>
