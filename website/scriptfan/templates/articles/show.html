@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <a href="{{ url_for('articles.update', article_id=article.id) }}" class="btn btn-success pull-right">{{ _('articles.edit') }}</a>
+        <h1>{{ article.title }}</h1>
+    </div>
+
+    <div id="article-{{ article.id }}" class="article">
+        <div class="article-head">
+            <span class="article-date" style="float:right">
+                <i class="icon icon-time"></i> {{ article.created_time | dateformat }}
+            </span>
+        </div>
+        <div class="article-content">
+            {# TODO: Use article.content_html instead of content #}
+            {{ article.content | markdown | safe }}
+        </div>
+    </div><!-- .article -->
+</div>
+{% endblock %}

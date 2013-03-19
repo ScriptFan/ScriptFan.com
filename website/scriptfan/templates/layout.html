@@ -8,16 +8,17 @@
         <!-- 全局样式 -->
         {{ t.css('lib/bootstrap/css/bootstrap.min.css') }}
         {{ t.css('css/styles.css') }}
-
         <!-- 页面样式 -->
-        {% block styles %}{% endblock %}
+        {% block styles %}
+        {{ t.css('css/%s.css' % request.blueprint) }}
+        {% endblock %}
     </head>
     <body>
         <div class="navbar">
             <div class="navbar-inner">
                 <a class="brand" href="/">ScriptFan</a>
                 <ul class="nav">
-                    <li><a href="/">{{ _("index") }}</a></li>
+                    <li><a href="{{ url_for('home.index') }}">{{ _("index") }}</a></li>
                     <li><a href="{{ url_for('events.index') }}">{{ _("event") }}</a></li>
                     <li><a href="{{ url_for('articles.index') }}">{{ _("articles") }}</a></li>
                     {% if current_user.is_authenticated() %}
@@ -30,7 +31,8 @@
                 <ul class="nav pull-right">
                     {% if current_user.is_authenticated() %}
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ current_user.user.get_avatar_url(16) }}" width="16" height="16" style="vertical-align:middle;" /> {{ current_user.user.nickname | default('Account') }} <b class="caret"></b></a>
+                        {# TODO: Cache avatar url to speed up page loading #}
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><!-- img src="{{ current_user.user.get_avatar_url(16) }}" width="16" height="16" style="vertical-align:middle;" / --> {{ current_user.user.nickname | default('Account') }} <b class="caret"></b></a>
 
                         <ul class="dropdown-menu">
                             <li><a href="{{ url_for('users.general') }}"><i class="icon icon-user"></i>{{ _("manage") }}</a></li>
@@ -83,9 +85,11 @@
         <!-- 全局脚本 -->
         {{ t.js('lib/jquery-1.8.3.min.js') }}
         {{ t.js('lib/bootstrap/js/bootstrap.min.js') }}
+        {{ t.js(url_for('home.env'), external=True) }}
         {{ t.js('js/application.js') }}
-
         <!-- 页面脚本 -->
-        {% block scripts %}{% endblock %}
+        {% block scripts %}
+        {{ t.js('js/%s.js' % request.blueprint) }}
+        {% endblock %}
     </body>
 </html>
