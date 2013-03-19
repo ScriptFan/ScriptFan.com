@@ -13,8 +13,8 @@ msgstr "博客"
 msgid "articles.create"
 msgstr "发布文章"
 
-msgid "articles.update"
-msgstr "编辑文章"
+msgid "articles.update %(title)s"
+msgstr "修改 %(title)s"
 
 msgid "event"
 msgstr "活动"
