@@ -34,7 +34,6 @@ def show(article_id):
 
 @blueprint.route('/create', methods=['GET', 'POST'])
 def create():
-    title = _("articles.create")
     form = ArticleForm()
     if form.validate_on_submit():
         article = Article()
@@ -49,13 +48,12 @@ def create():
 
 @blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
 def update(article_id):
-    title = _("articles.update")
     article = Article.get_by_id(article_id)
     form = ArticleForm(obj=article)
     if form.validate_on_submit():
         form.populate_obj(article)
         db.session.commit()
         flash('Update article successfully!', 'success')
-        return redirect(url_for('.show', article_id=article.id))
-
-    return render_template('articles/edit.html', form=form)
+        return redirect(url_for('.index'))
+    return render_template('articles/edit.html',
+                           form=form)
