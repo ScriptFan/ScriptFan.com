@@ -24,6 +24,25 @@ def runserver(config, host, port):
     register_jinja_env(app)
     app.run(host=host, port=port)
 
+@manager.option('-l', '--lang', dest='lang', help='Language to translate', default=None)
+def translate(lang):
+    try:
+        import subprocess
+        trans_dir = os.path.join('scriptfan', 'translations')
+        print 'Scanning translations under path:', trans_dir
+        for language in os.listdir(trans_dir):
+            message_dir  = os.path.join(trans_dir, language, 'LC_MESSAGES')
+            message_source = os.path.join(message_dir, 'messages.pot')
+            message_target = os.path.join(message_dir, 'messages.mo')
+            if os.path.exists(message_source):
+                print '  Translateing', language, 'messages...'
+                args = ['msgfmt', message_source, '-o', message_target, '-v']
+                pin, pout = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr= subprocess.PIPE).communicate()
+                for line in pout.split('\n'):
+                    print ' ', line
+    except Exception as e:
+        print '  Translateing failed:', e
+
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
 def initdb(config='scriptfan.cfg'):
     config_app(app, config)
