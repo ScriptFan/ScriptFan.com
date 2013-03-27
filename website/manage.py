@@ -15,12 +15,14 @@ def _make_context():
 manager.add_command('shell', Shell(make_context=_make_context))
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
-def runserver(config):
+@manager.option('-H', '--host',   dest='host',   help='Host address', default='0.0.0.0')
+@manager.option('-p', '--port',   dest='port',   help='Application port', default=5000)
+def runserver(config, host, port):
     config_app(app, config)
     dispatch_handlers(app)
     register_blueprints(app)
     register_jinja_env(app)
-    app.run(host='0.0.0.0')
+    app.run(host=host, port=port)
 
 @manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
 def initdb(config='scriptfan.cfg'):
