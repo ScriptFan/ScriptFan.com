@@ -16,8 +16,8 @@ msgstr "标题"
 msgid "articles.create"
 msgstr "发布文章"
 
-msgid "articles.edit"
-msgstr "编辑文章"
+msgid "articles.update %(title)s"
+msgstr "修改 %(title)s"
 
 msgid "views.articles.edit.title"
 msgstr "编辑文章：%%s"
