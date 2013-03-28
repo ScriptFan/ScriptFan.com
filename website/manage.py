@@ -47,18 +47,5 @@ def translate(lang):
     except Exception as e:
         print '  Translateing failed:', e
 
-@manager.option('-c', '--config', dest='config', help='Configuration file name', default='scriptfan.cfg')
-def initdb(config='scriptfan.cfg'):
-    config_app(app, config)
-
-    from scriptfan.models import *
-    try:
-        db.drop_all()
-        db.create_all()
-        print 'Create tables success'
-    except Exception as e:
-        print 'Create tables fail:', e
-        sys.exit(0)
-
 if __name__ == '__main__':
     manager.run()
