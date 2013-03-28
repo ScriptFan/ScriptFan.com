@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "articles/layout.html" %}
 
 {% block title %}{{ _('views.articles.new.title') }}{% endblock %}
 
@@ -11,13 +11,11 @@
 {{ super() }}
 {% endblock %}
 
-{% block content %}
-<div class="content">
+{% block content_body %}
     <div class="page-header">
         <h1>{{ _('views.articles.new.title') }}</h1>
     </div>
 
     {% include 'articles/_form.html' %}
-</div>
 {% endblock %}
 
