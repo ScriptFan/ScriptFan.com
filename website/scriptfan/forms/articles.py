@@ -23,5 +23,5 @@ class ArticleForm(RedirectForm):
 class CategoryForm(RedirectForm):
     """ Form for category create and update """
 
+    # TODO: Unique validation for name
     name = wtf.TextField("name", validators=[wtf.Required(message=u'名称不能为空')])
-    slug = wtf.TextField("slug", validators=[wtf.Required(message=u'名称不能为空')])

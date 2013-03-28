@@ -1,3 +1,8 @@
-<ul class="well well-small nav nav-pills nav-stacked span3" id="category-list">
-    hi there.
-</ul>
+<div class="well sidebar-list span3">
+    <ul class="nav nav-list" id="category-list">
+        <li class="nav-header">{{ _('views.articles.categories') }}</li>
+        {% for category in categories %}
+        <li id="category-{{ category.id }}"><a href="#">{{ category.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>

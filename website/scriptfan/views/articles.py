@@ -22,14 +22,15 @@ blueprint = Blueprint("articles", __name__)
 @blueprint.route('/', methods=['GET'])
 def index():
     articles = Article.query.all()
+    categories = Category.query.all()
     # app.logger.info(articles[0].title)
-    return render_template('articles/index.html',
-                            articles=articles)
+    return render_template('articles/index.html', articles=articles, categories=categories)
 
 @blueprint.route('/<int:article_id>', methods=['GET'])
 def show(article_id):
     article = Article.get_by_id(article_id)
-    return render_template('articles/show.html', article=article)
+    categories = Category.query.all()
+    return render_template('articles/show.html', article=article, categories=categories)
 
 
 @blueprint.route('/create', methods=['GET', 'POST'])
@@ -43,7 +44,8 @@ def create():
         flash('Add article successfully!', 'success')
         return redirect(url_for('.show', article_id=article.id))
 
-    return render_template('articles/new.html', form=form)
+    categories = Category.query.all()
+    return render_template('articles/new.html', form=form, categories=categories)
 
 
 @blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
@@ -55,5 +57,7 @@ def update(article_id):
         db.session.commit()
         flash('Update article successfully!', 'success')
         return redirect(url_for('.index'))
-    return render_template('articles/edit.html',
-                           form=form)
+
+
+    categories = Category.query.all()
+    return render_template('articles/edit.html', form=form, categories=categories)

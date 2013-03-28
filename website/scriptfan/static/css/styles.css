@@ -51,3 +51,7 @@ body > div.navbar > div.navbar-inner > div.container > div > form > input {
     height: 110px;
     background: #eeeeee,
 }
+
+.sidebar-list {
+    padding: 9px 0;
+}

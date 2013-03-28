@@ -28,6 +28,9 @@ msgstr "发布文章"
 msgid "articles.update"
 msgstr "编辑文章"
 
+msgid "views.articles.categories"
+msgstr "文章分类"
+
 msgid "event"
 msgstr "活动"
 
