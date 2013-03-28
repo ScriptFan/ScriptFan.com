@@ -30,13 +30,16 @@ msgid "index"
 msgstr "首页"
 
 msgid "articles"
-msgstr "博客"
+msgstr "文章"
 
 msgid "models.article.title"
 msgstr "标题"
 
 msgid "articles.create"
 msgstr "发布文章"
+
+msgid "articles.edit"
+msgstr "修改文章"
 
 msgid "articles.update %(title)s"
 msgstr "修改 %(title)s"

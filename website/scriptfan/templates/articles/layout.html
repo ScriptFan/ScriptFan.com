@@ -3,9 +3,9 @@
 {% block content %}
 <div class="row-fluid">
     <div class="content span9">
-        {% block content_body scoped %}{% endblock %}
+        {% block content_body %}{% endblock %}
     </div><!-- .content -->
 
-    {% include 'articles/_sidebar.html' scoped %}
+    {% include 'articles/_sidebar.html'%}
 </div><!-- .row-fluid -->
 {% endblock %}
