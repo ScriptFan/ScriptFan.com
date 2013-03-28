@@ -4,6 +4,28 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 
+## Users
+
+msgid  "views.users.slug.title"
+msgstr "设置个性域名"
+
+msgid  "views.users.general.title"
+msgstr "修改个人资料"
+
+msgid  "views.users.email.title"
+msgstr "修改登陆邮箱"
+
+msgid  "views.users.password.title.set"
+msgstr "设置密码"
+
+msgid  "views.users.password.title.reset"
+msgstr "修改密码"
+
+msgid  "views.users.openids.title"
+msgstr "管理服务绑定"
+
+
+
 msgid "index"
 msgstr "首页"
 

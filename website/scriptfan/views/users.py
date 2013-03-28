@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 from datetime import datetime
-from flask import Blueprint, session, request, url_for, redirect, abort
+from flask import Blueprint, session, request, url_for, redirect, abort, g
 from flask import render_template, flash
 from flask import current_app as app
 from flask.ext import login
@@ -44,6 +44,8 @@ def login_user(user, remember=False):
 @blurprint.route('/openid/manage', methods=['GET', 'POST'])
 @login.login_required
 def openid_manage():
+    g.actived_navitem = 'openids'
+
     form = ManageOpenIDForm(csrf_enabled=False)
     if form.validate_on_submit():
         method = form.method.data
@@ -255,6 +257,8 @@ def profile(slug_or_id=None):
 @blurprint.route('/general', methods=['GET', 'POST'])
 @login.login_required
 def general():
+    g.actived_navitem = 'general'
+
     form = EditProfileForm(csrf_enabled=False)
     if form.validate_on_submit():
         app.logger.info(u'* Updating users information...')
@@ -276,6 +280,8 @@ def general():
 @blurprint.route('/slug', methods=['GET', 'POST'])
 @login.login_required
 def slug():
+    g.actived_navitem = 'slug'
+
     form = EditSlugForm()
     if form.validate_on_submit():
         form.populate_obj(current_user.user)
@@ -289,6 +295,8 @@ def slug():
 @blurprint.route('/password', methods=['GET', 'POST'])
 @login.login_required
 def password():
+    g.actived_navitem = 'password'
+
     form = EditPasswordForm(csrf_enabled=False)
     if form.validate_on_submit():
         current_user.user.set_password(form.password.data)

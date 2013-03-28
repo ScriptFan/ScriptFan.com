@@ -1,11 +1,20 @@
+{% set pwd_action = current_user.user.password and 'reset' or 'set' -%}
+{% set navbar_items = [
+   (url_for('users.slug'),          'slug',      _('views.users.slug.title')), 
+   (url_for('users.general'),       'general',   _('views.users.general.title')), 
+   ('#',                            'email',     _('views.users.email.title')), 
+   (url_for('users.password'),      'password',  _('views.users.password.title.' + pwd_action)), 
+   (url_for('users.openid_manage'), 'openids',   _('views.users.openids.title')),
+] -%}
+
 <div class="well sidebar-list span3">
     <ul class="nav nav-list" id="navs-settings">
-        {% if not current_user.user.slug %}
-        <li class="slug"><a href="{{ url_for('users.slug') }}">设置修改域名</a></li>
+        {% for href, navitem, text in navbar_items %}
+        {% if navitem != 'slug' or not current_user.user.slug %}
+        <li class="{{ navitem }}{% if navitem == g.actived_navitem %} active{% endif %}">
+            <a href="{{ href }}">{{ text }}</a>
+        </li>
         {% endif %}
-        <li class="general"><a href="{{ url_for('users.general') }}">修改我的资料</a></li>
-        <li class="email"><a href="#">修改登陆邮箱</a></li>
-        <li class="password"><a href="{{ url_for('users.password') }}">{{ current_user.user.password and '修改密码' or '设置密码' }}</a></li>
-        <li class="services"><a href="{{ url_for('users.openid_manage') }}">管理服务绑定</a></li>
+        {% endfor %}
     </ul>
 </div>
