@@ -51,6 +51,7 @@ def translate(lang):
 def initdb(config='scriptfan.cfg'):
     config_app(app, config)
 
+    from scriptfan.models import *
     try:
         db.drop_all()
         db.create_all()
