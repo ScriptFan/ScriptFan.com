@@ -26,11 +26,15 @@ def runserver(config, host, port):
 
 @manager.option('-l', '--lang', dest='lang', help='Language to translate', default=None)
 def translate(lang):
+    if lang:
+        dirs = [lang,]
+    else:
+        trans_dir = os.path.join('scriptfan', 'translations')
+        dirs = os.listdir(trans_dir)
     try:
         import subprocess
-        trans_dir = os.path.join('scriptfan', 'translations')
         print 'Scanning translations under path:', trans_dir
-        for language in os.listdir(trans_dir):
+        for language in dirs:
             message_dir  = os.path.join(trans_dir, language, 'LC_MESSAGES')
             message_source = os.path.join(message_dir, 'messages.pot')
             message_target = os.path.join(message_dir, 'messages.mo')
