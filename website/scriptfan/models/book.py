@@ -29,7 +29,10 @@ class BookRecord(db.Model):
     __tablename__ = 'book_record'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.relationship('User', backref=db.backref('users'))
-    book_id = db.relationship('Book', backref=db.backref('books'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
     created_time = db.Column(db.DateTime, default=datetime.now)
     return_time = db.Column(db.DateTime, default=datetime.now)
+
+    user = db.relationship('User', backref=db.backref('users'))
+    book = db.relationship('Book', backref=db.backref('books'))
