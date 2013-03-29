@@ -16,7 +16,7 @@
         </div>
         <div class="article-content">
             {# TODO: Use article.content_html instead of content #}
-            {{ article.content | markdown | safe }}
+            {{ article.content_html | safe }}
         </div>
     </div><!-- .article -->
 {% endblock %}

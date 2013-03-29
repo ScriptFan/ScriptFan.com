@@ -16,7 +16,7 @@
             <span class="article-date" style="float:right"><i class="icon icon-time"></i> {{ article.created_time | dateformat }}</span>
         </div>
         <div class="article-content">
-            {{ article.content | markdown | safe }}
+            {{ article.content_html | safe }}
         </div>
     </li>
     {% endfor %}
