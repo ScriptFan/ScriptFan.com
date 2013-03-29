@@ -13,6 +13,8 @@ from .event_duration import EventDuration
 from .resource import Resource
 from .article import Article
 from .category import Category
+from .book import Book
+from .book import BookRecord
 
 # 活动相关资源
 # topic_resources = db.Table('topic_resources',
