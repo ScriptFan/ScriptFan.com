@@ -20,3 +20,6 @@
     transition: border linear .2s,box-shadow linear .2s;
 }
 
+.pagination {
+    margin-bottom: 0;
+}

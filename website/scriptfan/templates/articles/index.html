@@ -9,7 +9,7 @@
 </div>
 
 <ul class="article-list">
-    {% for article in articles %}
+    {% for article in articles.items %}
     <li class="article article-{{ article.id }}">
         <div class="article-head">
             <a href="{{ url_for('.show', article_id=article.id) }}"><h3>{{ article.title }}</h3></a>
@@ -18,7 +18,11 @@
         <div class="article-content">
             {{ article.content_html | safe }}
         </div>
+        <hr />
     </li>
     {% endfor %}
 </ul>
+
+{{ p.render_pagination(articles, 'articles.index') }}
+
 {% endblock %}

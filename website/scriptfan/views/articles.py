@@ -12,6 +12,7 @@ from flask.ext.login import current_user
 from flask.ext.babel import gettext as _
 
 from scriptfan import db
+from scriptfan.functions import get_page
 from scriptfan.forms.articles import ArticleForm
 from scriptfan.models import Article, Category
 
@@ -21,7 +22,8 @@ blueprint = Blueprint("articles", __name__)
 
 @blueprint.route('/', methods=['GET'])
 def index():
-    articles = Article.query.order_by('created_time DESC').all()
+    articles = Article.query.order_by('created_time DESC') \
+                      .paginate(get_page(), app.config.get('PAGE_SIZE', 10))
     categories = Category.query.all()
     return render_template('articles/index.html', articles=articles, categories=categories)
 
