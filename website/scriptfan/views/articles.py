@@ -21,10 +21,10 @@ blueprint = Blueprint("articles", __name__)
 
 @blueprint.route('/', methods=['GET'])
 def index():
-    articles = Article.query.all()
+    articles = Article.query.order_by('created_time DESC').all()
     categories = Category.query.all()
-    # app.logger.info(articles[0].title)
     return render_template('articles/index.html', articles=articles, categories=categories)
+
 
 @blueprint.route('/<int:article_id>', methods=['GET'])
 def show(article_id):
@@ -57,7 +57,6 @@ def update(article_id):
         db.session.commit()
         flash('Update article successfully!', 'success')
         return redirect(url_for('.index'))
-
 
     categories = Category.query.all()
     return render_template('articles/edit.html', form=form, categories=categories)
