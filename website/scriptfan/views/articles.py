@@ -14,7 +14,7 @@ from flask.ext.babel import gettext as _
 from scriptfan import db
 from scriptfan.functions import get_page
 from scriptfan.forms.articles import ArticleForm
-from scriptfan.models import Article, Category
+from scriptfan.models import Article, Tag
 
 
 blueprint = Blueprint("articles", __name__)
@@ -24,15 +24,13 @@ blueprint = Blueprint("articles", __name__)
 def index():
     articles = Article.query.order_by('created_time DESC') \
                       .paginate(get_page(), app.config.get('PAGE_SIZE', 10))
-    categories = Category.query.all()
-    return render_template('articles/index.html', articles=articles, categories=categories)
+    return render_template('articles/index.html', articles=articles)
 
 
 @blueprint.route('/<int:article_id>', methods=['GET'])
 def show(article_id):
     article = Article.get_by_id(article_id)
-    categories = Category.query.all()
-    return render_template('articles/show.html', article=article, categories=categories)
+    return render_template('articles/show.html', article=article)
 
 
 @blueprint.route('/create', methods=['GET', 'POST'])
@@ -46,8 +44,7 @@ def create():
         flash('Add article successfully!', 'success')
         return redirect(url_for('.show', article_id=article.id))
 
-    categories = Category.query.all()
-    return render_template('articles/new.html', form=form, categories=categories)
+    return render_template('articles/new.html', form=form)
 
 
 @blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
@@ -60,5 +57,4 @@ def update(article_id):
         flash('Update article successfully!', 'success')
         return redirect(url_for('.index'))
 
-    categories = Category.query.all()
-    return render_template('articles/edit.html', form=form, categories=categories)
+    return render_template('articles/edit.html', form=form)
