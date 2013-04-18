@@ -8,6 +8,7 @@
 
 from flask import (Blueprint, render_template, redirect,
                    flash, url_for, request, current_app as app)
+from flask.ext import login
 from flask.ext.login import current_user
 from flask.ext.babel import gettext as _
 
@@ -34,11 +35,13 @@ def show(article_id):
 
 
 @blueprint.route('/create', methods=['GET', 'POST'])
+@login.login_required
 def create():
     form = ArticleForm()
     if form.validate_on_submit():
         article = Article()
         form.populate_obj(article)
+        article.author_id = current_user.user.id
         db.session.add(article)
         db.session.commit()
         flash('Add article successfully!', 'success')
@@ -48,6 +51,7 @@ def create():
 
 
 @blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
+@login.login_required
 def update(article_id):
     article = Article.get_by_id(article_id)
     form = ArticleForm(obj=article)
