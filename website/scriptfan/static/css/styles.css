@@ -23,7 +23,7 @@ body > div.navbar > div.navbar-inner > div.container > div > form > input {
     box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
 }
 
-.form-horizontal {
+.form-horizontal, .form-vertical {
     margin-bottom: 0px;
 }
 
