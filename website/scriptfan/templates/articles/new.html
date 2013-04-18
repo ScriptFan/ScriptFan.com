@@ -3,11 +3,13 @@
 {% block title %}{{ _('views.articles.new.title') }}{% endblock %}
 
 {% block styles %}
-<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/articles.css') }}" />
+{{ t.css('lib/bootstrap-tagmanager/bootstrap-tagmanager.css') }}
+{{ super() }}
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="{{ url_for('static', filename='lib/epiceditor/js/epiceditor.min.js') }}"></script>
+{{ t.js('lib/bootstrap-tagmanager/bootstrap-tagmanager.js') }}
+{{ t.js('lib/epiceditor/js/epiceditor.min.js') }}
 {{ super() }}
 {% endblock %}
 

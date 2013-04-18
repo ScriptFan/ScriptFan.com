@@ -9,6 +9,7 @@
         <!-- 全局样式 -->
         {{ t.css('lib/bootstrap/css/bootstrap.min.css') }}
         {{ t.css('css/styles.css') }}
+
         <!-- 页面样式 -->
         {% block styles %}
         {{ t.css('css/%s.css' % request.blueprint) }}
@@ -88,8 +89,10 @@
         {{ t.js('lib/bootstrap/js/bootstrap.min.js') }}
         {{ t.js(url_for('home.env'), external=True) }}
         {{ t.js('js/application.js') }}
+
         <!-- 页面脚本 -->
         {% block scripts %}
+
         {{ t.js('js/%s.js' % request.blueprint) }}
         {% endblock %}
     </body>

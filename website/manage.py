@@ -22,7 +22,7 @@ def runserver(config, host, port):
     dispatch_handlers(app)
     register_blueprints(app)
     register_jinja_env(app)
-    app.run(host=host, port=port, threaded=True)
+    app.run(host=host, port=port)
 
 @manager.option('-l', '--lang', dest='lang', help='Language to translate', default=None)
 def translate(lang):

@@ -28,3 +28,20 @@
 .article-meta { background-color: #f9f9f9; margin-bottom: 16px; padding: 2px 5px; }
 .article-meta span { margin-right: 5px; }
 .article-show .article-meta { margin-left: -20px; margin-right: -20px; }
+.tags-manager-wrapper {
+    background-color: #FFF;
+    border: 1px solid #CCC;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    Unknown property name.-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border linear .2s,box-shadow linear .2s;
+    Unknown property name.-moz-transition: border linear .2s,box-shadow linear .2s;
+    Unknown property name.-o-transition: border linear .2s,box-shadow linear .2s;
+    transition: border linear .2s,box-shadow linear .2s;
+}
+.tags-manager-wrapper .tags-manager { margin-bottom: 0; border: none; float: left; }
+.tags-manager-wrapper .tags-manager:focus {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}

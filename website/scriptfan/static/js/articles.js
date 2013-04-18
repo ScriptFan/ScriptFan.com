@@ -1,4 +1,5 @@
 $(function() {
+    // 初始化Markdown编辑器
     var editor = new EpicEditor({
         basePath: ENV.STATIC + 'lib/epiceditor',
         theme: {
@@ -8,6 +9,12 @@ $(function() {
         }
     }).load();
     editor.importFile('post', $('#content').val());
+
+    // 文章标签编辑器
+    $('.tags-manager').tagsManager();
+    $('.tags-manager-wrapper').on('click', function() {
+        $('.tags-manager').focus();
+    });
 
     $('#form-article-create').submit(function() {
         var content = editor.exportFile();
