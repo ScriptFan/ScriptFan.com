@@ -30,7 +30,7 @@ def index():
 
 @blueprint.route('/<int:article_id>', methods=['GET'])
 def show(article_id):
-    article = Article.get_by_id(article_id)
+    article = Article.query.get(article_id)
     return render_template('articles/show.html', article=article)
 
 
@@ -53,7 +53,7 @@ def create():
 @blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
 @login.login_required
 def update(article_id):
-    article = Article.get_by_id(article_id)
+    article = Article.query.get(article_id)
     form = ArticleForm(obj=article)
     if form.validate_on_submit():
         form.populate_obj(article)
@@ -61,4 +61,5 @@ def update(article_id):
         flash('Update article successfully!', 'success')
         return redirect(url_for('.index'))
 
+    app.logger.info(form.data)
     return render_template('articles/edit.html', form=form)

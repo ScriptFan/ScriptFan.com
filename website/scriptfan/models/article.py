@@ -49,10 +49,6 @@ class Article(db.Model):
                 tag = Tag.query.filter_by(name=tag_name).first() or Tag(name=tag_name)
                 self.tags.append(tag)
 
-    @classmethod
-    def get_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
-
 
 class Tag(db.Model):
     __tablename__ = 'tags'
