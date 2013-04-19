@@ -16,3 +16,4 @@ class ArticleForm(RedirectForm):
 
     title = wtf.TextField('title', validators=[wtf.Required(message=u'请填写标题')])
     content = wtf.TextAreaField('content', validators=[wtf.Required(message=u'文章内容不能为空')])
+    tags_text = wtf.HiddenField('tags_text')

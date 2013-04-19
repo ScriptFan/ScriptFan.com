@@ -11,7 +11,7 @@ $(function() {
     editor.importFile('post', $('#content').val());
 
     // 文章标签编辑器
-    $('.tags-manager').tagsManager();
+    $('.tags-manager').tagsManager({ hiddenTagListName: 'tags_text' });
     $('.tags-manager-wrapper').on('click', function() {
         $('.tags-manager').focus();
     });
