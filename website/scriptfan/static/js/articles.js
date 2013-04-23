@@ -13,7 +13,7 @@ $(function() {
     // 文章标签编辑器
     $('.tags-manager').tagsManager({
         prefilled: prefilled_tags || [],
-        shiddenTagListName: 'tags_text' 
+        hiddenTagListName: 'tags_text' 
     });
 
     $('.tags-manager-wrapper').on('click', function() {

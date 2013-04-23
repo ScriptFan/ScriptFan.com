@@ -39,8 +39,10 @@ def show(article_id):
 def create():
     form = ArticleForm()
     if form.validate_on_submit():
+        app.logger.info('Create new article %s', form.title.data)
         article = Article()
         form.populate_obj(article)
+        app.logger.info('  Tagged as %s', form.tags_text.data)
         article.author_id = current_user.user.id
         db.session.add(article)
         db.session.commit()
