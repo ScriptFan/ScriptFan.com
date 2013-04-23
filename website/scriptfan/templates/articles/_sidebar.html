@@ -1,10 +1,8 @@
 <div class="well sidebar-list span3">
-    {#
     <ul class="nav nav-list" id="tags-list">
-        <li class="nav-header">{{ _('views.articles.tags') }}</li>
-        {% for tag in article.tags %}
-        <li id="tag-{{ tag.id }}"><a href="#">{{ tag.name }}</a></li>
+        <li class="nav-header">{{ _('views.articles.tag_list') }}</li>
+        {% for tag in tags %}
+        <li id="tag-{{ tag.id }}"><a href="{{ url_for('.index', tag_name=tag.name) }}">{{ tag.name }}</a></li>
         {% endfor %}
     </ul>
-    #}
 </div>

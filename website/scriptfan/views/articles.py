@@ -22,16 +22,21 @@ blueprint = Blueprint("articles", __name__)
 
 
 @blueprint.route('/', methods=['GET'])
-def index():
-    articles = Article.query.order_by('created_time DESC') \
-                      .paginate(get_page(), app.config.get('PAGE_SIZE', 10))
-    return render_template('articles/index.html', articles=articles)
+@blueprint.route('/tag/<tag_name>', methods=['GET'])
+def index(tag_name=None):
+    articles = Article.query
+    if tag_name:
+        articles = articles.filter(Article.tags.any(name=tag_name))
+    articles = articles.order_by('created_time DESC').paginate(get_page(), app.config.get('PAGE_SIZE', 10))
+    tags = Tag.query.all()
+    return render_template('articles/index.html', articles=articles, tags=tags, tag_name=tag_name)
 
 
 @blueprint.route('/<int:article_id>', methods=['GET'])
 def show(article_id):
     article = Article.query.get(article_id)
-    return render_template('articles/show.html', article=article)
+    tags = Tag.query.all()
+    return render_template('articles/show.html', article=article, tags=tags)
 
 
 @blueprint.route('/create', methods=['GET', 'POST'])
@@ -49,7 +54,8 @@ def create():
         flash('Add article successfully!', 'success')
         return redirect(url_for('.show', article_id=article.id))
 
-    return render_template('articles/new.html', form=form)
+    tags = Tag.query.all()
+    return render_template('articles/new.html', form=form, tags=tags)
 
 
 @blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
@@ -66,5 +72,5 @@ def update(article_id):
         flash('Update article successfully!', 'success')
         return redirect(url_for('.index'))
 
-    app.logger.info(form.data)
-    return render_template('articles/edit.html', form=form)
+    tags = Tag.query.all()
+    return render_template('articles/edit.html', form=form, tags=tags)

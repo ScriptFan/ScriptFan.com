@@ -53,8 +53,8 @@ msgstr "发布文章"
 msgid "articles.update"
 msgstr "编辑文章"
 
-msgid "views.articles.categories"
-msgstr "文章分类"
+msgid "views.articles.tag_list"
+msgstr "标签列表"
 
 msgid "event"
 msgstr "活动"

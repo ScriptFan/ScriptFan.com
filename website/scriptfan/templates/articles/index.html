@@ -1,11 +1,11 @@
 {% extends "articles/layout.html" %}
 
-{% block title %}{{ _('articles') }}{% endblock %}
+{% block title %}{%- if tag_name -%}{{ 'Tag: ' ~ tag_name}}{%- else -%}{{ _('articles') }}{%- endif %}{% endblock %}
 
 {% block content_body %}
 <div class="page-header">
     <a href="{{ url_for('articles.create') }}" class="btn btn-success pull-right">{{ _('articles.create') }}</a>
-    <h1>{{ _('articles') }}</h1>
+    <h1>{{ self.title() }}</h1>
 </div>
 
 <ul class="article-list">
