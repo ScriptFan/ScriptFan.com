@@ -45,7 +45,7 @@ def create():
         app.logger.info('  Tagged as %s', form.tags_text.data)
         article.author_id = current_user.user.id
         db.session.add(article)
-        db.session.commit()
+        # db.session.commit()
         flash('Add article successfully!', 'success')
         return redirect(url_for('.show', article_id=article.id))
 
@@ -58,8 +58,11 @@ def update(article_id):
     article = Article.query.get(article_id)
     form = ArticleForm(obj=article)
     if form.validate_on_submit():
+        app.logger.info('Updating article: #%s %s', article.id, article.title)
+        app.logger.info('  Old tags: %s', article.tags_text)
         form.populate_obj(article)
-        db.session.commit()
+        app.logger.info('  New tags: %s', article.tags_text)
+        # db.session.commit()
         flash('Update article successfully!', 'success')
         return redirect(url_for('.index'))
 

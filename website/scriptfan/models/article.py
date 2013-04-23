@@ -43,7 +43,7 @@ class Article(db.Model):
         # 仅当 tags 发生变化时才进行重新分配
         if value != self.tags_text:
             if self.id:
-                self.tags.delete()
+                self.tags[:] = []
             
             for tag_name in value.split(','):
                 tag = Tag.query.filter_by(name=tag_name).first() or Tag(name=tag_name)
