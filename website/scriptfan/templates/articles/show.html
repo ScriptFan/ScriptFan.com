@@ -6,6 +6,12 @@
     <div id="article-{{ article.id }}" class="article article-show">
         <div class="page-header" style="margin-bottom: 0;">
             <a href="{{ url_for('articles.update', article_id=article.id) }}" class="btn btn-success pull-right">{{ _('articles.edit') }}</a>
+            <form action="{{ url_for('articles.destroy', article_id=article.id) }}" method="POST" 
+                    class="form-inline pull-right" onsubmit="return confirm('{{ _('articles.destroy.confirm') }}');">
+                {{ destroy_form.hidden_tag() }}
+                <button class="btn btn-danger" type="submit">{{ _('articles.destroy') }}</button>
+            </form>
+
             <h1>{{ article.title }}</h1>
         </div>
 
@@ -18,7 +24,6 @@
         </div>
 
         <div class="article-content">
-            {# TODO: Use article.content_html instead of content #}
             {{ article.content_html | safe }}
         </div>
     </div><!-- .article -->

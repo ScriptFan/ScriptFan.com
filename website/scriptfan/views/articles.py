@@ -14,6 +14,7 @@ from flask.ext.babel import gettext as _
 
 from scriptfan import db
 from scriptfan.functions import get_page
+from scriptfan.forms.base import RedirectForm
 from scriptfan.forms.articles import ArticleForm
 from scriptfan.models import Article, Tag
 
@@ -22,7 +23,7 @@ blueprint = Blueprint("articles", __name__)
 
 
 @blueprint.route('/', methods=['GET'])
-@blueprint.route('/tag/<tag_name>', methods=['GET'])
+@blueprint.route('/tag/<tag_name>/', methods=['GET'])
 def index(tag_name=None):
     articles = Article.query
     if tag_name:
@@ -32,14 +33,15 @@ def index(tag_name=None):
     return render_template('articles/index.html', articles=articles, tags=tags, tag_name=tag_name)
 
 
-@blueprint.route('/<int:article_id>', methods=['GET'])
+@blueprint.route('/<int:article_id>/', methods=['GET'])
 def show(article_id):
     article = Article.query.get(article_id)
     tags = Tag.query.all()
-    return render_template('articles/show.html', article=article, tags=tags)
+    destroy_form = RedirectForm()
+    return render_template('articles/show.html', article=article, tags=tags, destroy_form=destroy_form)
 
 
-@blueprint.route('/create', methods=['GET', 'POST'])
+@blueprint.route('/create/', methods=['GET', 'POST'])
 @login.login_required
 def create():
     form = ArticleForm()
@@ -58,7 +60,7 @@ def create():
     return render_template('articles/new.html', form=form, tags=tags)
 
 
-@blueprint.route('/edit/<int:article_id>', methods=['GET', 'POST'])
+@blueprint.route('/edit/<int:article_id>/', methods=['GET', 'POST'])
 @login.login_required
 def update(article_id):
     article = Article.query.get(article_id)
@@ -74,3 +76,11 @@ def update(article_id):
 
     tags = Tag.query.all()
     return render_template('articles/edit.html', form=form, tags=tags)
+
+@blueprint.route('/<int:article_id>/destroy/', methods=['POST'])
+def destroy(article_id):
+    article = Article.query.get(article_id)
+    flash('Destroy article successfully!', 'success')
+    db.session.delete(article)
+    return redirect(url_for('.index'))
+

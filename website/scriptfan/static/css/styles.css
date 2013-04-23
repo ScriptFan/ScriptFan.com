@@ -52,6 +52,10 @@ body > div.navbar > div.navbar-inner > div.container > div > form > input {
     background: #eeeeee,
 }
 
+.page-header .btn {
+    margin-left: 10px;
+} 
+
 .sidebar-list {
     padding: 9px 0;
 }

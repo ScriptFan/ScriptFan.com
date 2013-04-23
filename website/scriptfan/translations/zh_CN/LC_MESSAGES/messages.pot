@@ -41,6 +41,12 @@ msgstr "发布文章"
 msgid "articles.edit"
 msgstr "修改文章"
 
+msgid "articles.destroy"
+msgstr "删除文章"
+
+msgid "articles.destroy.confirm"
+msgstr "确认要删除该文章吗？"
+
 msgid "articles.update %(title)s"
 msgstr "修改 %(title)s"
 
