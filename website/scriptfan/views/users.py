@@ -6,6 +6,7 @@ from flask import current_app as app
 from flask.ext import login
 from flask.ext.login import current_user
 from flask.ext.openid import COMMON_PROVIDERS
+from flask.ext.principal import Identity, AnonymousIdentity, identity_changed, identity_loaded
 from scriptfan import db, oid, login_manager
 from scriptfan.models import User, UserOpenID
 from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, \
@@ -143,6 +144,7 @@ def signin():
     if form.validate_on_submit():
         app.logger.info('Signin users: %s', form.email.data)
         login_user(form.user, remember=form.remember)
+        identity_changed.send(app._get_current_object(), identity=Identity(current_user.user.id))
         flash(u'登陆成功', 'success')
         return form.redirect('users.profile')
    
@@ -317,5 +319,7 @@ def signout():
     login.logout_user()
     if 'openid_provider' in session:
         del session['openid_provider']
+    identity_changed.send(app._get_current_object(), identity=AnonymousIdentity())
     return redirect(url_for('home.index'))
+
 

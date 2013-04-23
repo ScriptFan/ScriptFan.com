@@ -17,7 +17,7 @@ from scriptfan.functions import get_page
 from scriptfan.forms.base import RedirectForm
 from scriptfan.forms.articles import ArticleForm
 from scriptfan.models import Article, Tag
-
+from scriptfan import permissions
 
 blueprint = Blueprint("articles", __name__)
 
@@ -42,6 +42,7 @@ def show(article_id):
 
 
 @blueprint.route('/create/', methods=['GET', 'POST'])
+@permissions.user.require()
 @login.login_required
 def create():
     form = ArticleForm()

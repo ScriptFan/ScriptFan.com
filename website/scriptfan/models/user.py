@@ -45,7 +45,7 @@ class User(db.Model):
     created_time = db.Column(db.DateTime, default=datetime.now)
     #: 上次更新资料的时间
     updated_time = db.Column(db.DateTime, default=datetime.now)
-    #: 简单的权限控制，控制级别：3-普通用户 4-管理员 (目前就这么简单，后面再讨论）
+    #: 简单的权限控制，控制级别：1-被封用户 2-保留用户 3-普通用户 4-普通管理员 5-超级管理员
     privilege = db.Column(db.Integer, default=3)
   
     #: 用户 openid 的绑定列表
