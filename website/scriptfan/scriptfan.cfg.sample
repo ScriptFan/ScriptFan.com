@@ -9,7 +9,7 @@ USE_DEBUGGER=True
 SECRET_KEY='youshouldnotknowthis'
 
 # application side settings
-PAGE_SIZE=20
+PAGE_SIZE=10
 
 # database settings
 SQLALCHEMY_DATABASE_URI='mysql+mysqlconnector://root:root@localhost/scriptfan_dev?charset=utf8&use_unicode=1'

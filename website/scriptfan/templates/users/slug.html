@@ -1,6 +1,6 @@
 {% extends "users/layout.html" %}
 
-{% block title %}设置个性域名{% endblock %}
+{% block title %}{{ _('views.users.general.title') }}{% endblock %}
 
 {% block scripts %}
 <script type="text/javascript">
@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content_body %}
-<form id="form-slug" class="form-horizontal" action="{{ url_for('user.slug') }}" method="post">
+<form id="form-slug" class="form-horizontal" action="{{ url_for('users.slug') }}" method="post">
     {{ form.hidden_tag() }}
     
     <div class="alert alert-info"><strong>注意：</strong>个性域名设定后不能修改</div>

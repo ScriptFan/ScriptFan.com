@@ -1,0 +1,23 @@
+{% extends "articles/layout.html" %}
+
+{% block title %}{{ _('views.articles.edit.title') % form.title.data }}{% endblock %}
+
+{% block styles %}
+{{ t.css('lib/bootstrap-tagmanager/bootstrap-tagmanager.css') }}
+{{ super() }}
+{% endblock %}
+
+{% block scripts %}
+{{ t.js('lib/bootstrap-tagmanager/bootstrap-tagmanager.js') }}
+{{ t.js('lib/epiceditor/js/epiceditor.min.js') }}
+{{ super() }}
+{% endblock %}
+
+{% block content_body %}
+    <div class="page-header">
+        <h1>{{ _('views.articles.edit.title') % form.title.data }}</h1>
+    </div>
+
+    {% include 'articles/_form.html' %}
+{% endblock %}
+

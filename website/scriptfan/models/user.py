@@ -50,7 +50,10 @@ class User(db.Model):
   
     #: 用户 openid 的绑定列表
     openids = db.relationship('UserOpenID', backref=db.backref('user'))
-    
+   
+    #: User articles
+    articles = db.relationship('Article', backref=db.backref('author'))
+
     def __repr__(self):
         return u'<User (%s|%s)>' % (self.nickname, self.email)
 
