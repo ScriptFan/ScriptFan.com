@@ -4,5 +4,6 @@
 *.ini
 *.log
 *.db
+*.mo
 /.idea
 venv/

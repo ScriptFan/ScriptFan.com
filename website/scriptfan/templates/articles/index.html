@@ -1,0 +1,32 @@
+{% extends "articles/layout.html" %}
+
+{% block title %}{%- if tag_name -%}{{ 'Tag: ' ~ tag_name}}{%- else -%}{{ _('articles') }}{%- endif %}{% endblock %}
+
+{% block content_body %}
+<div class="page-header">
+    <a href="{{ url_for('articles.create') }}" class="btn btn-success pull-right">{{ _('articles.create') }}</a>
+    <h1>{{ self.title() }}</h1>
+</div>
+
+<ul class="article-list">
+    {% for article in articles.items %}
+    <li class="article article-{{ article.id }}">
+        <div class="article-head">
+            <a href="{{ url_for('.show', article_id=article.id) }}"><h3>{{ article.title }}</h3></a>
+            <div class="article-meta">
+                <span><i class="icon icon-time"></i> {{ article.created_time | dateformat }}</span>
+                <span><i class="icon icon-user"></i> {{ article.author.nickname }}</span>
+                <span><i class="icon icon-tags"></i> {{ article.tags_text }}</span>
+            </div>
+        </div>
+        <div class="article-content">
+            {{ article.content_html | safe }}
+        </div>
+        <hr />
+    </li>
+    {% endfor %}
+</ul>
+
+{{ p.render_pagination(articles, 'articles.index') }}
+
+{% endblock %}

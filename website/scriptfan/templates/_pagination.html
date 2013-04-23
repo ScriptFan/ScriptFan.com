@@ -1,0 +1,25 @@
+{% macro render_pagination(pagination, endpoint, args={}) %}
+<div class="pagination pagination-right">
+    <ul>
+        <li class="{{ pagination.has_prev and ' ' or 'disabled' }}">
+            <a href="{{ pagination.has_prev and url_for(endpoint, page=pagination.prev_num, **args) or 'javascript:;' }}">«</a>
+        </li>
+        {%- for page in pagination.iter_pages() %}
+        <li class="{{ (page == pagination.page) and 'active' or '' }} {{ page | empty('disabled') }}">
+            {%- if page -%}
+                {%- if page == pagination.page -%}
+                <a href="javascript:;">{{ page }}</a>
+                {%- else -%}
+                <a href="{{ url_for(endpoint, page=page, **args) }}">{{ page }}</a>
+                {%- endif -%}
+            {%- else -%}
+            <a href="javascript:;">...</a>
+            {%- endif -%}
+        </li>
+        {%- endfor %}
+        <li class="{{ pagination.has_next and ' ' or 'disabled' }}">
+            <a href="{{ pagination.has_next and url_for(endpoint, page=pagination.next_num, **args) or 'javascript:;' }}">»</a>
+        </li>
+    </ul>
+</div>
+{% endmacro %}

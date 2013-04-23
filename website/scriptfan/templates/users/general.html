@@ -1,14 +1,6 @@
 {% extends "users/layout.html" %}
 
-{% block title %}修改基本资料{% endblock %}
-
-{% block scripts %}
-<script type="text/javascript">
-    $(function() {
-        $('#navs-settings .general').addClass('active');
-    });
-</script>
-{% endblock %}
+{% block title %}{{ _('views.users.general.title') }}{% endblock %}
 
 {% block content_body %}
 <form id="form-general" class="form-horizontal" action="{{ url_for('users.general') }}" method="post">
