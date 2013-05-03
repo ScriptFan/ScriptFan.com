@@ -9,6 +9,7 @@
 import hashlib
 from urlparse import urlparse, urljoin
 from flask import request
+from scriptfan import permissions
 
 def md5(password):
     return hashlib.md5(password).hexdigest()
@@ -34,3 +35,13 @@ def get_redirect_target():
             continue
         if is_safe_url(target):
             return target
+
+def require(*roles):
+    for role_name in roles:
+        if hasattr(permissions, role_name):
+            print getattr(permissions, role_name)
+            if getattr(permissions, role_name).require():
+                return True
+
+    return False
+            

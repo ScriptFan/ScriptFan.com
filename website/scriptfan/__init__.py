@@ -37,7 +37,7 @@ def config_app(app, config):
     
     app.logger.info('- Setting up extensions...')
     db.init_app(app)
-    config_principle(app)
+    config_pricipal(app)
     oid.init_app(app)
     login_manager.init_app(app)
     babel.init_app(app)
@@ -52,7 +52,7 @@ def config_app(app, config):
             abort(500)
         return response
 
-def config_principle(app):
+def config_pricipal(app):
     principals.init_app(app)
 
     # 配置 priciple
@@ -60,17 +60,14 @@ def config_principle(app):
 
     @identity_loaded.connect_via(app)
     def on_identity_loaded(sender, identity):
-        app.logger.info('----------------')
         from flask.ext.login import current_user
-        if hasattr(current_user, 'user'):
+        if hasattr(current_user, 'user') and current_user.user.id:
             identity.user = current_user.user
             if hasattr(current_user.user, 'privilege'):
                 identity.provides.add(RoleNeed(current_user.user.privilege))
                 app.logger.info(current_user.user.privilege)
                 app.logger.info(identity.provides)
-        
-        import pprint
-        pprint.pprint(identity)
+
 
     @principals.identity_loader
     def loadIdentityFromSession():
@@ -124,3 +121,7 @@ def register_jinja_env(app):
     app.logger.info('Register jinja variables...')
     app.jinja_env.globals['static'] = (lambda filename: \
             url_for('static', filename=filename))
+    from scriptfan.functions import require
+    app.jinja_env.globals['require'] = require
+
+

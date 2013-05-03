@@ -317,8 +317,10 @@ def editemail():
 @login.login_required
 def signout():
     login.logout_user()
-    if 'openid_provider' in session:
-        del session['openid_provider']
+
+    for key in ('openid_provider', 'identity.name', 'identity.auth_type', 'identity'):
+        session.pop(key, None)
+
     identity_changed.send(app._get_current_object(), identity=AnonymousIdentity())
     return redirect(url_for('home.index'))
 
