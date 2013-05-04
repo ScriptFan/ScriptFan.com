@@ -62,6 +62,7 @@ def create():
 
 
 @blueprint.route('/edit/<int:article_id>/', methods=['GET', 'POST'])
+@roles_required('admin', 'root')
 @login.login_required
 def update(article_id):
     article = Article.query.get(article_id)
@@ -79,6 +80,7 @@ def update(article_id):
     return render_template('articles/edit.html', form=form, tags=tags)
 
 @blueprint.route('/<int:article_id>/destroy/', methods=['POST'])
+@roles_required('admin', 'root')
 def destroy(article_id):
     article = Article.query.get(article_id)
     flash('Destroy article successfully!', 'success')
