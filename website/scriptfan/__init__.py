@@ -64,7 +64,7 @@ def config_pricipal(app):
         if hasattr(current_user, 'user') and current_user.user.id:
             identity.user = current_user.user
             if hasattr(current_user.user, 'privilege'):
-                identity.provides.add(RoleNeed(current_user.user.privilege))
+                identity.provides.add(RoleNeed(unicode(current_user.user.privilege)))
                 app.logger.info(current_user.user.privilege)
                 app.logger.info(identity.provides)
 
@@ -121,7 +121,7 @@ def register_jinja_env(app):
     app.logger.info('Register jinja variables...')
     app.jinja_env.globals['static'] = (lambda filename: \
             url_for('static', filename=filename))
-    from scriptfan.functions import require
-    app.jinja_env.globals['require'] = require
+    from scriptfan.functions import require_roles
+    app.jinja_env.globals['require_roles'] = require_roles
 
 

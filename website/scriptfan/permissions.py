@@ -8,9 +8,9 @@
 
 from flask.ext.principal import RoleNeed, Permission
 
-banned  = Permission(RoleNeed(1))
-suspend = Permission(RoleNeed(2))
-user    = Permission(RoleNeed(3))
-admin   = Permission(RoleNeed(4))
-root    = Permission(RoleNeed(5))
+banned  = Permission(RoleNeed(u'1'))
+suspend = Permission(RoleNeed(u'2'))
+user    = Permission(RoleNeed(u'3'))
+admin   = Permission(RoleNeed(u'4'))
+root    = Permission(RoleNeed(u'5'))
 

@@ -38,7 +38,6 @@ def login_user(user, remember=False):
     """ 登陆用户并更新最近登陆时间 """
     login.login_user(LoginUser(user), remember=remember)
     user.login_time = datetime.now()
-    app.logger.info('* Updated current users: %s, %s', user.id, user.email)
 
 # 开发资料修改页面中的OpenID绑定功能
 # FIXME: 第一次接触OpenID，实现得有点绕，是否还有漏洞没考虑到？一起讨论吧

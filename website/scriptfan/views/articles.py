@@ -13,7 +13,7 @@ from flask.ext.login import current_user
 from flask.ext.babel import gettext as _
 
 from scriptfan import db
-from scriptfan.functions import get_page
+from scriptfan.functions import get_page, roles_required
 from scriptfan.forms.base import RedirectForm
 from scriptfan.forms.articles import ArticleForm
 from scriptfan.models import Article, Tag
@@ -42,7 +42,7 @@ def show(article_id):
 
 
 @blueprint.route('/create/', methods=['GET', 'POST'])
-@permissions.user.require()
+@roles_required('admin', 'root')
 @login.login_required
 def create():
     form = ArticleForm()
