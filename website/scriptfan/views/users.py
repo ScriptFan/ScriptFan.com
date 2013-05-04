@@ -6,6 +6,7 @@ from flask import current_app as app
 from flask.ext import login
 from flask.ext.login import current_user
 from flask.ext.openid import COMMON_PROVIDERS
+from flask.ext.principal import Identity, AnonymousIdentity, identity_changed, identity_loaded
 from scriptfan import db, oid, login_manager
 from scriptfan.models import User, UserOpenID
 from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, \
@@ -37,7 +38,6 @@ def login_user(user, remember=False):
     """ 登陆用户并更新最近登陆时间 """
     login.login_user(LoginUser(user), remember=remember)
     user.login_time = datetime.now()
-    app.logger.info('* Updated current users: %s, %s', user.id, user.email)
 
 # 开发资料修改页面中的OpenID绑定功能
 # FIXME: 第一次接触OpenID，实现得有点绕，是否还有漏洞没考虑到？一起讨论吧
@@ -143,6 +143,7 @@ def signin():
     if form.validate_on_submit():
         app.logger.info('Signin users: %s', form.email.data)
         login_user(form.user, remember=form.remember)
+        identity_changed.send(app._get_current_object(), identity=Identity(current_user.user.id))
         flash(u'登陆成功', 'success')
         return form.redirect('users.profile')
    
@@ -315,7 +316,11 @@ def editemail():
 @login.login_required
 def signout():
     login.logout_user()
-    if 'openid_provider' in session:
-        del session['openid_provider']
+
+    for key in ('openid_provider', 'identity.name', 'identity.auth_type', 'identity'):
+        session.pop(key, None)
+
+    identity_changed.send(app._get_current_object(), identity=AnonymousIdentity())
     return redirect(url_for('home.index'))
+
 
