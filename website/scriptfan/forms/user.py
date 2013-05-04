@@ -93,3 +93,5 @@ class ManageOpenIDForm(RedirectForm):
         wtf.AnyOf(['add', 'delete'], message=u'不支持该操作'), ])
     provider = wtf.HiddenField('provider', validators=[
         wtf.AnyOf(COMMON_PROVIDERS, message=u'还不能绑定到该OpenID'), ])
+
+
