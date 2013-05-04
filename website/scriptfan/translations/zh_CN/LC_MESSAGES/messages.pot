@@ -4,6 +4,10 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 
+## 公共
+msgid  "messages.permission_denied"
+msgstr "没有权限!"
+
 ## Users
 
 msgid  "views.users.slug.title"
