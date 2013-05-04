@@ -4,7 +4,9 @@
 
 {% block content_body %}
 <div class="page-header">
+    {% if require_roles('admin', 'root') %}
     <a href="{{ url_for('articles.create') }}" class="btn btn-success pull-right">{{ _('articles.create') }}</a>
+    {% endif %}
     <h1>{{ self.title() }}</h1>
 </div>
 
