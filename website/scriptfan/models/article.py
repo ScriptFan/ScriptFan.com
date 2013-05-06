@@ -9,7 +9,7 @@
 from flask import current_app as app
 from datetime import datetime
 from sqlalchemy import event
-
+from werkzeug.utils import cached_property
 from scriptfan import db
 from scriptfan.filters import markdown
 
@@ -56,7 +56,11 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False, unique=True)
     slug = db.Column(db.String(255), nullable=False, unique=True)
-    count = db.Column(db.Integer, default=0)
+
+    @cached_property
+    def count(self):
+        return self.articles.count()
+
 
 def article_content_changed(article, content, old_content, initiator):
     """ 如果文章的正文变更，重新通过markdown转换html """
@@ -66,4 +70,3 @@ def article_content_changed(article, content, old_content, initiator):
     article.content_html = unicode(markdown(content))
 
 event.listen(Article.content, 'set', article_content_changed)
-
