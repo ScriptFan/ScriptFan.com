@@ -21,7 +21,13 @@
             <div class="article-meta">
                 <span><i class="icon icon-time"></i> {{ article.created_time | dateformat }}</span>
                 <span><i class="icon icon-user"></i> {{ article.author.nickname }}</span>
-                <span><i class="icon icon-tags"></i> {{ article.tags_text }}</span>
+                {% if article.tags %}
+                <span><i class="icon icon-tags"></i> 
+                    {% for tag in article.tags %}
+                    <a class="label" href="{{ url_for('.index', tag_name=tag.name) }}">{{ tag.name }}</a>
+                    {% endfor %}
+                </span>
+                {% endif %}
             </div>
         </div>
 
