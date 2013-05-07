@@ -32,16 +32,15 @@ app.debug = True
 def config_app(app, config):
     app.logger.info('Setting up application...')
    
-    app.logger.info('- Loading config file: %s' % config)
+    app.logger.info('Loading config file: %s' % config)
     app.config.from_pyfile(config)
     
-    app.logger.info('- Setting up extensions...')
+    app.logger.info('Setting up extensions...')
     db.init_app(app)
-    config_pricipal(app)
+    config_principal(app)
     oid.init_app(app)
     login_manager.init_app(app)
     babel.init_app(app)
-
 
     @app.after_request
     def after_request(response):
@@ -52,7 +51,7 @@ def config_app(app, config):
             abort(500)
         return response
 
-def config_pricipal(app):
+def config_principal(app):
     principals.init_app(app)
 
     # 配置 priciple
@@ -123,5 +122,4 @@ def register_jinja_env(app):
             url_for('static', filename=filename))
     from scriptfan.functions import require_roles
     app.jinja_env.globals['require_roles'] = require_roles
-
 
