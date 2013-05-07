@@ -8,6 +8,9 @@ msgstr ""
 msgid  "messages.permission_denied"
 msgstr "没有权限!"
 
+msgid "messages.no_record"
+msgstr "还没有%%s记录！"
+
 ## Users
 
 msgid  "views.users.slug.title"
@@ -65,6 +68,9 @@ msgstr "编辑文章"
 
 msgid "views.articles.tag_list"
 msgstr "标签列表"
+
+msgid "views.articles.index.title_tag"
+msgstr "标签：%%s"
 
 msgid "event"
 msgstr "活动"

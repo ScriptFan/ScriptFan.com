@@ -1,6 +1,6 @@
 {% extends "articles/layout.html" %}
 
-{% block title %}{%- if tag_name -%}{{ 'Tag: ' ~ tag_name}}{%- else -%}{{ _('articles') }}{%- endif %}{% endblock %}
+{% block title %}{%- if tag_name -%}{{ _('views.articles.index.title_tag') % tag_name }}{%- else -%}{{ _('articles') }}{%- endif %}{% endblock %}
 
 {% block content_body %}
 <div class="page-header">
@@ -35,6 +35,10 @@
     {% endfor %}
 </ul>
 
+{% if articles.items %}
 {{ p.render_pagination(articles, 'articles.index') }}
+{% else %}
+<div class="alert alert-info">{{ _('messages.no_record') % _('articles') }}</div>
+{% endif %}
 
 {% endblock %}
