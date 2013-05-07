@@ -36,7 +36,7 @@ def translate(lang):
         print 'Scanning translations under path:', trans_dir
         for language in dirs:
             message_dir  = os.path.join(trans_dir, language, 'LC_MESSAGES')
-            message_source = os.path.join(message_dir, 'messages.pot')
+            message_source = os.path.join(message_dir, 'messages.po')
             message_target = os.path.join(message_dir, 'messages.mo')
             if os.path.exists(message_source):
                 print '  Translateing', language, 'messages...'
