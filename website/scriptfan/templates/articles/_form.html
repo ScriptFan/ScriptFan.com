@@ -23,7 +23,8 @@
         </div>
     </div>
     <div class="form-actions">
-        <button type="submit" class="btn btn-primary">提交</button>
+        <button type="submit" class="btn btn-info"    name="published" value="0">{{ _('articles.do_draft') }}</button>
+        <button type="submit" class="btn btn-primary" name="published" value="1">{{ _('articles.do_publish') }}</button>
     </div>
 </form>
 

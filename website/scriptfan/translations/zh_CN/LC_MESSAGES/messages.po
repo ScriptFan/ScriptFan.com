@@ -45,6 +45,12 @@ msgstr "标题"
 msgid "articles.create"
 msgstr "发布文章"
 
+msgid "articles.do_draft"
+msgstr "存为草稿"
+
+msgid "articles.do_publish"
+msgstr "发布文章"
+
 msgid "articles.edit"
 msgstr "修改文章"
 

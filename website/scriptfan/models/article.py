@@ -31,6 +31,7 @@ class Article(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_time = db.Column(db.DateTime, default=datetime.now)
     updated_time = db.Column(db.DateTime, default=datetime.now)
+    published = db.Column(db.Boolean, nullable=False)
 
     tags = db.relationship('Tag', secondary=article_tags, backref=db.backref('articles', lazy='dynamic'))
 
