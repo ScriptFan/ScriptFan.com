@@ -13,7 +13,7 @@ from flask.ext.login import current_user
 from flask.ext.babel import gettext as _
 
 from scriptfan import db
-from scriptfan.functions import get_page, roles_required
+from scriptfan.functions import get_page, roles_required, require_roles
 from scriptfan.forms.base import RedirectForm
 from scriptfan.forms.articles import ArticleForm
 from scriptfan.models import Article, Tag
@@ -26,8 +26,14 @@ blueprint = Blueprint("articles", __name__)
 @blueprint.route('/tag/<tag_name>/', methods=['GET'])
 def index(tag_name=None):
     articles = Article.query
+
+    # 对于非管理员，只能看到发布过的文章
+    if not require_roles('admin', 'root'):
+        articles = articles.filter_by(published=1)
+
     if tag_name:
         articles = articles.filter(Article.tags.any(name=tag_name))
+
     articles = articles.order_by('created_time DESC').paginate(get_page(), app.config.get('PAGE_SIZE', 10))
     tags = Tag.query.all()
     return render_template('articles/index.html', articles=articles, tags=tags, tag_name=tag_name)

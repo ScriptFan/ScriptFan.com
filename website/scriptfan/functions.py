@@ -43,7 +43,6 @@ def get_redirect_target():
 def require_roles(*roles):
     for role_name in roles:
         if hasattr(permissions, role_name):
-            print getattr(permissions, role_name)
             if getattr(permissions, role_name).can():
                 return True
 
