@@ -11,8 +11,10 @@ from flask import (Blueprint, render_template, redirect,
 from flask.ext import login
 from flask.ext.login import current_user
 from flask.ext.babel import gettext as _
+from flask_mail import Message
 
 from scriptfan import db
+from scriptfan import mail
 from scriptfan.functions import get_page, roles_required, require_roles
 from scriptfan.forms.base import RedirectForm
 from scriptfan.forms.articles import ArticleForm
