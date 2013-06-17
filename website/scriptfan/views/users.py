@@ -303,6 +303,7 @@ def _send_reset_email(user, token):
         app.logger.info('Sending reset email to %s with token %s', user.email, token)
         msg = Message(u'ScriptFan密码重置', recipients=[user.email])
         msg.html = render_template('users/reset_email.html', user=user, token=token)
+        # FIXME: 邮件发送使用异步方式，避免用户等待太长时间
         mail.send(msg)
         app.logger.info('Mail sent successfully.')
         return True
