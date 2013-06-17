@@ -11,7 +11,7 @@ from scriptfan import db, oid, login_manager
 from scriptfan.models import User, UserOpenID
 from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, \
                                  EditPasswordForm, EditSlugForm, \
-                                 ManageOpenIDForm
+                                 ManageOpenIDForm, ResetStep1Form
 
 blurprint = Blueprint('users', __name__)
 
@@ -292,6 +292,10 @@ def slug():
     form.process(obj=current_user.user)
     return render_template('users/slug.html', form=form, skip_slug_info=True)
 
+@blurprint.route('/reset/step1', methods=['GET', 'POST'])
+def reset_step1():
+    form = ResetStep1Form()
+    return render_template('users/reset_step1.html', form=form)
 
 @blurprint.route('/password', methods=['GET', 'POST'])
 @login.login_required

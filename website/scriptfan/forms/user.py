@@ -33,6 +33,15 @@ class SigninForm(RedirectForm):
         
         return not self.errors
 
+class ResetStep1Form(RedirectForm):
+    """请求发送密码重置邮件的表单"""
+
+    email = wtf.TextField('email', validators=[
+        wtf.Required(message=u'请填写电子邮件'),
+        wtf.Email(message=u'无效的电子邮件')])
+    captcha = wtf.TextField('captcha', validators=[
+        wtf.Required(message=u'请填写验证码')])
+
 
 class SignupForm(RedirectForm):
     email = wtf.TextField('email', validators=[
