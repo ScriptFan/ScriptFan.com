@@ -39,8 +39,14 @@ class ResetStep1Form(RedirectForm):
     email = wtf.TextField('email', validators=[
         wtf.Required(message=u'请填写电子邮件'),
         wtf.Email(message=u'无效的电子邮件')])
-    captcha = wtf.TextField('captcha', validators=[
-        wtf.Required(message=u'请填写验证码')])
+    # captcha = wtf.TextField('captcha', validators=[
+    #     wtf.Required(message=u'请填写验证码')])
+
+    def validate_email(form, field):
+        form.user = User.get_by_email(field.data)
+        if not form.user:
+            raise wtf.ValidationError(u'该邮件尚未在本站注册') 
+
 
 
 class SignupForm(RedirectForm):

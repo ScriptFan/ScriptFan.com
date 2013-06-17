@@ -1,5 +1,6 @@
 #-*-coding:utf-8-*-
 from datetime import datetime
+import uuid
 from flask import Blueprint, session, request, url_for, redirect, abort, g
 from flask import render_template, flash
 from flask import current_app as app
@@ -7,7 +8,9 @@ from flask.ext import login
 from flask.ext.login import current_user
 from flask.ext.openid import COMMON_PROVIDERS
 from flask.ext.principal import Identity, AnonymousIdentity, identity_changed, identity_loaded
-from scriptfan import db, oid, login_manager
+from flask_mail import Message
+
+from scriptfan import db, oid, mail, login_manager
 from scriptfan.models import User, UserOpenID
 from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, \
                                  EditPasswordForm, EditSlugForm, \
@@ -292,10 +295,43 @@ def slug():
     form.process(obj=current_user.user)
     return render_template('users/slug.html', form=form, skip_slug_info=True)
 
+
+def _send_reset_email(user, token):
+    """ 发送密码重置邮件 """
+
+    try:
+        app.logger.info('Sending reset email to %s with token %s', user.email, token)
+        msg = Message(u'ScriptFan密码重置', recipients=[user.email])
+        msg.html = render_template('users/reset_email.html', user=user, token=token)
+        mail.send(msg)
+        app.logger.info('Mail sent successfully.')
+        return True
+    except Exception, e:
+        app.logger.info(e.message)
+        app.logger.error('Failed to send password reset mail, because: %s', e)
+        return False
+
+
 @blurprint.route('/reset/step1', methods=['GET', 'POST'])
 def reset_step1():
     form = ResetStep1Form()
+    if form.validate_on_submit():
+        app.logger.info('User %s request to reset password.', form.user.nickname)
+        token = uuid.uuid4().hex
+
+        if _send_reset_email(form.user, token):
+            session['reset_token'] = token
+            flash(u'密码重置邮件已经发送至 <strong>%s</strong> 请前往收件箱查收。' % form.user.email, 'success')
+            return form.redirect('home.index')
+
+        flash(u'邮件发送失败，请稍候再试', 'error')
+
     return render_template('users/reset_step1.html', form=form)
+
+
+@blurprint.route('/reset/step2', methods=['GET', 'POST'])
+def reset_step2():
+    return 'Hello World!'
 
 @blurprint.route('/password', methods=['GET', 'POST'])
 @login.login_required
