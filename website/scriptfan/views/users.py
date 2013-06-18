@@ -14,7 +14,7 @@ from scriptfan import db, oid, mail, login_manager
 from scriptfan.models import User, UserOpenID
 from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, \
                                  EditPasswordForm, EditSlugForm, \
-                                 ManageOpenIDForm, ResetStep1Form
+                                 ManageOpenIDForm, ResetStep1Form, ResetStep2Form
 
 blurprint = Blueprint('users', __name__)
 
@@ -315,12 +315,16 @@ def _send_reset_email(user, token):
 
 @blurprint.route('/reset/step1', methods=['GET', 'POST'])
 def reset_step1():
+    """ 重置密码第一步，发送重置链接邮件 """
+
+    # TODO: 相关文字的国际化处理
     form = ResetStep1Form()
     if form.validate_on_submit():
         app.logger.info('User %s request to reset password.', form.user.nickname)
         token = uuid.uuid4().hex
 
         if _send_reset_email(form.user, token):
+            session['reset_email'] = form.user.email
             session['reset_token'] = token
             flash(u'密码重置邮件已经发送至 <strong>%s</strong> 请前往收件箱查收。' % form.user.email, 'success')
             return form.redirect('home.index')
@@ -329,10 +333,40 @@ def reset_step1():
 
     return render_template('users/reset_step1.html', form=form)
 
+def _valid_reset_token():
+    """ 验证重置口令及邮件地址是否匹配 """
+
+    return session.get('reset_email') and \
+           session.get('reset_token') and \
+           session['reset_email'] == request.args['email'] and \
+           session['reset_token'] == request.args['token']
 
 @blurprint.route('/reset/step2', methods=['GET', 'POST'])
 def reset_step2():
-    return 'Hello World!'
+    form = ResetStep2Form()
+    if form.validate_on_submit():
+        app.logger.info("Updating to new password")
+
+        # FIXME: 密码重置 - 验证用户不存在的情况是否有必要？
+        user = User.get_by_email(session['reset_email'])
+        user.set_password(form.password.data)
+        flash(u'用户密码已经更新', 'success')
+
+        # TODO: 通过重置密码功能修改密码成功后，向用户发送邮件提醒。
+
+        # 清除验证用的 Token
+        del session['reset_email']
+        del session['reset_token']
+
+        return redirect(url_for('users.signin'))
+
+    # 如果邮件及当前token均匹配，则显示重置密码的表单
+    if _valid_reset_token(): 
+        return render_template('users/reset_step2.html', form=form)
+    else:
+        flash(u'重置密码链接无效或者已经过期，请重新发送重置密码邮件', 'warning')
+        return redirect(url_for('users.reset_step1'))
+
 
 @blurprint.route('/password', methods=['GET', 'POST'])
 @login.login_required
