@@ -23,3 +23,13 @@ BABEL_DEFAULT_LOCALE='zh_CN'
 
 # 密码盐，用于增加密码的安全性
 PASSWORD_SALT = 'udontkown@must#complicated'
+
+# 邮件设置
+MAIL_SERVER = 'your mail server'
+MAIL_PORT = 25
+MAIL_USE_TLS = False
+MAIL_USE_SSL = False
+MAIL_USERNAME = 'username' 
+MAIL_PASSWORD = 'password'
+MAIL_DEFAULT_SENDER = 'from@gmail.com'
+

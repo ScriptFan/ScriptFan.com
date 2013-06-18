@@ -11,6 +11,7 @@ from flask import Flask, render_template, abort, url_for, session
 from flask.ext.openid import OpenID
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
+from flask_mail import Mail
 from flask.ext.babel import Babel
 from flask.ext.principal import Principal
 
@@ -20,6 +21,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 babel = Babel()
 principals = Principal()
+mail = Mail()
 
 # Create flask application instance
 instance_path = os.path.abspath(os.path.dirname(__file__))
@@ -41,6 +43,7 @@ def config_app(app, config):
     oid.init_app(app)
     login_manager.init_app(app)
     babel.init_app(app)
+    mail.init_app(app)
 
     @app.after_request
     def after_request(response):

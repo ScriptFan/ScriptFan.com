@@ -1,5 +1,6 @@
 #-*-coding:utf-8-*-
 from datetime import datetime
+import uuid
 from flask import Blueprint, session, request, url_for, redirect, abort, g
 from flask import render_template, flash
 from flask import current_app as app
@@ -7,11 +8,13 @@ from flask.ext import login
 from flask.ext.login import current_user
 from flask.ext.openid import COMMON_PROVIDERS
 from flask.ext.principal import Identity, AnonymousIdentity, identity_changed, identity_loaded
-from scriptfan import db, oid, login_manager
+from flask_mail import Message
+
+from scriptfan import db, oid, mail, login_manager
 from scriptfan.models import User, UserOpenID
 from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, \
                                  EditPasswordForm, EditSlugForm, \
-                                 ManageOpenIDForm
+                                 ManageOpenIDForm, ResetStep1Form, ResetStep2Form
 
 blurprint = Blueprint('users', __name__)
 
@@ -291,6 +294,78 @@ def slug():
 
     form.process(obj=current_user.user)
     return render_template('users/slug.html', form=form, skip_slug_info=True)
+
+
+def _send_reset_email(user, token):
+    """ 发送密码重置邮件 """
+
+    try:
+        app.logger.info('Sending reset email to %s with token %s', user.email, token)
+        msg = Message(u'ScriptFan密码重置', recipients=[user.email])
+        msg.html = render_template('users/reset_email.html', user=user, token=token)
+        # FIXME: 邮件发送使用异步方式，避免用户等待太长时间
+        mail.send(msg)
+        app.logger.info('Mail sent successfully.')
+        return True
+    except Exception, e:
+        app.logger.info(e.message)
+        app.logger.error('Failed to send password reset mail, because: %s', e)
+        return False
+
+
+@blurprint.route('/reset/step1', methods=['GET', 'POST'])
+def reset_step1():
+    """ 重置密码第一步，发送重置链接邮件 """
+
+    # TODO: 相关文字的国际化处理
+    form = ResetStep1Form()
+    if form.validate_on_submit():
+        app.logger.info('User %s request to reset password.', form.user.nickname)
+        token = uuid.uuid4().hex
+
+        if _send_reset_email(form.user, token):
+            session['reset_email'] = form.user.email
+            session['reset_token'] = token
+            flash(u'密码重置邮件已经发送至 <strong>%s</strong> 请前往收件箱查收。' % form.user.email, 'success')
+            return form.redirect('home.index')
+
+        flash(u'邮件发送失败，请稍候再试', 'error')
+
+    return render_template('users/reset_step1.html', form=form)
+
+def _valid_reset_token():
+    """ 验证重置口令及邮件地址是否匹配 """
+
+    return session.get('reset_email') and \
+           session.get('reset_token') and \
+           session['reset_email'] == request.args['email'] and \
+           session['reset_token'] == request.args['token']
+
+@blurprint.route('/reset/step2', methods=['GET', 'POST'])
+def reset_step2():
+    form = ResetStep2Form()
+    if form.validate_on_submit():
+        app.logger.info("Updating to new password")
+
+        # FIXME: 密码重置 - 验证用户不存在的情况是否有必要？
+        user = User.get_by_email(session['reset_email'])
+        user.set_password(form.password.data)
+        flash(u'用户密码已经更新', 'success')
+
+        # TODO: 通过重置密码功能修改密码成功后，向用户发送邮件提醒。
+
+        # 清除验证用的 Token
+        del session['reset_email']
+        del session['reset_token']
+
+        return redirect(url_for('users.signin'))
+
+    # 如果邮件及当前token均匹配，则显示重置密码的表单
+    if _valid_reset_token(): 
+        return render_template('users/reset_step2.html', form=form)
+    else:
+        flash(u'重置密码链接无效或者已经过期，请重新发送重置密码邮件', 'warning')
+        return redirect(url_for('users.reset_step1'))
 
 
 @blurprint.route('/password', methods=['GET', 'POST'])
