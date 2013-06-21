@@ -1,0 +1,11 @@
+{%- set reset_url = url_for('users.reset_step2', email=user.email, token=token, _external=True) -%}
+{%- set home_url = url_for('home.index', _external=True) -%}
+<strong>{{ user.nickname }}，你好！</strong>
+
+<p>请点击下面链接进行密码重置：</p>
+
+<a href="{{ reset_url }}">{{ reset_url }}</a>
+
+<hr />
+
+<p>想了解更多信息，请访问 <a href="{{ home_url }}">{{ home_url }}</a></p>

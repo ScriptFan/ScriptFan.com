@@ -31,6 +31,9 @@ msgstr "修改密码"
 msgid  "views.users.openids.title"
 msgstr "管理服务绑定"
 
+msgid  "views.users.reset.title"
+msgstr "重置密码"
+
 
 
 msgid "index"

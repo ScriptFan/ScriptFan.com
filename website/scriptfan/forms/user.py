@@ -33,6 +33,31 @@ class SigninForm(RedirectForm):
         
         return not self.errors
 
+class ResetStep1Form(RedirectForm):
+    """请求发送密码重置邮件的表单"""
+
+    email = wtf.TextField('email', validators=[
+        wtf.Required(message=u'请填写电子邮件'),
+        wtf.Email(message=u'无效的电子邮件')])
+    # captcha = wtf.TextField('captcha', validators=[
+    #     wtf.Required(message=u'请填写验证码')])
+
+    def validate_email(form, field):
+        form.user = User.get_by_email(field.data)
+        if not form.user:
+            raise wtf.ValidationError(u'该邮件尚未在本站注册') 
+
+
+class ResetStep2Form(RedirectForm):
+    """ 接收密码重置邮件后重新填写密码 """
+
+    password = wtf.PasswordField(u'新密码', validators=[
+        wtf.Required(message=u'请填写新密码，不能少与5位字符'),
+        wtf.Length(min=5, max=20, message=u'密码应为5到20位字符')])
+    confirm = wtf.PasswordField(u'确认密码', validators=[
+        wtf.Required(message=u'请再次输入新密码'),
+        wtf.EqualTo('password', message=u'两次输入的密码不一致')])
+
 
 class SignupForm(RedirectForm):
     email = wtf.TextField('email', validators=[
@@ -76,7 +101,7 @@ class EditPasswordForm(RedirectForm):
         wtf.EqualTo('password', message=u'两次输入的密码不一致')])
 
     def validate_old_password(form, field):
-        # 当用户密码为空时，跳过原始密码验证，是否存在安全隐患？
+        # FIXME: 当用户密码为空时，跳过原始密码验证，是否存在安全隐患？
         if current_user.user.password and (not current_user.user.check_password(field.data)):
             raise wtf.ValidationError(u'提供的原始密码不正确')
 

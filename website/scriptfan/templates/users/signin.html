@@ -22,6 +22,7 @@
             <div class="controls">
                 {{ form.password }}
                 <span class="help-inline">{{ form.password | error_text }}</span>
+                <span class="help-inline"><a href="{{ url_for('users.reset_step1') }}">忘记密码？</a></span>
             </div>
         </div>
         <div class="form-actions">

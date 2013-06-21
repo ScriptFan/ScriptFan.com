@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ _('views.users.reset.title') }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <h1>{{ self.title() }}</h1>
+    </div>
+    
+    <form action="{{ url_for('users.reset_step1') }}" class="form-horizontal" id="form-reset-step1" method="post">
+        {{ form.hidden_tag() }}
+        <div class="control-group {{ form.email | error_class }}">
+            <label class="control-label">电子邮件</label>
+            <div class="controls">
+                {{ form.email }}
+                <span class="help-inline">{{ form.email | error_text }}</span>
+            </div>
+        </div>
+        {#
+        <div class="control-group {{ form.captcha | error_class }}">
+            <label class="control-label">验证码</label>
+            <div class="controls">
+                {{ form.captcha(class='input-small') }}
+                <span class="help-inline">{{ form.captcha | error_text }}</span>
+            </div>
+        </div>
+        #}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">发送电子邮件</button>
+        </div>
+    </form><!-- #form-signin -->
+</div><!-- .content -->
+{% endblock %}
+
