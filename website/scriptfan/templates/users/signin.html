@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}会员登陆{% endblock %}
+{% block title %}{{ _('views.users.signin.title') }}{% endblock %}
 
 {% block content %}
 <div class="content">
@@ -11,26 +11,26 @@
     <form action="{{ url_for('users.signin') }}" class="form-horizontal" id="form-signin" method="post">
         {{ form.hidden_tag() }}
         <div class="control-group {{ form.email | error_class }}">
-            <label class="control-label">邮件</label>
+            <label class="control-label">{{ _('models.user.email') }}</label>
             <div class="controls">
                 {{ form.email }}
                 <span class="help-inline">{{ form.email | error_text }}</span>
             </div>
         </div>
         <div class="control-group {{ form.password | error_class }}">
-            <label class="control-label">密码</label>
+            <label class="control-label">{{ _('models.user.password') }}</label>
             <div class="controls">
                 {{ form.password }}
                 <span class="help-inline">{{ form.password | error_text }}</span>
-                <span class="help-inline"><a href="{{ url_for('users.reset_step1') }}">忘记密码？</a></span>
+                <span class="help-inline"><a href="{{ url_for('users.reset_step1') }}">{{ _('forms.signin.messages.password_lost') }}</a></span>
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">用户登陆</button>&nbsp;&nbsp;
+            <button type="submit" class="btn btn-primary">{{ _('forms.signin.buttons.submit') }}</button>&nbsp;&nbsp;
             <label class="checkbox inline">
-                {{ form.remember }} 记住我的登陆信息
+              {{ form.remember }} {{ _('forms.signin.fields.remember') }}
             </label>
-            <div>使用 <a href="{{ url_for('users.openid', provider='google') }}">Gmail帐户</a> 登陆</div>
+            <div><a href="{{ url_for('users.openid', provider='google') }}">{{ _('links.signin_with_google') }}</a></div>
         </div>
     </form><!-- #form-signin -->
 </div><!-- .content -->

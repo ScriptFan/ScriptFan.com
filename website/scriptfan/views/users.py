@@ -7,6 +7,7 @@ from flask import current_app as app
 from flask.ext import login
 from flask.ext.login import current_user
 from flask.ext.openid import COMMON_PROVIDERS
+from flask.ext.babel import gettext as _
 from flask.ext.principal import Identity, AnonymousIdentity, identity_changed, identity_loaded
 from flask_mail import Message
 
@@ -147,7 +148,7 @@ def signin():
         app.logger.info('Signin users: %s', form.email.data)
         login_user(form.user, remember=form.remember)
         identity_changed.send(app._get_current_object(), identity=Identity(current_user.user.id))
-        flash(u'登陆成功', 'success')
+        flash(_('views.users.signin.signin_success'), 'success')
         return form.redirect('users.profile')
    
     return render_template('users/signin.html', form=form)

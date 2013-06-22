@@ -8,26 +8,47 @@
 
 from flask.ext import wtf
 from flask.ext.login import current_user
+from flask.ext.babel import gettext as _
 from scriptfan.models import User
 from scriptfan.forms.base import RedirectForm
 from flask.ext.openid import COMMON_PROVIDERS
 
-class SigninForm(RedirectForm):
+
+class SignupForm(RedirectForm):
+    """用户注册表单"""
+
     email = wtf.TextField('email', validators=[
         wtf.Required(message=u'请填写电子邮件'),
         wtf.Email(message=u'无效的电子邮件')])
-    password = wtf.PasswordField('password', validators=[
+    nickname = wtf.TextField('nickname', validators=[
+        wtf.Required(message=u'请填写昵称')])
+    password1 = wtf.PasswordField('password1', validators=[
         wtf.Required(message=u'请填写密码')])
+    password2 = wtf.PasswordField('password2', validators=[
+        wtf.Required(message=u'再次填写密码'),
+        wtf.EqualTo('password1', message=u'两次输入的密码不一致')])
+
+    def validate_email(form, field):
+        if User.get_by_email(field.data):
+            raise wtf.ValidationError(u'该邮箱已被注册') 
+
+
+class SigninForm(RedirectForm):
+    """ 用户登陆表单 """
+
+    email = wtf.TextField('email', validators=[
+        wtf.Required(message=_('forms.signin.errors.require_email')),
+        wtf.Email(message=_('forms.signin.errors.invalid_email'))])
+    password = wtf.PasswordField('password', validators=[
+        wtf.Required(message=_('forms.signin.errors.require_password'))])
     remember = wtf.BooleanField('remember')
 
     def validate(self):
         if not super(RedirectForm, self).validate(): return False
 
         user = User.get_by_email(self.email.data)
-        if not user:
-            self.email.errors.append(u'该邮箱未注册') 
-        elif not user.check_password(self.password.data):
-            self.password.errors.append(u'密码错误')
+        if not user or user.check_password(self.password.data):
+            self.email.errors.append(_('forms.signin.errors.invalid_email_or_password')) 
         else:
             self.user = user
         
@@ -57,23 +78,6 @@ class ResetStep2Form(RedirectForm):
     confirm = wtf.PasswordField(u'确认密码', validators=[
         wtf.Required(message=u'请再次输入新密码'),
         wtf.EqualTo('password', message=u'两次输入的密码不一致')])
-
-
-class SignupForm(RedirectForm):
-    email = wtf.TextField('email', validators=[
-        wtf.Required(message=u'请填写电子邮件'),
-        wtf.Email(message=u'无效的电子邮件')])
-    nickname = wtf.TextField('nickname', validators=[
-        wtf.Required(message=u'请填写昵称')])
-    password1 = wtf.PasswordField('password1', validators=[
-        wtf.Required(message=u'请填写密码')])
-    password2 = wtf.PasswordField('password2', validators=[
-        wtf.Required(message=u'再次填写密码'),
-        wtf.EqualTo('password1', message=u'两次输入的密码不一致')])
-
-    def validate_email(form, field):
-        if User.get_by_email(field.data):
-            raise wtf.ValidationError(u'该邮箱已被注册') 
 
 
 class EditProfileForm(RedirectForm):
