@@ -12,6 +12,8 @@ msgid "messages.no_record"
 msgstr "还没有%%s记录！"
 
 ## Users
+msgid  "views.users.signup.confirm_signup"
+msgstr "同意用户协议并注册"
 
 msgid  "views.users.slug.title"
 msgstr "设置个性域名"
