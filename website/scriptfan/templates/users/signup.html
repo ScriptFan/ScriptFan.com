@@ -38,8 +38,14 @@
                 <span class="help-inline">{{ form.password2 | error_text }}</span>
             </div>
         </div>
+
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">注册</button>
+            <div class="alert alert-info" style="margin-left: -160px;">
+              <h4>注册协议</h4>
+              <p>要注册成为本站会员，体重大概大于 80 公斤。</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary">{{ _('views.users.signup.confirm_signup') }}</button>
             &nbsp;&nbsp;或者直接 <a href="{{ url_for('users.openid', provider='google') }}">使用Google登陆</a>
         </div>
     </form><!-- #form-signup -->

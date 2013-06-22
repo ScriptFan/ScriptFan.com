@@ -12,6 +12,14 @@ msgid "messages.no_record"
 msgstr "还没有%%s记录！"
 
 ## Users
+msgid  "views.users.signup.confirm_signup"
+msgstr "同意用户协议并注册"
+
+msgid  "views.users.signin.title"
+msgstr "用户登录"
+
+msgid  "views.users.signin.signin_success"
+msgstr "登录成功！"
 
 msgid  "views.users.slug.title"
 msgstr "设置个性域名"
@@ -107,3 +115,39 @@ msgstr "内容"
 
 msgid "submit"
 msgstr "提交"
+
+## 实体相关信息
+
+msgid  "models.user.email"
+msgstr "邮箱"
+
+msgid  "models.user.password"
+msgstr "密码"
+
+## 表单及相关信息 
+
+# SigninForm
+
+msgid  "forms.signin.errors.invalid_email_or_password"
+msgstr "邮箱或者密码错误"
+
+msgid  "forms.signin.errors.require_email"
+msgstr "请填写邮箱"
+
+msgid  "forms.signin.errors.invalid_email"
+msgstr "无效的邮箱"
+
+msgid  "forms.signin.errors.require_password"
+msgstr "请填写密码"
+
+msgid  "forms.signin.fields.remember"
+msgstr "记住我的登陆信息"
+
+msgid  "forms.signin.buttons.submit"
+msgstr "登录"
+
+msgid  "forms.signin.messages.password_lost"
+msgstr "忘记密码？"
+
+msgid  "links.signin_with_google"
+msgstr "使用Google帐户登陆"
