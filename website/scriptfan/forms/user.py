@@ -6,6 +6,7 @@
     定义用户相关页面所用到的表单, 包括注册、登陆、基本资料修改、密码修改、邮箱修改等。
 """
 
+from flask import current_app as app
 from flask.ext import wtf
 from flask.ext.login import current_user
 from flask.ext.babel import gettext as _
@@ -47,7 +48,7 @@ class SigninForm(RedirectForm):
         if not super(RedirectForm, self).validate(): return False
 
         user = User.get_by_email(self.email.data)
-        if not user or user.check_password(self.password.data):
+        if not user or not user.check_password(self.password.data):
             self.email.errors.append(_('forms.signin.errors.invalid_email_or_password')) 
         else:
             self.user = user

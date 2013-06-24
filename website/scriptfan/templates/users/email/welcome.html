@@ -1,0 +1,4 @@
+{%- set home_url = url_for('home.index', _external=True) -%}
+<strong>{{ user.nickname }}，你好！</strong>
+
+<p>想了解更多信息，请访问 <a href="{{ home_url }}">{{ home_url }}</a></p>

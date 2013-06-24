@@ -218,6 +218,8 @@ def _create_or_login(resp):
         db.session.add(user)
         db.session.commit()
 
+        _send_welcome_email(user)
+
         flash(u'帐号已经创建, 可以在资料<a href="%s">修改页面</a>补充密码等信息'% url_for('users.general'), 'success')
 
     app.logger.info('Signin users: %s', user.email)
@@ -240,6 +242,7 @@ def signup():
         user.set_password(form.password1.data)
         db.session.add(user)
         app.logger.info(u'New users added: %s', user)
+        _send_welcome_email(user)
         flash(u'注册成功', 'success')
         return redirect(url_for('users.signin'))
     
@@ -279,8 +282,6 @@ def general():
     # TODO 处理更新用户资料的请求
     # TODO 用户照片上传
 
-# TODO: 用户找回密码功能
-
 # 更新用户slug功能
 @blurprint.route('/slug', methods=['GET', 'POST'])
 @login.login_required
@@ -296,6 +297,19 @@ def slug():
     form.process(obj=current_user.user)
     return render_template('users/slug.html', form=form, skip_slug_info=True)
 
+def _send_welcome_email(user):
+    """ 发送欢迎邮件 """
+
+    try:
+        app.logger.info('Sending welcome email to %s', user.email)
+        msg = Message(u'欢迎来到ScriptFan', recipients=[user.email])
+        msg.html = render_template('users/email/welcome.html', user=user)
+        # FIXME: 邮件发送使用异步方式，避免用户等待太长时间
+        mail.send(msg)
+        app.logger.info('Mail sent successfully.')
+    except Exception, e:
+        app.logger.info(e.message)
+        app.logger.error('Failed to send welcome reset mail, because: %s', e)
 
 def _send_reset_email(user, token):
     """ 发送密码重置邮件 """
@@ -303,7 +317,7 @@ def _send_reset_email(user, token):
     try:
         app.logger.info('Sending reset email to %s with token %s', user.email, token)
         msg = Message(u'ScriptFan密码重置', recipients=[user.email])
-        msg.html = render_template('users/reset_email.html', user=user, token=token)
+        msg.html = render_template('users/email/reset.html', user=user, token=token)
         # FIXME: 邮件发送使用异步方式，避免用户等待太长时间
         mail.send(msg)
         app.logger.info('Mail sent successfully.')
@@ -312,6 +326,20 @@ def _send_reset_email(user, token):
         app.logger.info(e.message)
         app.logger.error('Failed to send password reset mail, because: %s', e)
         return False
+
+def _send_reset_success_email(user):
+    """ 发送重置通知邮件 """
+
+    try:
+        app.logger.info('Sending email confirm notification to %s', user.email)
+        msg = Message(u'你在 ScriptFan 的密码已经重置！', recipients=[user.email])
+        msg.html = render_template('users/email/reset_success.html', user=user)
+        # FIXME: 邮件发送使用异步方式，避免用户等待太长时间
+        mail.send(msg)
+        app.logger.info('Mail sent successfully.')
+    except Exception, e:
+        app.logger.info(e.message)
+        app.logger.error('Failed to send email reset notification mail, because: %s', e)
 
 
 @blurprint.route('/reset/step1', methods=['GET', 'POST'])
@@ -336,11 +364,12 @@ def reset_step1():
 
 def _valid_reset_token():
     """ 验证重置口令及邮件地址是否匹配 """
-
+    email, token = request.args.get('email'), request.args.get('token')
+    app.logger.info('Validating email reset with email: %s and token: %s', email, token)
     return session.get('reset_email') and \
            session.get('reset_token') and \
-           session['reset_email'] == request.args['email'] and \
-           session['reset_token'] == request.args['token']
+           session['reset_email'] == email and \
+           session['reset_token'] == token 
 
 @blurprint.route('/reset/step2', methods=['GET', 'POST'])
 def reset_step2():
@@ -353,11 +382,11 @@ def reset_step2():
         user.set_password(form.password.data)
         flash(u'用户密码已经更新', 'success')
 
-        # TODO: 通过重置密码功能修改密码成功后，向用户发送邮件提醒。
-
         # 清除验证用的 Token
         del session['reset_email']
         del session['reset_token']
+
+        _send_reset_success_email(user)
 
         return redirect(url_for('users.signin'))
 
