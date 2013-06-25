@@ -8,26 +8,51 @@
 
 {% block content %}
 <div class="content">
-    <div class="page-header">
-        <h1>{{ user.nickname }} 的资料
-            <img src="{{ user.get_avatar_url(110) }}" class="pull-right img-polaroid avatar-large" />
-        </h1>
-    </div>
+  <div class="page-header">
+    <h1>
+      {{ user.nickname }} 的资料
 
-    <div class="well well-small section section-userinfo">
-        <div>电子邮件：<a href="mailto:{{ user.email }}">{{ user.email }}</a></div>
-        {% if user.id == current_user.user.id %}
-            <div>手机号码：{{ user.phone }}</div>
-        {% elif not current_user.is_anonymous() %}
-            {% if user.phone_privacy in (1, 2) %}
-                <div>手机号码：{{ user.phone }}</div>
-            {% endif %}
-        {% elif user.phone_privacy == 1 %}
-            <div>手机号码：{{ user.phone }}</div>
-        {% endif %}
-        <div>座右铭：<span>{{ user.motoo }}</span></div>
-        <div>个人介绍：<span>{{ user.intro }}</span></div>
-        <div>注册日期：<span>{{ user.created_time | dateformat }}</span></div>
-    </div>
+      {# 管理员可以管理级别低于自己的用户 #}
+      {% if require_roles('admin', 'root') and user.privilege < current_user.user.privilege %}
+      <div class="btn-group">
+        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+          管理用户
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          {% set role_menus = [
+              (0, '设置为封禁用户'),
+              (1, '设置为受限用户'),
+              (2, '设置为普通用户'),
+              (3, '设置为普通管理员'), 
+          ] -%}
+          {% for privilege, role_item in role_menus %}
+          {% if current_user.user.privilege > privilege and user.privilege != privilege %}
+          <li><a href="javascript:;" data-privilege="{{ privilege }}">{{ role_item }}</a></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <img src="{{ user.get_avatar_url(110) }}" class="pull-right img-polaroid avatar-large" />
+    </h1>
+  </div>
+
+  <div class="well well-small section section-userinfo">
+    <div>电子邮件：<a href="mailto:{{ user.email }}">{{ user.email }}</a></div>
+    {% if user.id == current_user.user.id %}
+    <div>手机号码：{{ user.phone }}</div>
+    {% elif not current_user.is_anonymous() %}
+    {% if user.phone_privacy in (1, 2) %}
+    <div>手机号码：{{ user.phone }}</div>
+    {% endif %}
+    {% elif user.phone_privacy == 1 %}
+    <div>手机号码：{{ user.phone }}</div>
+    {% endif %}
+    <div>座右铭：<span>{{ user.motoo }}</span></div>
+    <div>个人介绍：<span>{{ user.intro }}</span></div>
+    <div>注册日期：<span>{{ user.created_time | dateformat }}</span></div>
+  </div>
 </div>
 {% endblock %}
