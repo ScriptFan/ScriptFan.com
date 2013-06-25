@@ -147,10 +147,13 @@ def signin():
     
     if form.validate_on_submit():
         app.logger.info('Signin users: %s', form.email.data)
-        login_user(form.user, remember=form.remember)
-        identity_changed.send(app._get_current_object(), identity=Identity(current_user.user.id))
-        flash(_('views.users.signin.signin_success'), 'success')
-        return form.redirect('users.profile')
+        if form.user.privilege == 0:
+            flash(u'用户 <strong>%s</strong> 已经被封禁，不能登陆！' % form.user.nickname, 'error')
+        else:
+            login_user(form.user, remember=form.remember)
+            identity_changed.send(app._get_current_object(), identity=Identity(current_user.user.id))
+            flash(_('views.users.signin.signin_success'), 'success')
+            return form.redirect('users.profile')
    
     return render_template('users/signin.html', form=form)
 
