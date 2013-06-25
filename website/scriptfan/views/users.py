@@ -1,7 +1,7 @@
-#-*-coding:utf-8-*-
+# -*- coding: utf-8 -*-
 from datetime import datetime
 import uuid
-from flask import Blueprint, session, request, url_for, redirect, abort, g
+from flask import Blueprint, session, request, url_for, redirect, abort, g, jsonify
 from flask import render_template, flash
 from flask import current_app as app
 from flask.ext import login
@@ -13,11 +13,12 @@ from flask_mail import Message
 
 from scriptfan import db, oid, mail, login_manager
 from scriptfan.models import User, UserOpenID
+from scriptfan.functions import roles_required
 from scriptfan.forms.user import SignupForm, SigninForm, EditProfileForm, \
                                  EditPasswordForm, EditSlugForm, \
                                  ManageOpenIDForm, ResetStep1Form, ResetStep2Form
 
-blurprint = Blueprint('users', __name__)
+blueprint = Blueprint('users', __name__)
 
 class Anonymous(login.AnonymousUser):
     user = User(nickname=u'游客', email='')
@@ -45,7 +46,7 @@ def login_user(user, remember=False):
 
 # 开发资料修改页面中的OpenID绑定功能
 # FIXME: 第一次接触OpenID，实现得有点绕，是否还有漏洞没考虑到？一起讨论吧
-@blurprint.route('/openid/manage', methods=['GET', 'POST'])
+@blueprint.route('/openid/manage', methods=['GET', 'POST'])
 @login.login_required
 def openid_manage():
     g.actived_navitem = 'openids'
@@ -81,7 +82,7 @@ def _delete_openid(provider):
     return redirect(url_for('users.openid_manage'))
 
 # 添加绑定的实现
-@blurprint.route('/openid/add/<provider>/', methods=['GET'])
+@blueprint.route('/openid/add/<provider>/', methods=['GET'])
 @login.login_required
 @oid.loginhandler
 def openid_add(provider):
@@ -109,7 +110,7 @@ def openid_add(provider):
     return oid.try_login(COMMON_PROVIDERS.get(provider), \
                          ask_for=['email', 'fullname', 'nickname'])
 
-@blurprint.route('/openid/<provider>/', methods=['GET'])
+@blueprint.route('/openid/<provider>/', methods=['GET'])
 @oid.loginhandler
 def openid(provider, next=None):
     if current_user.is_authenticated():
@@ -136,7 +137,7 @@ def openid(provider, next=None):
                          ask_for=['email', 'fullname', 'nickname'])
 
 
-@blurprint.route('/signin/', methods=['GET', 'POST'])
+@blueprint.route('/signin/', methods=['GET', 'POST'])
 def signin():
     # 如果用户已经登陆，跳转到用户资料页面
     if current_user.is_authenticated():
@@ -228,7 +229,7 @@ def _create_or_login(resp):
 
     return redirect(oid.get_next_url())
 
-@blurprint.route('/signup/', methods=['GET', 'POST'])
+@blueprint.route('/signup/', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated():
         return redirect(url_for('users.profile'))
@@ -249,20 +250,37 @@ def signup():
     return render_template('users/signup.html', form=form)
 
 # FIXME: Slug should not be same as an exists user_id
-@blurprint.route('/profile/')
-@blurprint.route('/profile/<slug_or_id>')
+@blueprint.route('/profile/', methods=['GET'])
+@blueprint.route('/profile/<slug_or_id>', methods=['GET'])
 @login.login_required
 def profile(slug_or_id=None):
     if slug_or_id:
-        if slug_or_id.isdigit():
-            user = User.query.get(int(slug_or_id)).first()
-        else:
-            user = User.query.filter_by(slug=slug_or_id).first()
+        user = User.get_by_slug_or_id(slug_or_id)
         return user and render_template('users/profile.html', user=user) or abort(404)
     else:
         return render_template('users/profile.html', user=current_user.user)
 
-@blurprint.route('/general', methods=['GET', 'POST'])
+@blueprint.route('/profile/<slug_or_id>', methods=['POST'])
+@roles_required('admin', 'root')
+def update_role(slug_or_id=None):
+    """ 更改用户级别 """
+
+    privilege = request.form.get('privilege', '')
+    if slug_or_id and privilege.isdigit():
+        privilege = int(privilege)
+
+        user = User.get_by_slug_or_id(slug_or_id)
+        if user and current_user.user.privilege > user.privilege and current_user.user.privilege > privilege:
+            user.privilege = privilege
+            msg = u'<strong>%s</strong> 已经被设置为 <strong>%s</strong>' % (user.nickname, user.privilege_name)
+            flash(msg, 'success')
+            return msg
+
+    flash(u'更新用户出错，请重试！', 'error')
+    return abort(404)
+
+
+@blueprint.route('/general', methods=['GET', 'POST'])
 @login.login_required
 def general():
     g.actived_navitem = 'general'
@@ -283,7 +301,7 @@ def general():
     # TODO 用户照片上传
 
 # 更新用户slug功能
-@blurprint.route('/slug', methods=['GET', 'POST'])
+@blueprint.route('/slug', methods=['GET', 'POST'])
 @login.login_required
 def slug():
     g.actived_navitem = 'slug'
@@ -342,7 +360,7 @@ def _send_reset_success_email(user):
         app.logger.error('Failed to send email reset notification mail, because: %s', e)
 
 
-@blurprint.route('/reset/step1', methods=['GET', 'POST'])
+@blueprint.route('/reset/step1', methods=['GET', 'POST'])
 def reset_step1():
     """ 重置密码第一步，发送重置链接邮件 """
 
@@ -371,7 +389,7 @@ def _valid_reset_token():
            session['reset_email'] == email and \
            session['reset_token'] == token 
 
-@blurprint.route('/reset/step2', methods=['GET', 'POST'])
+@blueprint.route('/reset/step2', methods=['GET', 'POST'])
 def reset_step2():
     form = ResetStep2Form()
     if form.validate_on_submit():
@@ -398,7 +416,7 @@ def reset_step2():
         return redirect(url_for('users.reset_step1'))
 
 
-@blurprint.route('/password', methods=['GET', 'POST'])
+@blueprint.route('/password', methods=['GET', 'POST'])
 @login.login_required
 def password():
     g.actived_navitem = 'password'
@@ -412,12 +430,12 @@ def password():
     form.errors and flash(u'用户密码未能更新', 'error')
     return render_template('users/password.html', form=form, skip_password_info=True)
 
-@blurprint.route('/email')
+@blueprint.route('/email')
 @login.login_required
 def editemail():
     return 'email'
 
-@blurprint.route('/signout/', methods=['GET'])
+@blueprint.route('/signout/', methods=['GET'])
 @login.login_required
 def signout():
     login.logout_user()

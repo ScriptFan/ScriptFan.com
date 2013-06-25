@@ -7,28 +7,26 @@
 {% endblock %}
 
 {% block content %}
-<div class="content">
+<div class="content" class="user-profile">
   <div class="page-header">
     <h1>
       {{ user.nickname }} 的资料
 
       {# 管理员可以管理级别低于自己的用户 #}
       {% if require_roles('admin', 'root') and user.privilege < current_user.user.privilege %}
-      <div class="btn-group">
-        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-          管理用户
+      <div class="btn-group" id="role-menus">
+        <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+          更改级别 <small class="label label-info">{{ _('models.user.privilege.privilege%s' % user.privilege )}}</small>
           <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
-          {% set role_menus = [
-              (0, '设置为封禁用户'),
-              (1, '设置为受限用户'),
-              (2, '设置为普通用户'),
-              (3, '设置为普通管理员'), 
-          ] -%}
-          {% for privilege, role_item in role_menus %}
+          {% for privilege in range(0, 4) %}
           {% if current_user.user.privilege > privilege and user.privilege != privilege %}
-          <li><a href="javascript:;" data-privilege="{{ privilege }}">{{ role_item }}</a></li>
+          <li>
+            <a href="javascript:;" data-privilege="{{ privilege }}">
+              {{ _('views.users.profile.set_role_as') }}{{ _('models.user.privilege.privilege%s' % privilege) }}
+            </a>
+          </li>
           {% endif %}
           {% endfor %}
         </ul>

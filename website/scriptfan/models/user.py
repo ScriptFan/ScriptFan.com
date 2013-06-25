@@ -12,6 +12,8 @@ from scriptfan.functions import md5
 from datetime import datetime
 from flask import url_for, request
 
+from flask.ext.babel import gettext as _
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -71,6 +73,17 @@ class User(db.Model):
     @classmethod
     def get_by_slug(cls, slug):
         return User.query.filter_by(slug=slug).first()
+    
+    @classmethod
+    def get_by_slug_or_id(cls, slug_or_id):
+      if slug_or_id.isdigit():
+        return User.query.get(int(slug_or_id)).first()
+      else:
+        return User.query.filter_by(slug=slug_or_id).first()
+
+    @property
+    def privilege_name(self):
+      return _('models.user.privilege.privilege%s' % self.privilege)
 
     @property
     def url(self):

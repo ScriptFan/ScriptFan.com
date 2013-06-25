@@ -107,7 +107,7 @@ def register_blueprints(app):
     app.logger.info('Register blueprints...')
     from scriptfan.views import home, events, users, articles
     app.register_blueprint(home.blueprint,   url_prefix='')
-    app.register_blueprint(users.blurprint,  url_prefix='/users')
+    app.register_blueprint(users.blueprint,  url_prefix='/users')
     app.register_blueprint(events.blueprint, url_prefix='/events')
     app.register_blueprint(articles.blueprint, url_prefix='/articles')
 

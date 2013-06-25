@@ -42,6 +42,8 @@ msgstr "管理服务绑定"
 msgid  "views.users.reset.title"
 msgstr "重置密码"
 
+msgid  "views.users.profile.set_role_as"
+msgstr "设置为"
 
 
 msgid "index"
@@ -123,6 +125,21 @@ msgstr "邮箱"
 
 msgid  "models.user.password"
 msgstr "密码"
+
+msgid  "models.user.privilege.privilege0"
+msgstr "封禁用户"
+
+msgid  "models.user.privilege.privilege1"
+msgstr "受限用户"
+
+msgid  "models.user.privilege.privilege2"
+msgstr "普通用户"
+
+msgid  "models.user.privilege.privilege3"
+msgstr "普通管理员"
+
+msgid  "models.user.privilege.privilege4"
+msgstr "超级管理员"
 
 ## 表单及相关信息 
 
