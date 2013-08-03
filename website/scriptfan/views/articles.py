@@ -31,7 +31,7 @@ def index(tag_name=None):
 
     # 对于非管理员，只能看到发布过的文章
     if not require_roles('admin', 'root'):
-        articles = articles.filter_by(published=1)
+        articles = articles.filter_by(published=True)
 
     if tag_name:
         articles = articles.filter(Article.tags.any(name=tag_name))

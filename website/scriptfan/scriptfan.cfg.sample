@@ -12,14 +12,14 @@ SECRET_KEY='youshouldnotknowthis'
 PAGE_SIZE=10
 
 # database settings
-SQLALCHEMY_DATABASE_URI='mysql+mysqlconnector://root:root@localhost/scriptfan_dev?charset=utf8&use_unicode=1'
+SQLALCHEMY_DATABASE_URI='postgresql://postgres:postgres@localhost:5432/scriptfan'
 SQLALCHEMY_ECHO=False
 
 # LOGGING CONFIG
 LOGGER_NAME='scriptfan'
 
 # babel
-BABEL_DEFAULT_LOCALE='zh_CN'
+BABEL_DEFAULT_LOCALE='zh_Hans_CN'
 
 # 密码盐，用于增加密码的安全性
 PASSWORD_SALT = 'udontkown@must#complicated'
@@ -32,4 +32,3 @@ MAIL_USE_SSL = False
 MAIL_USERNAME = 'username' 
 MAIL_PASSWORD = 'password'
 MAIL_DEFAULT_SENDER = 'from@gmail.com'
-

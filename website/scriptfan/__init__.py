@@ -45,6 +45,14 @@ def config_app(app, config):
     babel.init_app(app)
     mail.init_app(app)
 
+    @babel.localeselector
+    def get_locale():
+        # 暂时强制返回 zh_CN
+        return 'zh_CN'
+
+    from flask.ext.babel import get_locale
+    app.logger.error(get_locale())
+
     @app.after_request
     def after_request(response):
         try:
